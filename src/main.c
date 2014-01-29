@@ -20,17 +20,18 @@
 
 #include "cpu-2650.h"
 
-int main( int argc, char **argv )
+int main( void )
 {
-  Cpu cpu;
+  Cpu cpu; /* Data structure that represents the Signetics 2650. */
+  unsigned char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
 
+  /* From here on, this is just test code, to prove the concept. */
   init_cpu( &cpu );
 
-  printf( "Register 0: %d\n", cpu.register_0 );
+  memory[ cpu.pc ] = 255;
 
-  update_register( &cpu.register_0, 255 );
-
-  printf( "Register 0: %d\n", cpu.register_0 );
+  printf( "PC: 0x%04X; Value at that memory location: 0x%02X.\n",
+	  cpu.pc, memory[ cpu.pc ] );
 
   return 0;
 }

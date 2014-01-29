@@ -19,11 +19,9 @@
 #ifndef CPU_2650_H
 #define CPU_2650_H
 
-#include <stdint.h>
-
 typedef enum Opcodes {
   /* Load register zero. */
-  LODZ_0 = 0x00, /* This is illegal, but it does work. */
+  LODZ_0 = 0x00, /* Officially, this is illegal, but it does work. */
   LODZ_1 = 0x01,
   LODZ_2 = 0x02,
   LODZ_3 = 0x03,
@@ -356,21 +354,79 @@ typedef enum Opcodes {
   BIRA_0 = 0xDC,
   BIRA_1 = 0xDD,
   BIRA_2 = 0xDE,
-  BIRA_3 = 0xDF
+  BIRA_3 = 0xDF,
+
+  /* Compare to register zero, arithmetic/logical. */
+  COMZ_0 = 0xE0,
+  COMZ_1 = 0xE1,
+  COMZ_2 = 0xE2,
+  COMZ_3 = 0xE3,
+
+  /* Compare immediate, arithmetic/logical. */
+  COMI_0 = 0xE4,
+  COMI_1 = 0xE5,
+  COMI_2 = 0xE6,
+  COMI_3 = 0xE7,
+
+  /* Compare relative, arithmetic/logical. */
+  COMR_0 = 0xE8,
+  COMR_1 = 0xE9,
+  COMR_2 = 0xEA,
+  COMR_3 = 0xEB,
+
+  /* Compare absolute, arithmetic/logical. */
+  COMA_0 = 0xEC,
+  COMA_1 = 0xED,
+  COMA_2 = 0xEE,
+  COMA_3 = 0xEF,
+
+  /* Write data. */
+  WRTD_0 = 0xF0,
+  WRTD_1 = 0xF1,
+  WRTD_2 = 0xF2,
+  WRTD_3 = 0xF3,
+
+  /* Test under mask, immediate. */
+  TMI_0  = 0xF4,
+  TMI_1  = 0xF5,
+  TMI_2  = 0xF6,
+  TMI_3  = 0xF7,
+
+  /* Branch on decrementing register, relative. */
+  BDRR_0 = 0xF8,
+  BDRR_1 = 0xF9,
+  BDRR_2 = 0xFA,
+  BDRR_3 = 0xFB,
+
+  /* Branch on decrementing register, absolute. */
+  BDRA_0 = 0xFC,
+  BDRA_1 = 0xFD,
+  BDRA_2 = 0xFE,
+  BDRA_3 = 0xFF
 } Opcodes;
 
 typedef struct Cpu {
-  int8_t register_0;
-  int8_t register_1;
-  int8_t register_2;
-  int8_t register_3;
-  int8_t register_4;
-  int8_t register_5;
-  int8_t register_6;
+
+  /* General purpose registers */
+  unsigned char register_0;
+  unsigned char register_1;
+  unsigned char register_2;
+  unsigned char register_3;
+  unsigned char register_4;
+  unsigned char register_5;
+  unsigned char register_6;
+
+  /* Program status word */
+  struct psw {
+    unsigned char upper;
+    unsigned char lower;
+  } psw;
+
+  /* Program counter */
+  unsigned short pc;
 } Cpu;
 
 /* Function prototypes */
 void init_cpu( Cpu *cpu );
-void update_register( int8_t *reg, int8_t value );
 
 #endif /* CPU_2650_H */

@@ -27,9 +27,9 @@ void init_cpu( Cpu *cpu )
   cpu->register_4 = 0;
   cpu->register_5 = 0;
   cpu->register_6 = 0;
-}
 
-void update_register( int8_t *reg, int8_t value )
-{
-  *reg = value;
+  cpu->psw.upper = 0;
+  cpu->psw.lower = 0;
+
+  cpu->pc = 0x1234; /* This is just for testing purposes! */
 }
