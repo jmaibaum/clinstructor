@@ -16,38 +16,21 @@
   CLInstructor.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "cpu-2650.h"
 #include "parse-hex.h"
 
-int main( int argc, char **argv )
+void parse_hex_file( FILE *fp, char *mem )
 {
-  FILE *fp;
-  char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
-  int i;
+  char ch;
 
-  /* Check command line arguments. */
-  if ( argc > 1 ) {
-     if ( (fp = fopen( argv[1], "r" )) ) { 
-      parse_hex_file( fp, memory );
-      fclose( fp );
+  while ( (ch = getc( fp )) != EOF) {
+    printf( "%d\n", ch );
+
+    if ( isxdigit( ch ) ) {
+      *mem++ = ch - '0';
     }
-  } else {
-    printf( "You have not specified any source files, so I will quit.\n" );
-    return 0;
   }
-
-  Cpu cpu; /* Data structure that represents the Signetics 2650. */
-
-  /* From here on, this is just test code, to prove the concept. */
-  init_cpu( &cpu );
-
-  /* To check the hex parser, print out the first ten bytes in memory. */
-  for ( i = 0; i < 10; ++i )
-    printf( "Value at memory location 0x%04X: 0x%02X.\n",
-	    i, memory[i] );
-
-  return 0;
 }
