@@ -24,13 +24,9 @@
 
 void parse_hex_file( FILE *fp, char *mem )
 {
-  char ch;
+  char ch[2];
 
-  while ( (ch = getc( fp )) != EOF) {
-    printf( "%d\n", ch );
-
-    if ( isxdigit( ch ) ) {
-      *mem++ = ch - '0';
-    }
+  while ( (ch[0] = getc( fp )) != EOF ) {
+    *mem++ = (char) strtol( ch, NULL, 16 );
   }
 }
