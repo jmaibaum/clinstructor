@@ -30,7 +30,7 @@ int main( int argc, char **argv )
 
   /* Check command line arguments. */
   if ( argc > 1 ) {
-     if ( (fp = fopen( argv[1], "r" )) ) { 
+    if ( (fp = fopen( argv[1], "r" )) ) { 
       parse_hex_file( fp, memory );
       fclose( fp );
     }
@@ -45,9 +45,9 @@ int main( int argc, char **argv )
   init_cpu( &cpu );
 
   /* To check the hex parser, print out the first ten bytes in memory. */
-  for ( i = 0; i < 10; ++i )
+  for ( i = 0; i < 16; ++i )
     printf( "Value at memory location 0x%04X: 0x%02X.\n",
-	    i, memory[i] );
+	    i, (unsigned char) memory[i] );
 
   return 0;
 }

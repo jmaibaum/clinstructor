@@ -24,9 +24,11 @@
 
 void parse_hex_file( FILE *fp, char *mem )
 {
-  char ch[2];
+  char byte[3];
 
-  while ( (ch[0] = getc( fp )) != EOF ) {
-    *mem++ = (char) strtol( ch, NULL, 16 );
+  while ( fgets( byte, 3, fp ) ) {
+    if ( isxdigit( byte[0] ) && isxdigit( byte[1] ) ) {
+      *mem++ = strtol( byte, NULL, 16 );
+    }
   }
 }
