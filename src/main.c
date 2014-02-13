@@ -31,7 +31,11 @@ int main( int argc, char **argv )
   /* Check command line arguments. */
   if ( argc > 1 ) {
     if ( (fp = fopen( argv[1], "r" )) ) { 
-      parse_hex_file( fp, memory );
+      if ( parse_hex_file( fp, memory ) ) {
+	printf( "Warning: Emulated memory is full, "
+		"but hex file still contains data.\n" );
+      }
+
       fclose( fp );
     } else {
       printf( "Error: Could not open hex file \"%s\".\n", argv[1] );
@@ -51,6 +55,12 @@ int main( int argc, char **argv )
   for ( i = 0; i < 16; ++i )
     printf( "Value at memory location 0x%04X: 0x%02X.\n",
 	    i, (unsigned char) memory[i] );
+
+  printf( "Value at memory location 0x7FFE: 0x%02X.\n",
+	  (unsigned char) memory[0x7FFE]);
+  printf( "Value at memory location 0x7FFF: 0x%02X.\n",
+	  (unsigned char) memory[0x7FFF]);
+
 
   return EXIT_SUCCESS;
 }

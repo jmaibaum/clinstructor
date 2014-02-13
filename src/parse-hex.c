@@ -22,13 +22,21 @@
 
 #include "parse-hex.h"
 
-void parse_hex_file( FILE *fp, char *mem )
+int parse_hex_file( FILE *fp, char *mem )
 {
-  char byte[3];
+  int bytecount = 0;
+  char byte[3];      /* Because of the terminating null byte! */
 
   while ( fgets( byte, 3, fp ) ) {
     if ( isxdigit( byte[0] ) && isxdigit( byte[1] ) ) {
-      *mem++ = strtol( byte, NULL, 16 );
+      if ( bytecount < 0x8000 ) {
+	*mem++ = strtol( byte, NULL, 16 );
+	++bytecount;
+      } else {
+	return EXIT_FAILURE;
+      }
     }
   }
+
+  return EXIT_SUCCESS;
 }
