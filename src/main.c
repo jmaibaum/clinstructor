@@ -33,10 +33,13 @@ int main( int argc, char **argv )
     if ( (fp = fopen( argv[1], "r" )) ) { 
       parse_hex_file( fp, memory );
       fclose( fp );
+    } else {
+      printf( "Error: Could not open hex file \"%s\".\n", argv[1] );
+      return EXIT_FAILURE;
     }
   } else {
     printf( "You have not specified any source files, so I will quit.\n" );
-    return 0;
+    return EXIT_SUCCESS;
   }
 
   Cpu cpu; /* Data structure that represents the Signetics 2650. */
@@ -49,5 +52,5 @@ int main( int argc, char **argv )
     printf( "Value at memory location 0x%04X: 0x%02X.\n",
 	    i, (unsigned char) memory[i] );
 
-  return 0;
+  return EXIT_SUCCESS;
 }
