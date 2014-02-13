@@ -26,7 +26,7 @@ int main( int argc, char **argv )
 {
   FILE *fp;
   char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
-  int i;
+  int err;
 
   /* Check command line arguments. */
   if ( argc > 1 ) {
@@ -48,21 +48,29 @@ int main( int argc, char **argv )
 
   Cpu cpu; /* Data structure that represents the Signetics 2650. */
 
-  /* From here on, this is just test code, to prove the concept. */
-  init_cpu( &cpu );
+  /* Initialize cpu and enter emulation loop. */
+  cpu_init( &cpu );
 
-  /* To check the hex parser, print out the first ten bytes in memory. */
-  for ( i = 0; i < 16; ++i )
-    printf( "Value at memory location 0x%04X: 0x%02X.\n",
-	    i, (unsigned char) GET_MEMORY( i ) );
+  err = cpu_loop( &cpu, memory );
 
-  printf( "Value at memory location 0x7FFE: 0x%02X.\n",
-	  (unsigned char) GET_MEMORY( 0x7FFE ) );
-  printf( "Value at memory location 0x7FFF: 0x%02X.\n",
-	  (unsigned char) GET_MEMORY( 0x7FFF ) );
-  printf( "Value at memory location 0x8000: 0x%02X.\n",
-	  (unsigned char) GET_MEMORY( 0x8000 ) );
+  if ( err ) {
+    printf("CPU-DUMP:\n"
+	   "/----------------------------\\\n"
+	   "|IAR:%04X\tIR:%02X        |\n"
+	   "|----------------------------|\n"
+	   "|R0:%02X\tR1:%02X\tR2:%02X\tR3:%02X|\n"
+	   "|\tR4:%02X\tR5:%02X\tR6:%02X|\n"
+	   "\\----------------------------/\n",
+	   cpu.iar,
+	   cpu.ir,
+	   cpu.register_0,
+	   cpu.register_1,
+	   cpu.register_2,
+	   cpu.register_3,
+	   cpu.register_4,
+	   cpu.register_5,
+	   cpu.register_6);
+  }
 
-
-  return EXIT_SUCCESS;
+  return err;
 }

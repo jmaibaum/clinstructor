@@ -26,7 +26,8 @@
    memory access should only be through the following macro, GET_MEMORY(), which
    wraps addresses > 0x7FFF around. Feels a little hacky, but I have not come to
    a better solution, yet. */
-#define GET_MEMORY( address ) memory[ ( address ) % 0x8000 ]
+
+#define GET_MEMORY( address ) *( memory + ( address ) % 0x8000 )
 
 typedef enum Opcodes {
   /* Load register zero. */
@@ -426,16 +427,19 @@ typedef struct Cpu {
   unsigned char register_6;
 
   /* Program status word */
-  struct psw {
-    unsigned char upper;
-    unsigned char lower;
-  } psw;
+  unsigned char psu;
+  unsigned char psl;
 
-  /* Program counter */
-  unsigned short pc;
+  /* Instruction Address Register */
+  unsigned short iar;
+
+  /* Instruction Register */
+  unsigned char ir;
 } Cpu;
 
 /* Function prototypes */
-void init_cpu( Cpu *cpu );
+void cpu_init( Cpu *cpu );
+
+int cpu_loop( Cpu *cpu, char *memory );
 
 #endif /* CPU_2650_H */
