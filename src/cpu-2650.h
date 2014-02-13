@@ -19,6 +19,15 @@
 #ifndef CPU_2650_H
 #define CPU_2650_H
 
+/* The compiler (or the operating system's memory management on Mac OSX) seems
+   to allocate some more bytes than specified in main.c (probably due to machine
+   word boundaries?!). So the program does not throw an error, if memory a
+   little above 0x7FFF gets adressed (like 0x8000 or 0x8001). Therefore, all
+   memory access should only be through the following macro, GET_MEMORY(), which
+   wraps addresses > 0x7FFF around. Feels a little hacky, but I have not come to
+   a better solution, yet. */
+#define GET_MEMORY( address ) memory[ ( address ) % 0x8000 ]
+
 typedef enum Opcodes {
   /* Load register zero. */
   LODZ_0 = 0x00, /* Officially, this is illegal, but it does work. */

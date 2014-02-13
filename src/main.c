@@ -54,12 +54,14 @@ int main( int argc, char **argv )
   /* To check the hex parser, print out the first ten bytes in memory. */
   for ( i = 0; i < 16; ++i )
     printf( "Value at memory location 0x%04X: 0x%02X.\n",
-	    i, (unsigned char) memory[i] );
+	    i, (unsigned char) GET_MEMORY( i ) );
 
   printf( "Value at memory location 0x7FFE: 0x%02X.\n",
-	  (unsigned char) memory[0x7FFE]);
+	  (unsigned char) GET_MEMORY( 0x7FFE ) );
   printf( "Value at memory location 0x7FFF: 0x%02X.\n",
-	  (unsigned char) memory[0x7FFF]);
+	  (unsigned char) GET_MEMORY( 0x7FFF ) );
+  printf( "Value at memory location 0x8000: 0x%02X.\n",
+	  (unsigned char) GET_MEMORY( 0x8000 ) );
 
 
   return EXIT_SUCCESS;
