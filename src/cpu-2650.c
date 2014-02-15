@@ -206,6 +206,57 @@ int cpu_loop( Cpu *cpu, char *memory )
       break;
 
 
+    case STRZ_1: /* C1 */
+
+      printf( "STRZ_1.\n" );
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_4 = cpu->register_0;
+      else
+	cpu->register_1 = cpu->register_0;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      break;
+
+
+    case STRZ_2: /* C2 */
+
+      printf( "STRZ_2.\n" );
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_5 = cpu->register_0;
+      else
+	cpu->register_2 = cpu->register_0;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      break;
+
+
+    case STRZ_3: /* C3 */
+
+      printf( "STRZ_3.\n" );
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_6 = cpu->register_0;
+      else
+	cpu->register_3 = cpu->register_0;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      break;
+
+
     case COMZ_0: /* E0 */
 
       printf( "COMZ_0.\n" );
