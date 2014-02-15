@@ -59,10 +59,10 @@ int cpu_loop( Cpu *cpu, char *memory )
 
       printf( "LODZ_1.\n" );
 
-      /* Set register value */
+      /* Set register value. */
       cpu->register_0 = REGISTER_BANK ?	cpu->register_4 : cpu->register_1;
 
-      /* Set CC flags */
+      /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
@@ -73,10 +73,10 @@ int cpu_loop( Cpu *cpu, char *memory )
 
       printf( "LODZ_2.\n" );
 
-      /* Set register value */
+      /* Set register value. */
       cpu->register_0 = REGISTER_BANK ?	cpu->register_5 : cpu->register_2;
 
-      /* Set CC flags */
+      /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
@@ -87,10 +87,10 @@ int cpu_loop( Cpu *cpu, char *memory )
 
       printf( "LODZ_3.\n" );
 
-      /* Set register value */
+      /* Set register value. */
       cpu->register_0 = REGISTER_BANK ?	cpu->register_6 : cpu->register_3;
 
-      /* Set CC flags */
+      /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
@@ -101,10 +101,10 @@ int cpu_loop( Cpu *cpu, char *memory )
 
       printf( "LODI_0.\n" );
 
-      /* Set register value */
+      /* Set register value. */
       cpu->register_0 = memory[MEMORY( ++cpu->iar )];
 
-      /* Set CC flags */
+      /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
@@ -115,13 +115,13 @@ int cpu_loop( Cpu *cpu, char *memory )
 
       printf( "LODI_1.\n" );
 
-      /* Set register value */
+      /* Set register value. */
       if ( REGISTER_BANK )
 	cpu->register_4 = memory[MEMORY( ++cpu->iar )];
       else
 	cpu->register_1 = memory[MEMORY( ++cpu->iar )];
 
-      /* Set CC flags */
+      /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= REGISTER_BANK ?
 	CC_REG( cpu->register_4 ) : CC_REG( cpu->register_1 );
@@ -133,13 +133,13 @@ int cpu_loop( Cpu *cpu, char *memory )
 
       printf( "LODI_2.\n" );
 
-      /* Set register value */
+      /* Set register value. */
       if ( REGISTER_BANK )
 	cpu->register_5 = memory[MEMORY( ++cpu->iar )];
       else
 	cpu->register_2 = memory[MEMORY( ++cpu->iar )];
 
-      /* Set CC flags */
+      /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= REGISTER_BANK ?
 	CC_REG( cpu->register_5 ) : CC_REG( cpu->register_2 );
@@ -151,16 +151,72 @@ int cpu_loop( Cpu *cpu, char *memory )
 
       printf( "LODI_3.\n" );
 
-      /* Set register value */
+      /* Set register value. */
       if ( REGISTER_BANK )
 	cpu->register_6 = memory[MEMORY( ++cpu->iar )];
       else
 	cpu->register_3 = memory[MEMORY( ++cpu->iar )];
 
-      /* Set CC flags */
+      /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= REGISTER_BANK ?
 	CC_REG( cpu->register_6 ) : CC_REG( cpu->register_3 );
+
+      break;
+
+
+    case EORZ_0: /* 20 */
+
+      printf( "EORZ_0.\n" );
+
+      /* Set register value. */
+      cpu->register_0 ^= cpu->register_0;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case EORZ_1: /* 21 */
+
+      printf( "EORZ_1.\n" );
+
+      /* Set register value. */
+      cpu->register_0 ^= REGISTER_BANK ? cpu->register_4 : cpu->register_1;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case EORZ_2: /* 22 */
+
+      printf( "EORZ_2.\n" );
+
+      /* Set register value. */
+      cpu->register_0 ^= REGISTER_BANK ? cpu->register_5 : cpu->register_2;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case EORZ_3: /* 23 */
+
+      printf( "EORZ_3.\n" );
+
+      /* Set register value. */
+      cpu->register_0 ^= REGISTER_BANK ? cpu->register_6 : cpu->register_3;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
 
       break;
 
@@ -169,6 +225,109 @@ int cpu_loop( Cpu *cpu, char *memory )
 
       printf( "CPU is now in HALT state.\n" );
       cpu_error = 1;
+
+      break;
+
+
+    case ANDZ_1: /* 41 */
+
+      printf( "ANDZ_1.\n" );
+
+      /* Set register value. */
+      cpu->register_0 &= REGISTER_BANK ? cpu->register_4 : cpu->register_1;
+
+      /* Set CC value. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ANDZ_2: /* 42 */
+
+      printf( "ANDZ_2.\n" );
+
+      /* Set register value. */
+      cpu->register_0 &= REGISTER_BANK ? cpu->register_5 : cpu->register_2;
+
+      /* Set CC value. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ANDZ_3: /* 43 */
+
+      printf( "ANDZ_3.\n" );
+
+      /* Set register value. */
+      cpu->register_0 &= REGISTER_BANK ? cpu->register_6 : cpu->register_3;
+
+      /* Set CC value. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case IORZ_0: /* 60 */
+
+      printf( "IORZ_0.\n" );
+
+      /*
+	Set register value is not necessary, since this:
+
+	  cpu->register_0 |= cpu->register_0;
+
+	does not change the value of Reg 0.
+      */
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case IORZ_1: /* 61 */
+
+      printf( "IORZ_1.\n" );
+
+      /* Set register value. */
+      cpu->register_0 |= ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case IORZ_2: /* 62 */
+
+      printf( "IORZ_2.\n" );
+
+      /* Set register value. */
+      cpu->register_0 |= ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case IORZ_3: /* 63 */
+
+      printf( "IORZ_3.\n" );
+
+      /* Set register value. */
+      cpu->register_0 |= ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
 
       break;
 
