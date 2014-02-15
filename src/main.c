@@ -54,22 +54,26 @@ int main( int argc, char **argv )
   err = cpu_loop( &cpu, memory );
 
   if ( err ) {
-    printf("CPU-DUMP:\n"
-	   "/----------------------------\\\n"
-	   "|IAR:%04X\tIR:%02X        |\n"
-	   "|----------------------------|\n"
-	   "|R0:%02X\tR1:%02X\tR2:%02X\tR3:%02X|\n"
-	   "|\tR4:%02X\tR5:%02X\tR6:%02X|\n"
-	   "\\----------------------------/\n",
-	   cpu.iar,
-	   cpu.ir,
-	   cpu.register_0,
-	   cpu.register_1,
-	   cpu.register_2,
-	   cpu.register_3,
-	   cpu.register_4,
-	   cpu.register_5,
-	   cpu.register_6);
+    printf( "CPU-DUMP:\n"
+	    "/----------------------------\\\n"
+	    "|IAR:%04X\tIR:%02X        |\n"
+	    "|----------------------------|\n"
+	    "|R0:%02X\tR1:%02X\tR2:%02X\tR3:%02X|\n"
+	    "|\tR4:%02X\tR5:%02X\tR6:%02X|\n"
+	    "|----------------------------|\n"
+	    "|PSW:%02X%02X                    |\n"
+	    "\\----------------------------/\n",
+	    cpu.iar,
+	    cpu.ir,
+	    cpu.register_0,
+	    cpu.register_1,
+	    cpu.register_2,
+	    cpu.register_3,
+	    cpu.register_4,
+	    cpu.register_5,
+	    cpu.register_6,
+	    cpu.psu,
+	    cpu.psl );
   }
 
   return err;

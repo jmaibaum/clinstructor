@@ -26,9 +26,91 @@
    memory access should only be through the following macro, GET_MEMORY(), which
    wraps addresses > 0x7FFF around. Feels a little hacky, but I have not come to
    a better solution, yet. */
+#define MEMORY( address ) ( ( address ) % 0x8000 )
 
-#define GET_MEMORY( address ) *( memory + ( address ) % 0x8000 )
+/* Enums, Definitions, and Macros for managing the PSW. */
+typedef enum PSU_Masks {
 
+  /* 
+     Program Status Upper:
+     |-----------------------------------------------|
+     |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+     |-----------------------------------------------|
+     |  S  |  F  |  II |  -  |  -  | SP2 | SP1 | SP0 |
+     |-----------------------------------------------|
+  */
+
+  PSU_SP = 0x07, /* Stack pointer (3 least significant bits) */
+  PSU_II = 0x20, /* Interrupt inhibit */
+  PSU_F  = 0x40, /* Flag */
+  PSU_S  = 0x80  /* Sense */
+} PSU_Masks;
+
+typedef enum PSL_Masks {
+
+  /* 
+     Program Status Lower:
+     |-----------------------------------------------|
+     |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+     |-----------------------------------------------|
+     | CC1 | CC0 | IDC |  RS |  WC | OVF | COM |  C  |
+     |-----------------------------------------------|
+  */
+
+  PSL_C   = 0x01, /* Carry/borrow */
+  PSL_COM = 0x02, /* Logical/arithmetical compare */
+  PSL_OVF = 0x04, /* Overflow */
+  PSL_WC  = 0x08, /* With/without carry */
+  PSL_RS  = 0x10, /* Register bank select */
+  PSL_IDC = 0x20, /* Interdigit carry */
+  PSL_CC  = 0xC0  /* Condition code (2 most significant bits) */
+} PSL_Masks;
+
+typedef enum CC_VALS {
+  CC_ZERO     = 0x00,
+  CC_POSITIVE = 0x40,
+  CC_NEGATIVE = 0x80,
+  CC_EQUAL    = 0x00,
+  CC_GREATER  = 0x40,
+  CC_LESS     = 0x80
+} CC_VALS;
+
+/* Macros to get a single flag value. */
+#define STACK_POINTER ( cpu->psu & PSU_SP )
+#define IR_INHIBIT    ( cpu->psu & PSU_II )
+#define FLAG          ( cpu->psu & PSU_F )
+#define SENSE         ( cpu->psu & PSU_S )
+
+#define CARRY         ( cpu->psl & PSL_C )
+#define COMPARE       ( cpu->psl & PSL_COM )
+#define OVERFLOW      ( cpu->psl & PSL_OVF )
+#define WITH_CARRY    ( cpu->psl & PSL_WC )
+#define REGISTER_BANK ( cpu->psl & PSL_RS )
+#define ID_CARRY      ( cpu->psl & PSL_IDC )
+#define C_CODE        ( cpu->psl & PSL_CC )
+
+/* Clear CC. This has to be done in advance to any CC manipulation. */
+#define CLEAR_CC ( cpu->psl &= ~PSL_CC )
+
+/* Decide if a value should be interpreted logically or arithmetically. */
+#define LOG_OR_ARI( value )			\
+  ( COMPARE ? (value) : (signed char) (value) )
+
+/* Get the correct value for CC after any instruction that affects a
+   register. */
+#define CC_REG( data_byte )				\
+  ( ( (data_byte) != CC_ZERO )				\
+    ? ( ( (data_byte) < CC_NEGATIVE )			\
+	? CC_POSITIVE : CC_NEGATIVE ) : CC_ZERO )
+
+/* Get the correct value for CC after a compare instruction. */
+#define CC_COM( first_byte, second_byte )			\
+  (first_byte) != (second_byte) ?				\
+    ( LOG_OR_ARI(first_byte) < LOG_OR_ARI(second_byte) ?	\
+      CC_LESS : CC_GREATER ) : CC_EQUAL
+
+
+/* Typedef for all the 2650's opcodes. */
 typedef enum Opcodes {
   /* Load register zero. */
   LODZ_0 = 0x00, /* Officially, this is illegal, but it does work. */
@@ -433,8 +515,14 @@ typedef struct Cpu {
   /* Instruction Address Register */
   unsigned short iar;
 
+  /* Data-bus register */
+  unsigned char dbr;
+
   /* Instruction Register */
   unsigned char ir;
+
+  /* Holding Register */
+  unsigned char hr;
 } Cpu;
 
 /* Function prototypes */
