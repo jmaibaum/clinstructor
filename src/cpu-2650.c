@@ -221,6 +221,83 @@ int cpu_loop( Cpu *cpu, char *memory )
       break;
 
 
+    case EORI_0: /* 24 */
+
+      printf( "EORI_0.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      cpu->register_0 ^= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case EORI_1: /* 25 */
+
+      printf( "EORI_1.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_4 ^= cpu->dbr;
+      else
+	cpu->register_1 ^= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      break;
+
+
+    case EORI_2: /* 26 */
+
+      printf( "EORI_2.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_5 ^= cpu->dbr;
+      else
+	cpu->register_2 ^= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      break;
+
+
+    case EORI_3: /* 27 */
+
+      printf( "EORI_3.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_6 ^= cpu->dbr;
+      else
+	cpu->register_3 ^= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      break;
+
+
     case HALT: /* 40 */
 
       printf( "CPU is now in HALT state.\n" );
@@ -267,6 +344,83 @@ int cpu_loop( Cpu *cpu, char *memory )
       /* Set CC value. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ANDI_0: /* 44 */
+
+      printf( "ANDI_0.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      cpu->register_0 &= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ANDI_1: /* 45 */
+
+      printf( "ANDI_1.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_4 &= cpu->dbr;
+      else
+	cpu->register_1 &= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      break;
+
+
+    case ANDI_2: /* 46 */
+
+      printf( "ANDI_2.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_5 &= cpu->dbr;
+      else
+	cpu->register_2 &= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      break;
+
+
+    case ANDI_3: /* 47 */
+
+      printf( "ANDI_3.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_6 &= cpu->dbr;
+      else
+	cpu->register_3 &= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
       break;
 
@@ -328,6 +482,83 @@ int cpu_loop( Cpu *cpu, char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case IORI_0: /* 64 */
+
+      printf( "IORI_0.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      cpu->register_0 |= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case IORI_1: /* 65 */
+
+      printf( "IORI_1.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_4 |= cpu->dbr;
+      else
+	cpu->register_1 |= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      break;
+
+
+    case IORI_2: /* 66 */
+
+      printf( "IORI_2.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_5 |= cpu->dbr;
+      else
+	cpu->register_2 |= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      break;
+
+
+    case IORI_3: /* 67 */
+
+      printf( "IORI_3.\n" );
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set register value. */
+      if ( REGISTER_BANK )
+	cpu->register_6 |= cpu->dbr;
+      else
+	cpu->register_3 |= cpu->dbr;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
       break;
 
