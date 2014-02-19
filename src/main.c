@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include "cpu-2650.h"
 #include "parse-hex.h"
@@ -27,6 +28,8 @@ int main( int argc, char **argv )
   FILE *fp;
   char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
   int err;
+  struct timeval start;
+  struct timeval stop;
 
   /* Check command line arguments. */
   if ( argc > 1 ) {
@@ -51,9 +54,14 @@ int main( int argc, char **argv )
   /* Initialize cpu and enter emulation loop. */
   cpu_init( &cpu );
 
+  gettimeofday(&start, NULL);
   err = cpu_loop( &cpu, memory );
+  gettimeofday(&stop, NULL);
 
   if ( err ) {
+    if ( err == 2 )
+      printf( "Error: Opcode %02X is not implemented, yet.\n\n", cpu.ir );
+
     printf( "CPU-DUMP:\n"
 	    "/----------------------------\\\n"
 	    "|IAR:%04X\tIR:%02X        |\n"
@@ -74,6 +82,12 @@ int main( int argc, char **argv )
 	    cpu.register_6,
 	    cpu.psu,
 	    cpu.psl );
+
+    if ( stop.tv_sec - start.tv_sec )
+      printf( "Emulation lasted longer than one second. "
+	      "The next line does\n not tell the truth.\n" );
+
+    printf( "Time Elapsed: %d µs.\n", stop.tv_usec - start.tv_usec );
   }
 
   return err;
