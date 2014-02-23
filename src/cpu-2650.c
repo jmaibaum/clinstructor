@@ -282,6 +282,51 @@ int cpu_loop( Cpu *cpu, char *memory )
       break;
 
 
+    case LODA_0: /* 0C */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  cpu->register_0 = (cpu->indexing == INCREMENT) ?
+	    ++cpu->register_0 : --cpu->register_0;
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0,
+						   cpu->hr,
+						   cpu->dbr ) )];
+	}
+      } else {
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	} else {
+	  cpu->register_0 = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
+							     cpu->dbr ) )];
+	}
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
     case EORZ_0: /* 20 */
 
       /* Set register value. */

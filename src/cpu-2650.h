@@ -111,10 +111,17 @@ typedef enum CC_VALS {
       CC_LESS : CC_GREATER ) : CC_EQUAL
 
 
-/* Macros for relative indexing. */
+/* Typedef for Address Mode Masking */
+typedef enum AddressMasks {
+  INDIRECT = 0x80,
+  R_OFFSET = 0x7F,
+  I_HIGH_B = 0x7F, /* Indirect high byte is only lower 7 bits. */
+  INDEXING = 0x60, /* Indexing mode. */
+  A_HIGH_N = 0x1F, /* High order address "byte" in "normal" instructions. */
+  A_HIGH_B = 0x7F  /* High order address "byte" in branch instructions. */
+} AddressMasks;
 
-#define INDIRECT (0x80)
-#define R_OFFSET (0x7F)
+/* Macros for relative indexing. */
 
 /* Get 7 bit long two's complement for ofsetting relative addressing. */
 #define RELATIVE_OFFSET( offset )		\
@@ -125,14 +132,32 @@ typedef enum CC_VALS {
   ( ( (iar) + 1 ) + RELATIVE_OFFSET(off) )
 
 /* Compute Address for indirect relative addressing. */
-#define RELATIVE_ADDRESS_INDIRECT( iar, off )			\
-  ( ( memory[( (iar) + 1 ) + RELATIVE_OFFSET(off)] << 8 ) +	\
-    memory[( (iar) + 2 ) + RELATIVE_OFFSET(off)] )
-
+#define RELATIVE_ADDRESS_INDIRECT( iar, off )				\
+  ( ( ( memory[MEMORY( ( (iar) + 1 ) +					\
+		       RELATIVE_OFFSET(off) )] << 8 ) & I_HIGH_B) +	\
+    memory[MEMORY( ( (iar) + 2 ) + RELATIVE_OFFSET(off) )] )
 
 /* Macros for absolute addressing. */
 
-#define INDEXING (0x60) /* 0b01100000 */
+typedef enum IndexingModes {
+  NO_INDEXING     = 0x00,
+  INCREMENT       = 0x20,
+  DECREMENT       = 0x40,
+  SIMPLE_INDEXING = 0x60
+} IndexingModes;
+
+#define ABSOLUTE_ADDRESS( high, low )		\
+  ( ( ( (high) & A_HIGH_N ) << 8 ) + (low) )
+
+#define ABSOLUTE_ADDRESS_INDIRECT( hpart, lpart )                              \
+  ( ( ( memory[MEMORY( ABSOLUTE_ADDRESS(hpart, lpart) )] << 8 ) & I_HIGH_B ) + \
+    memory[MEMORY( ABSOLUTE_ADDRESS(hpart, (lpart) + 1) )] )
+
+#define ABSOLUTE_ADDRESS_INDEX( index, hpart, lpart )	\
+  ( ABSOLUTE_ADDRESS( hpart, lpart ) + (index) )
+
+#define ABSOLUTE_ADDRESS_INDEX_INDIRECT( index, hbyte, lbyte )	\
+  ( ABSOLUTE_ADDRESS_INDIRECT( hbyte, lbyte ) + (index) )
 
 
 /* Typedef for all the 2650's opcodes. */
