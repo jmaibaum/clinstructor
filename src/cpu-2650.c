@@ -510,6 +510,30 @@ int cpu_loop( Cpu *cpu, char *memory )
       break;
 
 
+    case SPSU: /* 12 */
+
+      /* Set register value. */
+      cpu->register_0 = cpu->psu;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case SPSL: /* 13 */
+
+      /* Set register value. */
+      cpu->register_0 = cpu->psl;
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
     case EORZ_0: /* 20 */
 
       /* Set register value. */
