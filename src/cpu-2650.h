@@ -28,6 +28,7 @@
    a better solution, yet. */
 #define MEMORY( address ) ( ( address ) % 0x8000 )
 
+
 /* Enums, Definitions, and Macros for managing the PSW. */
 typedef enum PSU_Masks {
 
@@ -109,6 +110,12 @@ typedef enum CC_VALS {
     ( LOG_OR_ARI(first_byte) < LOG_OR_ARI(second_byte) ?	\
       CC_LESS : CC_GREATER ) : CC_EQUAL
 
+
+/* Macros for relative indexing. */
+
+#define INDIRECT (0x80)
+#define R_OFFSET (0x7F)
+
 /* Get 7 bit long two's complement for ofsetting relative addressing. */
 #define RELATIVE_OFFSET( offset )		\
   ( (signed char) ( (offset) << 1 ) >> 1 )
@@ -121,6 +128,12 @@ typedef enum CC_VALS {
 #define RELATIVE_ADDRESS_INDIRECT( iar, off )			\
   ( ( memory[( (iar) + 1 ) + RELATIVE_OFFSET(off)] << 8 ) +	\
     memory[( (iar) + 2 ) + RELATIVE_OFFSET(off)] )
+
+
+/* Macros for absolute addressing. */
+
+#define INDEXING (0x60) /* 0b01100000 */
+
 
 /* Typedef for all the 2650's opcodes. */
 typedef enum Opcodes {
@@ -538,6 +551,7 @@ typedef struct Cpu {
 
   /* Convenience variables */
   int rel_off;
+  int indexing;
 } Cpu;
 
 /* Function prototypes */

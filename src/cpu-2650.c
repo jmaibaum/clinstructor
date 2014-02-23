@@ -23,16 +23,16 @@
 
 void cpu_init( Cpu *cpu )
 {
-  cpu->register_0 = 0;
-  cpu->register_1 = 0;
-  cpu->register_2 = 0;
-  cpu->register_3 = 0;
-  cpu->register_4 = 0;
-  cpu->register_5 = 0;
-  cpu->register_6 = 0;
+  cpu->register_0 =
+  cpu->register_1 =
+  cpu->register_2 =
+  cpu->register_3 =
+  cpu->register_4 =
+  cpu->register_5 =
+  cpu->register_6 =
 
-  cpu->psu = 0;
-  cpu->psl = 0;
+  cpu->psu =
+  cpu->psl =
 
   cpu->iar = 0;
 }
@@ -154,10 +154,10 @@ int cpu_loop( Cpu *cpu, char *memory )
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      cpu->rel_off = cpu->dbr & 0x7F;
+      cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Indirect or direct addressing? */
-      if ( cpu->dbr & 0x80 ) {
+      if ( cpu->dbr & INDIRECT ) {
 	/* Set register value. */
 	cpu->register_0 =
 	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off) )];
@@ -179,10 +179,10 @@ int cpu_loop( Cpu *cpu, char *memory )
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      cpu->rel_off = cpu->dbr & 0x7F;
+      cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Indirect or direct addressing? */
-      if ( cpu->dbr & 0x80 ) {
+      if ( cpu->dbr & INDIRECT ) {
 	/* Set register value. */
 	if ( REGISTER_BANK )
 	  cpu->register_4 =
@@ -215,10 +215,10 @@ int cpu_loop( Cpu *cpu, char *memory )
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      cpu->rel_off = cpu->dbr & 0x7F;
+      cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Indirect or direct addressing? */
-      if ( cpu->dbr & 0x80 ) {
+      if ( cpu->dbr & INDIRECT ) {
 	/* Set register value. */
 	if ( REGISTER_BANK )
 	  cpu->register_5 =
@@ -251,10 +251,10 @@ int cpu_loop( Cpu *cpu, char *memory )
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      cpu->rel_off = cpu->dbr & 0x7F;
+      cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Indirect or direct addressing? */
-      if ( cpu->dbr & 0x80 ) {
+      if ( cpu->dbr & INDIRECT ) {
 	/* Set register value. */
 	if ( REGISTER_BANK )
 	  cpu->register_6 =
