@@ -109,6 +109,18 @@ typedef enum CC_VALS {
     ( LOG_OR_ARI(first_byte) < LOG_OR_ARI(second_byte) ?	\
       CC_LESS : CC_GREATER ) : CC_EQUAL
 
+/* Get 7 bit long two's complement for ofsetting relative addressing. */
+#define RELATIVE_OFFSET( offset )		\
+  ( (signed char) ( (offset) << 1 ) >> 1 )
+
+/* Compute Address for relative addressing. */
+#define RELATIVE_ADDRESS( iar, off )		\
+  ( ( (iar) + 1 ) + RELATIVE_OFFSET(off) )
+
+/* Compute Address for indirect relative addressing. */
+#define RELATIVE_ADDRESS_INDIRECT( iar, off )			\
+  ( ( memory[( (iar) + 1 ) + RELATIVE_OFFSET(off)] << 8 ) +	\
+    memory[( (iar) + 2 ) + RELATIVE_OFFSET(off)] )
 
 /* Typedef for all the 2650's opcodes. */
 typedef enum Opcodes {
@@ -523,6 +535,9 @@ typedef struct Cpu {
 
   /* Holding Register */
   unsigned char hr;
+
+  /* Convenience variables */
+  int rel_off;
 } Cpu;
 
 /* Function prototypes */

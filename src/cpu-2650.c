@@ -48,16 +48,12 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case LODZ_0: /* 00 */
 
-      /* printf( "LODZ_0.\n" ); */
-
-      cpu_error = 1;
+      /* cpu_error = 1; */
 
       break;
 
 
     case LODZ_1: /* 01 */
-
-      /* printf( "LODZ_1.\n" ); */
 
       /* Set register value. */
       cpu->register_0 = REGISTER_BANK ?	cpu->register_4 : cpu->register_1;
@@ -71,8 +67,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case LODZ_2: /* 02 */
 
-      /* printf( "LODZ_2.\n" ); */
-
       /* Set register value. */
       cpu->register_0 = REGISTER_BANK ?	cpu->register_5 : cpu->register_2;
 
@@ -84,8 +78,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case LODZ_3: /* 03 */
-
-      /* printf( "LODZ_3.\n" ); */
 
       /* Set register value. */
       cpu->register_0 = REGISTER_BANK ?	cpu->register_6 : cpu->register_3;
@@ -99,8 +91,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case LODI_0: /* 04 */
 
-      /* printf( "LODI_0.\n" ); */
-
       /* Set register value. */
       cpu->register_0 = memory[MEMORY( ++cpu->iar )];
 
@@ -112,8 +102,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case LODI_1: /* 05 */
-
-      /* printf( "LODI_1.\n" ); */
 
       /* Set register value. */
       if ( REGISTER_BANK )
@@ -131,8 +119,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case LODI_2: /* 06 */
 
-      /* printf( "LODI_2.\n" ); */
-
       /* Set register value. */
       if ( REGISTER_BANK )
 	cpu->register_5 = memory[MEMORY( ++cpu->iar )];
@@ -149,8 +135,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case LODI_3: /* 07 */
 
-      /* printf( "LODI_3.\n" ); */
-
       /* Set register value. */
       if ( REGISTER_BANK )
 	cpu->register_6 = memory[MEMORY( ++cpu->iar )];
@@ -165,9 +149,140 @@ int cpu_loop( Cpu *cpu, char *memory )
       break;
 
 
-    case EORZ_0: /* 20 */
+    case LODR_0: /* 08 */
 
-      /* printf( "EORZ_0.\n" ); */
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & 0x7F;
+
+      /* Indirect or direct addressing? */
+      if ( cpu->dbr & 0x80 ) {
+	/* Set register value. */
+	cpu->register_0 =
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off) )];
+      } else {
+	/* Set register value. */
+	cpu->register_0 =
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case LODR_1: /* 09 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & 0x7F;
+
+      /* Indirect or direct addressing? */
+      if ( cpu->dbr & 0x80 ) {
+	/* Set register value. */
+	if ( REGISTER_BANK )
+	  cpu->register_4 =
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off) )];
+	else
+	  cpu->register_1 =
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off) )];
+      } else {
+	/* Set register value. */
+	if ( REGISTER_BANK )
+	  cpu->register_4 =
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	else
+	  cpu->register_1 =
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= REGISTER_BANK ?
+	CC_REG( cpu->register_4 ) : CC_REG( cpu->register_1 );
+
+      break;
+
+
+    case LODR_2: /* 0A */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & 0x7F;
+
+      /* Indirect or direct addressing? */
+      if ( cpu->dbr & 0x80 ) {
+	/* Set register value. */
+	if ( REGISTER_BANK )
+	  cpu->register_5 =
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off) )];
+	else
+	  cpu->register_2 =
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off) )];
+      } else {
+	/* Set register value. */
+	if ( REGISTER_BANK )
+	  cpu->register_5 =
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	else
+	  cpu->register_2 =
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= REGISTER_BANK ?
+	CC_REG( cpu->register_5 ) : CC_REG( cpu->register_2 );
+
+      break;
+
+
+    case LODR_3: /* 0B */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & 0x7F;
+
+      /* Indirect or direct addressing? */
+      if ( cpu->dbr & 0x80 ) {
+	/* Set register value. */
+	if ( REGISTER_BANK )
+	  cpu->register_6 =
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off) )];
+	else
+	  cpu->register_3 =
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off) )];
+      } else {
+	/* Set register value. */
+	if ( REGISTER_BANK )
+	  cpu->register_6 =
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	else
+	  cpu->register_3 =
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= REGISTER_BANK ?
+	CC_REG( cpu->register_6 ) : CC_REG( cpu->register_3 );
+
+      break;
+
+
+    case EORZ_0: /* 20 */
 
       /* Set register value. */
       cpu->register_0 ^= cpu->register_0;
@@ -181,8 +296,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case EORZ_1: /* 21 */
 
-      /* printf( "EORZ_1.\n" ); */
-
       /* Set register value. */
       cpu->register_0 ^= REGISTER_BANK ? cpu->register_4 : cpu->register_1;
 
@@ -194,8 +307,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case EORZ_2: /* 22 */
-
-      /* printf( "EORZ_2.\n" ); */
 
       /* Set register value. */
       cpu->register_0 ^= REGISTER_BANK ? cpu->register_5 : cpu->register_2;
@@ -209,8 +320,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case EORZ_3: /* 23 */
 
-      /* printf( "EORZ_3.\n" ); */
-
       /* Set register value. */
       cpu->register_0 ^= REGISTER_BANK ? cpu->register_6 : cpu->register_3;
 
@@ -222,8 +331,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case EORI_0: /* 24 */
-
-      /* printf( "EORI_0.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -239,8 +346,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case EORI_1: /* 25 */
-
-      /* printf( "EORI_1.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -260,8 +365,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case EORI_2: /* 26 */
 
-      /* printf( "EORI_2.\n" ); */
-
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
@@ -279,8 +382,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case EORI_3: /* 27 */
-
-      /* printf( "EORI_3.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -300,15 +401,12 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case HALT: /* 40 */
 
-      /* printf( "CPU is now in HALT state.\n" ); */
       cpu_error = 1;
 
       break;
 
 
     case ANDZ_1: /* 41 */
-
-      /* printf( "ANDZ_1.\n" ); */
 
       /* Set register value. */
       cpu->register_0 &= REGISTER_BANK ? cpu->register_4 : cpu->register_1;
@@ -322,8 +420,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case ANDZ_2: /* 42 */
 
-      /* printf( "ANDZ_2.\n" ); */
-
       /* Set register value. */
       cpu->register_0 &= REGISTER_BANK ? cpu->register_5 : cpu->register_2;
 
@@ -336,8 +432,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case ANDZ_3: /* 43 */
 
-      /* printf( "ANDZ_3.\n" ); */
-
       /* Set register value. */
       cpu->register_0 &= REGISTER_BANK ? cpu->register_6 : cpu->register_3;
 
@@ -349,8 +443,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case ANDI_0: /* 44 */
-
-      /* printf( "ANDI_0.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -366,8 +458,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case ANDI_1: /* 45 */
-
-      /* printf( "ANDI_1.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -387,8 +477,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case ANDI_2: /* 46 */
 
-      /* printf( "ANDI_2.\n" ); */
-
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
@@ -406,8 +494,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case ANDI_3: /* 47 */
-
-      /* printf( "ANDI_3.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -427,8 +513,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case IORZ_0: /* 60 */
 
-      /* printf( "IORZ_0.\n" ); */
-
       /*
 	Set register value is not necessary, since this:
 
@@ -446,8 +530,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case IORZ_1: /* 61 */
 
-      /* printf( "IORZ_1.\n" ); */
-
       /* Set register value. */
       cpu->register_0 |= ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
@@ -459,8 +541,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case IORZ_2: /* 62 */
-
-      /* printf( "IORZ_2.\n" ); */
 
       /* Set register value. */
       cpu->register_0 |= ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
@@ -474,8 +554,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case IORZ_3: /* 63 */
 
-      /* printf( "IORZ_3.\n" ); */
-
       /* Set register value. */
       cpu->register_0 |= ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
@@ -487,8 +565,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case IORI_0: /* 64 */
-
-      /* printf( "IORI_0.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -504,8 +580,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case IORI_1: /* 65 */
-
-      /* printf( "IORI_1.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -525,8 +599,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case IORI_2: /* 66 */
 
-      /* printf( "IORI_2.\n" ); */
-
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
@@ -544,8 +616,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case IORI_3: /* 67 */
-
-      /* printf( "IORI_3.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -565,8 +635,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case LPSU: /* 92 */
 
-      /* printf( "LPSU.\n" ); */
-
       /*
 	From the Instruction Manual, p. 68:
 
@@ -582,8 +650,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case LPSL: /* 93 */
 
-      /* printf( "LPSL.\n" ); */
-
       cpu->psl = cpu->register_0;
 
       break;
@@ -591,14 +657,10 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case NOP: /* C0 */
 
-      /* printf( "NOP.\n" ); */
-
       break;
 
 
     case STRZ_1: /* C1 */
-
-      /* printf( "STRZ_1.\n" ); */
 
       /* Set register value. */
       if ( REGISTER_BANK )
@@ -615,8 +677,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case STRZ_2: /* C2 */
 
-      /* printf( "STRZ_2.\n" ); */
-
       /* Set register value. */
       if ( REGISTER_BANK )
 	cpu->register_5 = cpu->register_0;
@@ -631,8 +691,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case STRZ_3: /* C3 */
-
-      /* printf( "STRZ_3.\n" ); */
 
       /* Set register value. */
       if ( REGISTER_BANK )
@@ -649,8 +707,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case COMZ_0: /* E0 */
 
-      /* printf( "COMZ_0.\n" ); */
-
       /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_COM( cpu->register_0, cpu->register_0 );
@@ -659,8 +715,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case COMZ_1: /* E1 */
-
-      /* printf( "COMZ_1.\n" ); */
 
       /* Set CC flags. */
       CLEAR_CC;
@@ -672,8 +726,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case COMZ_2: /* E2 */
 
-      /* printf( "COMZ_2.\n" ); */
-
       /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_COM( cpu->register_0,
@@ -684,8 +736,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case COMZ_3: /* E3 */
 
-      /* printf( "COMZ_3.\n" ); */
-
       /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_COM( cpu->register_0,
@@ -695,8 +745,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case COMI_0: /* E4 */
-
-      /* printf( "COMI_0.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -709,8 +757,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case COMI_1: /* E5 */
-
-      /* printf( "COMI_1.\n" ); */
 
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -725,8 +771,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case COMI_2: /* E6 */
 
-      /* printf( "COMI_2.\n" ); */
-
       /* Get next byte from memory into Data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
@@ -739,8 +783,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
 
     case COMI_3: /* E7 */
-
-      /* printf( "COMI_3.\n" ); */
 
       /* Get next byte from memory into Data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
@@ -755,8 +797,6 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     default:
 
-      /* fprintf( stderr, "Error: Opcode 0x%02X is not implemented yet.\n.",
-	 cpu->ir ); */
       cpu_error = 2;
 
     }

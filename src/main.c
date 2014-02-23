@@ -59,8 +59,10 @@ int main( int argc, char **argv )
   gettimeofday(&stop, NULL);
 
   if ( err ) {
-    if ( err == 2 )
+
+    if ( err == 2 ) {
       printf( "Error: Opcode %02X is not implemented, yet.\n\n", cpu.ir );
+    }
 
     printf( "CPU-DUMP:\n"
 	    "/----------------------------\\\n"
