@@ -534,6 +534,35 @@ int cpu_loop( Cpu *cpu, char *memory )
       break;
 
 
+    case BCTR_0: /* 18 */
+    case BCTR_1: /* 19 */
+    case BCTR_2: /* 1A */
+    case BCTR_3: /* 1B */
+      cpu->cc = cpu->ir & 0x3;
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( cpu->cc == C_CODE || cpu->cc == 0x3 ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+								   cpu->rel_off
+								   ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+
+      }
+
+      break;
+
+
     case EORZ_0: /* 20 */
 
       /* Set register value. */

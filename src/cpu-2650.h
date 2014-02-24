@@ -137,6 +137,11 @@ typedef enum AddressMasks {
 		       RELATIVE_OFFSET(off) )] << 8 ) & I_HIGH_B) +	\
     memory[MEMORY( ( (iar) + 2 ) + RELATIVE_OFFSET(off) )] )
 
+/* In a branch instruction, the above macros would point one memory address too
+   far, therefore, we have to subtract one. */
+#define BRANCH_TO( too_far )			\
+  ( (too_far) - 1 )
+
 /* Macros for absolute addressing. */
 
 typedef enum IndexingModes {
@@ -577,6 +582,7 @@ typedef struct Cpu {
   /* Convenience variables */
   int rel_off;
   int indexing;
+  int cc;
 } Cpu;
 
 /* Function prototypes */
