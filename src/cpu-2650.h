@@ -164,6 +164,15 @@ typedef enum IndexingModes {
 #define ABSOLUTE_ADDRESS_INDEX_INDIRECT( index, hbyte, lbyte )	\
   ( ABSOLUTE_ADDRESS_INDIRECT( hbyte, lbyte ) + (index) )
 
+#define BRANCH_TO_ABSOLUTE_ADDRESS( high, low ) \
+  ( ( ( (high) & A_HIGH_B ) << 8 ) + (low) - 1 )
+
+#define BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( hpart, lpart )		\
+  ( ( ( memory[MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( hpart,		\
+                                                   lpart ) )] << 8 )	\
+						     & I_HIGH_B ) +     \
+    memory[MEMORY( ABSOLUTE_ADDRESS( hpart, (lpart) + 1 ) )] - 1 )
+
 
 /* Typedef for all the 2650's opcodes. */
 typedef enum Opcodes {

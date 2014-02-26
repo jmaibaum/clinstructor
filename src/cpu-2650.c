@@ -538,12 +538,14 @@ int cpu_loop( Cpu *cpu, char *memory )
     case BCTR_1: /* 19 */
     case BCTR_2: /* 1A */
     case BCTR_3: /* 1B */
-      cpu->cc = cpu->ir & 0x3;
+      /* Extract CC code from Opcode and scale it to PSL format for
+	 comparison. */
+      cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      if ( cpu->cc == C_CODE || cpu->cc == 0x3 ) {
+      if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
 	cpu->rel_off = cpu->dbr & R_OFFSET;
 
 	/* Indirect or direct addressing? */
@@ -558,6 +560,28 @@ int cpu_loop( Cpu *cpu, char *memory )
 							  cpu->rel_off ) ) );
 	}
 
+      }
+
+      break;
+
+
+    case BCTA_0: /* 1C */
+    case BCTA_1: /* 1D */
+    case BCTA_2: /* 1E */
+    case BCTA_3: /* 1F */
+      /* Extract CC code from Opcode and scale it to PSL format for
+	 comparison. */
+      cpu->cc = ( cpu->ir & 0x3 ) << 6;
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
 
       break;
