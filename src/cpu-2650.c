@@ -821,7 +821,7 @@ int cpu_loop( Cpu *cpu, char *memory )
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      if ( cpu->register_0 != 0 ) {
+      if ( cpu->register_0 ) {
 	cpu->rel_off = cpu->dbr & R_OFFSET;
 
 	/* Indirect or direct addressing? */
@@ -846,42 +846,19 @@ int cpu_loop( Cpu *cpu, char *memory )
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      if ( REGISTER_BANK ) {
-
-	if ( cpu->register_4 != 0 ) {
-	  cpu->rel_off = cpu->dbr & R_OFFSET;
-
-	  /* Indirect or direct addressing? */
-	  if ( cpu->dbr & INDIRECT ) {
-	    /* Branch to specified address. */
-	    cpu->iar =
-	      MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							    cpu->rel_off ) ) );
-	  } else {
-	    /* Branch to specified address. */
-	    cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							    cpu->rel_off ) ) );
-	  }
-
-	}
-
-      } else {
-
-	if ( cpu->register_1 != 0 ) {
-	  cpu->rel_off = cpu->dbr & R_OFFSET;
-
-	  /* Indirect or direct addressing? */
-	  if ( cpu->dbr & INDIRECT ) {
-	    /* Branch to specified address. */
-	    cpu->iar =
-	      MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							    cpu->rel_off ) ) );
-	  } else {
-	    /* Branch to specified address. */
-	    cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							    cpu->rel_off ) ) );
-	  }
-
+      if ( (REGISTER_BANK ? cpu->register_4 : cpu->register_1) ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+	
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar =
+	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+							  cpu->rel_off ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
 	}
 
       }
@@ -894,42 +871,19 @@ int cpu_loop( Cpu *cpu, char *memory )
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      if ( REGISTER_BANK ) {
-
-	if ( cpu->register_5 != 0 ) {
-	  cpu->rel_off = cpu->dbr & R_OFFSET;
-
-	  /* Indirect or direct addressing? */
-	  if ( cpu->dbr & INDIRECT ) {
-	    /* Branch to specified address. */
-	    cpu->iar =
-	      MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							    cpu->rel_off ) ) );
-	  } else {
-	    /* Branch to specified address. */
-	    cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							    cpu->rel_off ) ) );
-	  }
-
-	}
-
-      } else {
-
-	if ( cpu->register_2 != 0 ) {
-	  cpu->rel_off = cpu->dbr & R_OFFSET;
-
-	  /* Indirect or direct addressing? */
-	  if ( cpu->dbr & INDIRECT ) {
-	    /* Branch to specified address. */
-	    cpu->iar =
-	      MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							    cpu->rel_off ) ) );
-	  } else {
-	    /* Branch to specified address. */
-	    cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							    cpu->rel_off ) ) );
-	  }
-
+      if ( (REGISTER_BANK ? cpu->register_5 : cpu->register_2) ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+	
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar =
+	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+							  cpu->rel_off ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
 	}
 
       }
@@ -942,42 +896,19 @@ int cpu_loop( Cpu *cpu, char *memory )
       /* Get next byte from memory into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      if ( REGISTER_BANK ) {
-
-	if ( cpu->register_6 != 0 ) {
-	  cpu->rel_off = cpu->dbr & R_OFFSET;
-
-	  /* Indirect or direct addressing? */
-	  if ( cpu->dbr & INDIRECT ) {
-	    /* Branch to specified address. */
-	    cpu->iar =
-	      MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							    cpu->rel_off ) ) );
-	  } else {
-	    /* Branch to specified address. */
-	    cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							    cpu->rel_off ) ) );
-	  }
-
-	}
-
-      } else {
-
-	if ( cpu->register_3 != 0 ) {
-	  cpu->rel_off = cpu->dbr & R_OFFSET;
-
-	  /* Indirect or direct addressing? */
-	  if ( cpu->dbr & INDIRECT ) {
-	    /* Branch to specified address. */
-	    cpu->iar =
-	      MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							    cpu->rel_off ) ) );
-	  } else {
-	    /* Branch to specified address. */
-	    cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							    cpu->rel_off ) ) );
-	  }
-
+      if ( (REGISTER_BANK ? cpu->register_6 : cpu->register_3) ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+	
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar =
+	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+							  cpu->rel_off ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
 	}
 
       }
@@ -992,7 +923,7 @@ int cpu_loop( Cpu *cpu, char *memory )
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      if ( cpu->register_0 != 0 ) {
+      if ( cpu->register_0 ) {
 	cpu->iar = (cpu->hr & INDIRECT) ?
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
@@ -1008,22 +939,10 @@ int cpu_loop( Cpu *cpu, char *memory )
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      if ( REGISTER_BANK ) {
-
-	if ( cpu->register_4 != 0 ) {
-	  cpu->iar = (cpu->hr & INDIRECT) ?
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
-
-      } else {
-
-	if ( cpu->register_1 != 0 ) {
-	  cpu->iar = (cpu->hr & INDIRECT) ?
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
-
+      if ( (REGISTER_BANK ? cpu->register_4 : cpu->register_1) ) {
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
 
       break;
@@ -1036,22 +955,10 @@ int cpu_loop( Cpu *cpu, char *memory )
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      if ( REGISTER_BANK ) {
-
-	if ( cpu->register_5 != 0 ) {
-	  cpu->iar = (cpu->hr & INDIRECT) ?
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
-
-      } else {
-
-	if ( cpu->register_2 != 0 ) {
-	  cpu->iar = (cpu->hr & INDIRECT) ?
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
-
+      if ( (REGISTER_BANK ? cpu->register_5 : cpu->register_2) ) {
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
 
       break;
@@ -1064,22 +971,10 @@ int cpu_loop( Cpu *cpu, char *memory )
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      if ( REGISTER_BANK ) {
-
-	if ( cpu->register_6 != 0 ) {
-	  cpu->iar = (cpu->hr & INDIRECT) ?
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
-
-      } else {
-
-	if ( cpu->register_3 != 0 ) {
-	  cpu->iar = (cpu->hr & INDIRECT) ?
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
-
+      if ( (REGISTER_BANK ? cpu->register_6 : cpu->register_3) ) {
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
 
       break;
