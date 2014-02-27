@@ -1277,7 +1277,7 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case BIRR_2: /* DA */
  
-     /* Get next memory byte into data bus register. */
+      /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       
       if ( (REGISTER_BANK ? ++cpu->register_5 : ++cpu->register_2) ) {
@@ -1302,7 +1302,7 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case BIRR_3: /* DB */
 
-     /* Get next memory byte into data bus register. */
+      /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       
       if ( (REGISTER_BANK ? ++cpu->register_6 : ++cpu->register_3) ) {
@@ -1322,6 +1322,70 @@ int cpu_loop( Cpu *cpu, char *memory )
 	
       }
       
+      break;
+
+
+    case BIRA_0: /* DC */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      
+      if ( ++cpu->register_0 ) {
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+      }
+
+      break;
+
+
+    case BIRA_1: /* DD */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      
+      if ( (REGISTER_BANK ? ++cpu->register_4 : ++cpu->register_1) ) {
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+      }
+
+      break;
+
+
+    case BIRA_2: /* DE */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      
+      if ( (REGISTER_BANK ? ++cpu->register_5 : ++cpu->register_2) ) {
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+      }
+
+      break;
+
+
+    case BIRA_3: /* DF */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      
+      if ( (REGISTER_BANK ? ++cpu->register_6 : ++cpu->register_3) ) {
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+      }
+
       break;
 
 
