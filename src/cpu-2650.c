@@ -1175,6 +1175,24 @@ int cpu_loop( Cpu *cpu, char *memory )
       break;
 
 
+    case BXA: /* 9F */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Implicit index register is #3/#6! */
+      cpu->iar = MEMORY( ( (cpu->hr & INDIRECT) ?
+			   BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+								cpu->dbr ) :
+			   BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )
+			 + (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
+			 );
+
+      break;
+
+
     case NOP: /* C0 */
 
       break;
