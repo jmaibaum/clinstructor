@@ -134,13 +134,36 @@ typedef enum AddressMasks {
 /* Compute Address for indirect relative addressing. */
 #define RELATIVE_ADDRESS_INDIRECT( iar, off )				\
   ( ( ( memory[MEMORY( ( (iar) + 1 ) +					\
-		       RELATIVE_OFFSET(off) )] << 8 ) & I_HIGH_B) +	\
+		       RELATIVE_OFFSET(off) )] & I_HIGH_B ) << 8 ) +	\
     memory[MEMORY( ( (iar) + 2 ) + RELATIVE_OFFSET(off) )] )
 
 /* In a branch instruction, the above macros would point one memory address too
    far, therefore, we have to subtract one. */
 #define BRANCH_TO( too_far )			\
   ( (too_far) - 1 )
+
+/*
+  The ZBRR and ZBSR instructions are special relative addressing instructions
+  that allow to branch to one of the first 64 or one of the last 64 bytes of
+  page zero (0x0000-0x1FFF). The address can be calculated efficiently from the
+  usual relative offset modulo 8192 (0x2000). Some examples:
+
+  OFFSET ADDRESS
+      00    0000
+      01    0001
+      3E    003E
+      3F    003F
+      40    1FC0
+      41    1FC1
+      7E    1FFE
+      7F    1FFF
+*/
+#define ZERO_BRANCH( off )				\
+  ( (unsigned short) RELATIVE_OFFSET( off ) % 0x2000 )
+
+#define ZERO_BRANCH_INDIRECT( off )			\
+  ( ( (memory[ZERO_BRANCH( off )] & I_HIGH_B) << 8 ) +	\
+    memory[ZERO_BRANCH( off ) + 1] )
 
 /* Macros for absolute addressing. */
 
@@ -155,7 +178,7 @@ typedef enum IndexingModes {
   ( ( ( (high) & A_HIGH_N ) << 8 ) + (low) )
 
 #define ABSOLUTE_ADDRESS_INDIRECT( hpart, lpart )                              \
-  ( ( ( memory[MEMORY( ABSOLUTE_ADDRESS(hpart, lpart) )] << 8 ) & I_HIGH_B ) + \
+  ( ( ( memory[MEMORY( ABSOLUTE_ADDRESS(hpart, lpart) )] & I_HIGH_B ) << 8 ) + \
     memory[MEMORY( ABSOLUTE_ADDRESS(hpart, (lpart) + 1) )] )
 
 #define ABSOLUTE_ADDRESS_INDEX( index, hpart, lpart )	\
@@ -167,10 +190,10 @@ typedef enum IndexingModes {
 #define BRANCH_TO_ABSOLUTE_ADDRESS( high, low ) \
   ( ( ( (high) & A_HIGH_B ) << 8 ) + (low) - 1 )
 
-#define BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( hpart, lpart )		\
-  ( ( ( memory[MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( hpart,		\
-                                                   lpart ) )] << 8 )	\
-						     & I_HIGH_B ) +     \
+#define BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( hpart, lpart )		   \
+  ( ( ( memory[MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( hpart,		   \
+                                                   lpart ) )] & I_HIGH_B ) \
+                                                                  << 8 ) + \
     memory[MEMORY( ABSOLUTE_ADDRESS( hpart, (lpart) + 1 ) )] - 1 )
 
 

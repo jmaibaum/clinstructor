@@ -48,7 +48,7 @@ int cpu_loop( Cpu *cpu, char *memory )
 
     case LODZ_0: /* 00 */
 
-      /* cpu_error = 1; */
+      cpu_error = 1;
 
       break;
 
@@ -1154,6 +1154,20 @@ int cpu_loop( Cpu *cpu, char *memory )
       break;
 
 
+    case ZBRR: /* 9B */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      cpu->iar = (cpu->dbr & INDIRECT) ?
+	MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) ):
+	BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
+
+      break;
+
+
     case BCFA_0: /* 9C */
     case BCFA_1: /* 9D */
     case BCFA_2: /* 9E */
@@ -1182,7 +1196,13 @@ int cpu_loop( Cpu *cpu, char *memory )
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      /* Implicit index register is #3/#6! */
+      /*
+	Implicit index register is #3/#6.
+
+	The instruction set manual is not clear about index control in BXA/BSXA
+	(cf. p. 49), however, it feels reasonable to assume simple indexing (no
+	auto increment/decrement).
+      */
       cpu->iar = MEMORY( ( (cpu->hr & INDIRECT) ?
 			   BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
 								cpu->dbr ) :
