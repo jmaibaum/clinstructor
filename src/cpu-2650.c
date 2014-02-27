@@ -1330,6 +1330,106 @@ int cpu_loop( Cpu *cpu, char *memory )
       break;
 
 
+    case BIRR_0: /* D8 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( ++cpu->register_0 ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+								   cpu->rel_off
+								   ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+
+      }
+
+      break;
+
+
+    case BIRR_1: /* D9 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      
+      if ( (REGISTER_BANK ? ++cpu->register_4 : ++cpu->register_1) ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+	
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+								   cpu->rel_off
+								   ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+
+      }
+
+      break;
+
+
+    case BIRR_2: /* DA */
+ 
+     /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      
+      if ( (REGISTER_BANK ? ++cpu->register_5 : ++cpu->register_2) ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+	
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+								   cpu->rel_off
+								   ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+	
+      }
+      
+      break;
+
+
+    case BIRR_3: /* DB */
+
+     /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      
+      if ( (REGISTER_BANK ? ++cpu->register_6 : ++cpu->register_3) ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+	
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+								   cpu->rel_off
+								   ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+	
+      }
+      
+      break;
+
+
     case COMZ_0: /* E0 */
 
       /* Set CC flags. */
