@@ -24,6 +24,6 @@
 #ifndef PARSER_HEX_H
 #define PARSER_HEX_H
 
-int parse_hex_file( FILE *fp, char *mem );
+int parse_hex_file( FILE *fp, unsigned char *mem );
 
 #endif /* PARSER_HEX_H */

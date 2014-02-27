@@ -37,7 +37,7 @@ void cpu_init( Cpu *cpu )
   cpu->iar = 0;
 }
 
-int cpu_loop( Cpu *cpu, char *memory )
+int cpu_loop( Cpu *cpu, unsigned char *memory )
 {
   int cpu_error = 0;
 

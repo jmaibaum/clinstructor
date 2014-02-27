@@ -26,7 +26,7 @@
 int main( int argc, char **argv )
 {
   FILE *fp;
-  char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
+  unsigned char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
   int err;
   struct timeval start;
   struct timeval stop;

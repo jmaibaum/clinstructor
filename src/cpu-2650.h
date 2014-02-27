@@ -620,6 +620,6 @@ typedef struct Cpu {
 /* Function prototypes */
 void cpu_init( Cpu *cpu );
 
-int cpu_loop( Cpu *cpu, char *memory );
+int cpu_loop( Cpu *cpu, unsigned char *memory );
 
 #endif /* CPU_2650_H */
