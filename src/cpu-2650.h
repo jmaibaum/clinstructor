@@ -32,7 +32,7 @@
 /* Enums, Definitions, and Macros for managing the PSW. */
 typedef enum PSU_Masks {
 
-  /* 
+  /*
      Program Status Upper:
      |-----------------------------------------------|
      |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
@@ -49,7 +49,7 @@ typedef enum PSU_Masks {
 
 typedef enum PSL_Masks {
 
-  /* 
+  /*
      Program Status Lower:
      |-----------------------------------------------|
      |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |

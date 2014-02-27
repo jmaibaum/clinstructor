@@ -16,7 +16,7 @@
   CLInstructor.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* 
+/*
   parser-hex.h: Utility functions to parse an ordinary HEX file as input
   program.
 */

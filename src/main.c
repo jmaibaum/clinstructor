@@ -33,7 +33,7 @@ int main( int argc, char **argv )
 
   /* Check command line arguments. */
   if ( argc > 1 ) {
-    if ( (fp = fopen( argv[1], "r" )) ) { 
+    if ( (fp = fopen( argv[1], "r" )) ) {
       if ( parse_hex_file( fp, memory ) ) {
 	printf( "Warning: Emulated memory is full, "
 		"but hex file still contains data.\n" );
