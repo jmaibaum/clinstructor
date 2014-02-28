@@ -708,6 +708,106 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+    case EORR_0: /* 28 */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      cpu->register_0 ^= (cpu->dbr & INDIRECT) ?
+	memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )] :
+	memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case EORR_1: /* 29 */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      if ( REGISTER_BANK ) {
+	cpu->register_4 ^= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->register_1 ^= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_4 : cpu->register_1 );
+
+      break;
+
+
+    case EORR_2: /* 2A */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      if ( REGISTER_BANK ) {
+	cpu->register_5 ^= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->register_2 ^= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_5 : cpu->register_2 );
+
+      break;
+
+
+    case EORR_3: /* 2B */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      if ( REGISTER_BANK ) {
+	cpu->register_6 ^= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->register_3 ^= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_6 : cpu->register_3 );
+
+      break;
+
+
     case HALT: /* 40 */
 
       cpu_error = 1;
@@ -816,6 +916,106 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      break;
+
+
+    case ANDR_0: /* 48 */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      cpu->register_0 &= (cpu->dbr & INDIRECT) ?
+	memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )] :
+	memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ANDR_1: /* 49 */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      if ( REGISTER_BANK ) {
+	cpu->register_4 &= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->register_1 &= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_4 : cpu->register_1 );
+
+      break;
+
+
+    case ANDR_2: /* 4A */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      if ( REGISTER_BANK ) {
+	cpu->register_5 &= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->register_2 &= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_5 : cpu->register_2 );
+
+      break;
+
+
+    case ANDR_3: /* 4B */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      if ( REGISTER_BANK ) {
+	cpu->register_6 &= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->register_3 &= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_6 : cpu->register_3 );
 
       break;
 
@@ -1118,6 +1318,106 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      break;
+
+
+    case IORR_0: /* 68 */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      cpu->register_0 |= (cpu->dbr & INDIRECT) ?
+	memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )] :
+	memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case IORR_1: /* 69 */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      if ( REGISTER_BANK ) {
+	cpu->register_4 |= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->register_1 |= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_4 : cpu->register_1 );
+
+      break;
+
+
+    case IORR_2: /* 6A */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      if ( REGISTER_BANK ) {
+	cpu->register_5 |= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->register_2 |= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_5 : cpu->register_2 );
+
+      break;
+
+
+    case IORR_3: /* 6B */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Set register value */
+      if ( REGISTER_BANK ) {
+	cpu->register_6 |= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->register_3 |= (cpu->dbr & INDIRECT) ?
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						    cpu->rel_off ) )] :
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_6 : cpu->register_3 );
 
       break;
 
