@@ -1,7 +1,7 @@
 clinstructor
 ============
 
-A cross-platform Instructor 50 emulator for the command line.
+A free Instructor 50 emulator for the command line.
 
 
 Development Documentation
