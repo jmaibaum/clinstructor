@@ -1263,6 +1263,269 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+      /* Note: There are no 'STRI' operations. Consequently, opcodes C4 to C7 do
+	 not exist. */
+
+
+    case STRR_0: /* C8 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Store contents of R0 in memory address calculated from relative
+	 offset. */
+      memory[(cpu->dbr & INDIRECT) ?
+	     MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) ) :
+	     MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
+	= cpu->register_0;
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case STRR_1: /* C9 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Store contents of R1/4 in memory address calculated from relative
+	 offset. */
+      memory[(cpu->dbr & INDIRECT) ?
+	     MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) ) :
+	     MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
+	= (REGISTER_BANK) ? cpu->register_4 : cpu->register_1;
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case STRR_2: /* CA */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Store contents of R2/5 in memory address calculated from relative
+	 offset. */
+      memory[(cpu->dbr & INDIRECT) ?
+	     MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) ) :
+	     MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
+	= (REGISTER_BANK) ? cpu->register_5 : cpu->register_2;
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case STRR_3: /* CB */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Store contents of R3/6 in memory address calculated from relative
+	 offset. */
+      memory[(cpu->dbr & INDIRECT) ?
+	     MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) ) :
+	     MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
+	= (REGISTER_BANK) ? cpu->register_6 : cpu->register_3;
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case STRA_0: /* CC */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  cpu->register_0 = (cpu->indexing == INCREMENT) ?
+	    ++cpu->register_0 : --cpu->register_0;
+	}
+
+	memory[(cpu->hr & INDIRECT) ?
+	       MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
+							cpu->hr, cpu->dbr) ) :
+	       MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
+					       cpu->dbr ) )]
+	  = cpu->register_0;
+
+      } else {
+	memory[(cpu->hr & INDIRECT) ?
+	       MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	       MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
+	  = cpu->register_0;
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case STRA_1: /* CD */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+
+	  if ( REGISTER_BANK ) {
+	    cpu->register_4 = (cpu->indexing == INCREMENT) ?
+	      ++cpu->register_4 : --cpu->register_4;
+	  } else {
+	    cpu->register_1 = (cpu->indexing == INCREMENT) ?
+	      ++cpu->register_1 : --cpu->register_1;
+	  }
+
+	}
+
+	/* Store contents of R0 into memory location specified by absolute
+	   address + index in R1/4. */
+	memory[(cpu->hr & INDIRECT) ?
+	       MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+			  ((REGISTER_BANK) ? cpu->register_4 : cpu->register_1),
+						        cpu->hr, cpu->dbr) ) :
+	       MEMORY( ABSOLUTE_ADDRESS_INDEX(
+			  ((REGISTER_BANK) ? cpu->register_4 : cpu->register_1),
+                                               cpu->hr,cpu->dbr ) )]
+	  = cpu->register_0;
+
+      } else {
+	/* Store contents of R1/4 into memory location specified by absolute
+	   address. */
+	memory[(cpu->hr & INDIRECT) ?
+	       MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	       MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
+	  = (REGISTER_BANK) ? cpu->register_4 : cpu->register_1;
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case STRA_2: /* CE */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+
+	  if ( REGISTER_BANK ) {
+	    cpu->register_5 = (cpu->indexing == INCREMENT) ?
+	      ++cpu->register_5 : --cpu->register_5;
+	  } else {
+	    cpu->register_2 = (cpu->indexing == INCREMENT) ?
+	      ++cpu->register_2 : --cpu->register_2;
+	  }
+
+	}
+
+	/* Store contents of R0 into memory location specified by absolute
+	   address + index in R2/5. */
+	memory[(cpu->hr & INDIRECT) ?
+	       MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+			  ((REGISTER_BANK) ? cpu->register_5 : cpu->register_2),
+						        cpu->hr, cpu->dbr) ) :
+	       MEMORY( ABSOLUTE_ADDRESS_INDEX(
+			  ((REGISTER_BANK) ? cpu->register_5 : cpu->register_2),
+                                               cpu->hr,cpu->dbr ) )]
+	  = cpu->register_0;
+
+      } else {
+	/* Store contents of R2/5 into memory location specified by absolute
+	   address. */
+	memory[(cpu->hr & INDIRECT) ?
+	       MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	       MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
+	  = (REGISTER_BANK) ? cpu->register_5 : cpu->register_2;
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case STRA_3: /* CF */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+
+	  if ( REGISTER_BANK ) {
+	    cpu->register_6 = (cpu->indexing == INCREMENT) ?
+	      ++cpu->register_6 : --cpu->register_6;
+	  } else {
+	    cpu->register_3 = (cpu->indexing == INCREMENT) ?
+	      ++cpu->register_3 : --cpu->register_3;
+	  }
+
+	}
+
+	/* Store contents of R0 into memory location specified by absolute
+	   address + index in R3/6. */
+	memory[(cpu->hr & INDIRECT) ?
+	       MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+			  ((REGISTER_BANK) ? cpu->register_6 : cpu->register_3),
+						        cpu->hr, cpu->dbr) ) :
+	       MEMORY( ABSOLUTE_ADDRESS_INDEX(
+			  ((REGISTER_BANK) ? cpu->register_6 : cpu->register_3),
+                                               cpu->hr,cpu->dbr ) )]
+	  = cpu->register_0;
+
+      } else {
+	/* Store contents of R3/6 into memory location specified by absolute
+	   address. */
+	memory[(cpu->hr & INDIRECT) ?
+	       MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	       MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
+	  = (REGISTER_BANK) ? cpu->register_6 : cpu->register_3;
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
     case BIRR_0: /* D8 */
 
       /* Get next memory byte into data bus register. */
