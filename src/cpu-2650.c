@@ -562,6 +562,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -583,6 +585,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -838,6 +842,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -862,6 +868,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -888,6 +896,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -913,6 +923,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -928,6 +940,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -945,6 +959,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -961,6 +977,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -976,6 +994,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -1151,6 +1171,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -1164,6 +1186,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->iar = (cpu->dbr & INDIRECT) ?
 	MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) ):
 	BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
+
+      /* No setting of CC required. */
 
       break;
 
@@ -1185,6 +1209,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -1209,6 +1235,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 			   BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )
 			 + (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
 			 );
+
+      /* No setting of CC required. */
 
       break;
 
@@ -1548,6 +1576,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -1572,6 +1602,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -1598,6 +1630,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -1623,6 +1657,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -1638,6 +1674,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -1655,6 +1693,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -1671,6 +1711,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -1686,6 +1728,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -1802,6 +1846,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -1826,6 +1872,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -1852,6 +1900,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -1876,6 +1926,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -1909,6 +1961,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -1925,6 +1979,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
 
+      /* No setting of CC required. */
+
       break;
 
 
@@ -1940,6 +1996,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
 	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
       }
+
+      /* No setting of CC required. */
 
       break;
 
