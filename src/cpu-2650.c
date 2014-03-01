@@ -111,8 +111,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC flags. */
       CLEAR_CC;
-      cpu->psl |= REGISTER_BANK ?
-	CC_REG( cpu->register_4 ) : CC_REG( cpu->register_1 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
       break;
 
@@ -127,8 +126,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC flags. */
       CLEAR_CC;
-      cpu->psl |= REGISTER_BANK ?
-	CC_REG( cpu->register_5 ) : CC_REG( cpu->register_2 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
 
       break;
 
@@ -143,8 +141,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC flags. */
       CLEAR_CC;
-      cpu->psl |= REGISTER_BANK ?
-	CC_REG( cpu->register_6 ) : CC_REG( cpu->register_3 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
       break;
 
@@ -204,8 +201,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= REGISTER_BANK ?
-	CC_REG( cpu->register_4 ) : CC_REG( cpu->register_1 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
       break;
 
@@ -240,8 +236,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= REGISTER_BANK ?
-	CC_REG( cpu->register_5 ) : CC_REG( cpu->register_2 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
 
       break;
 
@@ -276,8 +271,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= REGISTER_BANK ?
-	CC_REG( cpu->register_6 ) : CC_REG( cpu->register_3 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
       break;
 
@@ -288,15 +282,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	 byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
-
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
 	/* Increment/decrement index register. */
 	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  cpu->register_0 = (cpu->indexing == INCREMENT) ?
-	    ++cpu->register_0 : --cpu->register_0;
+	  (cpu->indexing == INCREMENT) ? ++cpu->register_0 : --cpu->register_0;
 	}
 
 	if ( cpu->hr & INDIRECT ) {
@@ -333,20 +325,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	 byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
-
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
 	/* Increment/decrement index register. */
 	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  if ( REGISTER_BANK ) {
-	    cpu->register_4 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_4 : --cpu->register_4;
-	  } else {
-	    cpu->register_1 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_1 : --cpu->register_1;
-	  }
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_4 : ++cpu->register_1 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_4 : --cpu->register_1 );
 	}
 
 	if ( cpu->hr & INDIRECT ) {
@@ -381,8 +368,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
 	/* Set CC. */
 	CLEAR_CC;
-	cpu->psl |= REGISTER_BANK ?
-	  CC_REG( cpu->register_4 ) : CC_REG( cpu->register_1 );
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
       }
 
       break;
@@ -394,20 +380,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	 byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
-
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
 	/* Increment/decrement index register. */
 	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  if ( REGISTER_BANK ) {
-	    cpu->register_5 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_5 : --cpu->register_5;
-	  } else {
-	    cpu->register_2 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_2 : --cpu->register_2;
-	  }
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_5 : ++cpu->register_2 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_5 : --cpu->register_2 );
 	}
 
 	if ( cpu->hr & INDIRECT ) {
@@ -442,8 +423,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
 	/* Set CC. */
 	CLEAR_CC;
-	cpu->psl |= REGISTER_BANK ?
-	  CC_REG( cpu->register_5 ) : CC_REG( cpu->register_2 );
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
       }
 
       break;
@@ -455,20 +435,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	 byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
-
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
 	/* Increment/decrement index register. */
 	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  if ( REGISTER_BANK ) {
-	    cpu->register_6 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_6 : --cpu->register_6;
-	  } else {
-	    cpu->register_3 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_3 : --cpu->register_3;
-	  }
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_6 : ++cpu->register_3 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_6 : --cpu->register_3 );
 	}
 
 	if ( cpu->hr & INDIRECT ) {
@@ -503,8 +478,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
 	/* Set CC. */
 	CLEAR_CC;
-	cpu->psl |= REGISTER_BANK ?
-	  CC_REG( cpu->register_6 ) : CC_REG( cpu->register_3 );
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
       }
 
       break;
@@ -749,7 +723,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_4 : cpu->register_1 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
       break;
 
@@ -776,7 +750,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_5 : cpu->register_2 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
 
       break;
 
@@ -803,7 +777,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_6 : cpu->register_3 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
       break;
 
@@ -961,7 +935,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_4 : cpu->register_1 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
       break;
 
@@ -988,7 +962,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_5 : cpu->register_2 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
 
       break;
 
@@ -1015,7 +989,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_6 : cpu->register_3 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
       break;
 
@@ -1363,7 +1337,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_4 : cpu->register_1 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
       break;
 
@@ -1390,7 +1364,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_5 : cpu->register_2 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
 
       break;
 
@@ -1417,7 +1391,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set CC. */
       CLEAR_CC;
-      cpu->psl |= CC_REG( (REGISTER_BANK) ? cpu->register_6 : cpu->register_3 );
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
       break;
 
@@ -1526,8 +1500,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	Implicit index register is #3/#6.
 
 	The instruction set manual is not clear about index control in BXA/BSXA
-	(cf. p. 49), however, it feels reasonable to assume simple indexing (no
-	auto increment/decrement).
+	(cf. p. 49), however, it feels reasonable to assume simple indexing
+	(i.e. no auto increment/decrement).
       */
       cpu->iar = MEMORY( ( (cpu->hr & INDIRECT) ?
 			   BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
@@ -1677,15 +1651,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	 byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
-
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
 	/* Increment/decrement index register. */
 	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  cpu->register_0 = (cpu->indexing == INCREMENT) ?
-	    ++cpu->register_0 : --cpu->register_0;
+	  (cpu->indexing == INCREMENT) ? ++cpu->register_0 : --cpu->register_0;
 	}
 
 	memory[(cpu->hr & INDIRECT) ?
@@ -1713,22 +1685,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	 byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
-
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
 	/* Increment/decrement index register. */
 	if ( cpu->indexing != SIMPLE_INDEXING ) {
-
-	  if ( REGISTER_BANK ) {
-	    cpu->register_4 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_4 : --cpu->register_4;
-	  } else {
-	    cpu->register_1 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_1 : --cpu->register_1;
-	  }
-
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_4 : ++cpu->register_1 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_4 : --cpu->register_1 );
 	}
 
 	/* Store contents of R0 into memory location specified by absolute
@@ -1762,22 +1727,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	 byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
-
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
 	/* Increment/decrement index register. */
 	if ( cpu->indexing != SIMPLE_INDEXING ) {
-
-	  if ( REGISTER_BANK ) {
-	    cpu->register_5 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_5 : --cpu->register_5;
-	  } else {
-	    cpu->register_2 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_2 : --cpu->register_2;
-	  }
-
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_5 : ++cpu->register_2 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_5 : --cpu->register_2 );
 	}
 
 	/* Store contents of R0 into memory location specified by absolute
@@ -1811,22 +1769,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	 byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
-
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
 	/* Increment/decrement index register. */
 	if ( cpu->indexing != SIMPLE_INDEXING ) {
-
-	  if ( REGISTER_BANK ) {
-	    cpu->register_6 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_6 : --cpu->register_6;
-	  } else {
-	    cpu->register_3 = (cpu->indexing == INCREMENT) ?
-	      ++cpu->register_3 : --cpu->register_3;
-	  }
-
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_6 : ++cpu->register_3 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_6 : --cpu->register_3 );
 	}
 
 	/* Store contents of R0 into memory location specified by absolute
