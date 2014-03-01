@@ -782,6 +782,207 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+    case EORA_0: /* 2C */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ? ++cpu->register_0 : --cpu->register_0;
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 ^=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 ^=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
+						   cpu->dbr ) )];
+	}
+
+      } else {
+	cpu->register_0 ^= ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case EORA_1: /* 2D */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_4 : ++cpu->register_1 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_4 : --cpu->register_1 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 ^=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 ^=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 ^= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	} else {
+	  cpu->register_1 ^= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+      }
+
+      break;
+
+
+    case EORA_2: /* 2E */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_5 : ++cpu->register_2 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_5 : --cpu->register_2 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 ^=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 ^=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 ^= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	} else {
+	  cpu->register_1 ^= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+      }
+
+      break;
+
+
+    case EORA_3: /* 2F */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_6 : ++cpu->register_3 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_6 : --cpu->register_3 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 ^=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 ^=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 ^= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	} else {
+	  cpu->register_1 ^= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+      }
+
+      break;
+
+
     case HALT: /* 40 */
 
       cpu_error = 1;
@@ -990,6 +1191,207 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      break;
+
+
+    case ANDA_0: /* 4C */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ? ++cpu->register_0 : --cpu->register_0;
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 &=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 &=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
+						   cpu->dbr ) )];
+	}
+
+      } else {
+	cpu->register_0 &= ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ANDA_1: /* 4D */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_4 : ++cpu->register_1 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_4 : --cpu->register_1 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 &=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 &=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 &= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	} else {
+	  cpu->register_1 &= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+      }
+
+      break;
+
+
+    case ANDA_2: /* 4E */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_5 : ++cpu->register_2 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_5 : --cpu->register_2 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 &=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 &=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 &= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	} else {
+	  cpu->register_1 &= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+      }
+
+      break;
+
+
+    case ANDA_3: /* 4F */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_6 : ++cpu->register_3 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_6 : --cpu->register_3 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 &=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 &=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 &= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	} else {
+	  cpu->register_1 &= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+      }
 
       break;
 
@@ -1392,6 +1794,207 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      break;
+
+
+    case IORA_0: /* 6C */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ? ++cpu->register_0 : --cpu->register_0;
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 |=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 |=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
+						   cpu->dbr ) )];
+	}
+
+      } else {
+	cpu->register_0 |= ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case IORA_1: /* 6D */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_4 : ++cpu->register_1 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_4 : --cpu->register_1 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 |=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 |=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 |= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	} else {
+	  cpu->register_1 |= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+      }
+
+      break;
+
+
+    case IORA_2: /* 6E */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_5 : ++cpu->register_2 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_5 : --cpu->register_2 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 |=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 |=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 |= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	} else {
+	  cpu->register_1 |= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+      }
+
+      break;
+
+
+    case IORA_3: /* 6F */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_6 : ++cpu->register_3 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_6 : --cpu->register_3 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 |=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->register_0 |=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 |= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	} else {
+	  cpu->register_1 |= ( cpu->hr & INDIRECT ) ?
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Set CC. */
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+      }
 
       break;
 
