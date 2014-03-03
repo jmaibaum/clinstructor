@@ -44,7 +44,8 @@ typedef enum PSU_Masks {
   PSU_SP = 0x07, /* Stack pointer (3 least significant bits) */
   PSU_II = 0x20, /* Interrupt inhibit */
   PSU_F  = 0x40, /* Flag */
-  PSU_S  = 0x80  /* Sense */
+  PSU_S  = 0x80, /* Sense */
+  PSU_NU = 0xE7  /* Mask for clearing not used bits 3 and 4. */
 } PSU_Masks;
 
 typedef enum PSL_Masks {
@@ -92,6 +93,12 @@ typedef enum CC_VALS {
 
 /* Clear CC. This has to be done in advance to any CC manipulation. */
 #define CLEAR_CC ( cpu->psl &= ~PSL_CC )
+
+/* This macro masks of bit 3 and 4 of any byte that gets to be written into or
+   compared with the PSU in order to assure that those bits are never set to one
+   or compared with a one (because they are not used). */
+#define PSU( value )				\
+  ( (value) & PSU_NU )
 
 /* Decide if a value should be interpreted logically or arithmetically. */
 #define LOG_OR_ARI( value )			\

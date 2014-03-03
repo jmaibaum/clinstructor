@@ -1999,6 +1999,69 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+    case CPSU: /* 74 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Data byte is used to clear selective (logically NAND) selective
+	 bits in the PSU. All other bits should be left untouched. */
+      cpu->psu &= ~cpu->dbr;
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case CPSL: /* 75 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Data byte is used to clear selective (logically NAND) selective bits in
+	 the PSL. All other bits should be left untouched. */
+      cpu->psl &= ~cpu->dbr;
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case PPSU: /* 76 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /*
+	Data byte is used to turn on (logically OR) selective bits in the
+	PSU. All other bits should be left untouched.
+
+	It is not really clear from the instruction manual (p. 70) if bits 3 and
+	4 of the PSU, which are normally unused, can be set to one with this
+	instruction. For the time being, assume that this is not the case and
+	mask them out via the PSU() macro.
+      */
+      cpu->psu |= PSU( cpu->dbr );
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case PPSL: /* 77 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Data byte is used to turn on (logically OR) selective bits in the
+	 PSL. All other bits should be left untouched. */
+      cpu->psl |= cpu->dbr;
+
+      /* No setting of CC required. */
+
+      break;
+
+
     case LPSU: /* 92 */
 
       /*
@@ -2007,9 +2070,9 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  "Bits #4 and #3 of the PSU are unassigned and will always be regarded
 	  as containing zeroes."
 
-        Thus, we have to mask the PSU with 0xE7, which is 0b11100111.
+        Thus, we have to mask the PSU with PSU_NU, which is 0b11100111.
        */
-      cpu->psu = ( cpu->register_0 & 0xE7 );
+      cpu->psu = PSU( cpu->register_0 );
 
       break;
 
@@ -2114,6 +2177,52 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 			 );
 
       /* No setting of CC required. */
+
+      break;
+
+
+    case TPSU: /* B4 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /*
+	Data byte is used to check if selective bits in the PSU are set or not.
+	CC Code is set afterwards to indicate if all checks were positive, then
+	CC=0 else CC=2.
+
+	It is not really clear from the instruction manual (p. 72) if bits 3 and
+	4 are really tested with this instruction or not even if they are
+	otherwise unused. For the time being, mask them out of the test byte
+	with the PSU() macro.
+
+	It is also not clear what the result of CC will be, if tested with 0x00
+	and the current contents of the PSU are 0x00 as well. For now, We assume
+	that this would mean a positive test and therefore CC gets cleared in
+	this case, too.
+      */
+      cpu->psl |= ( cpu->psu != PSU( cpu->dbr ) ) ?
+	(CLEAR_CC | CC_LESS) : CLEAR_CC;
+
+      break;
+
+
+    case TPSL: /* B5 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /*
+	Data byte is used to check if selective bits in the PSL are set or not.
+	CC Code is set afterwards to indicate if all checks were positive, then
+	CC=0 else CC=2.
+
+	It is also not clear what the result of CC will be, if tested with 0x00
+	and the current contents of the PSL are 0x00 as well. For now, We assume
+	that this would mean a positive test and therefore CC gets cleared in
+	this case, too.
+      */
+      cpu->psl |= (cpu->psl != cpu->dbr) ? (CLEAR_CC | CC_LESS) : CLEAR_CC;
 
       break;
 
