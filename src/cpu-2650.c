@@ -3018,6 +3018,54 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+    case TMI_0: /* F4 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set CC flags. */
+      cpu->psl |= (cpu->register_0 != cpu->dbr) ?
+	(CLEAR_CC | CC_LESS) : CLEAR_CC;
+
+      break;
+
+
+    case TMI_1: /* F5 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set CC flags. */
+      cpu->psl |= ( ( (REGISTER_BANK) ? cpu->register_4 : cpu->register_1 )
+		    != cpu->dbr) ? (CLEAR_CC | CC_LESS) : CLEAR_CC;
+
+      break;
+
+
+    case TMI_2: /* F6 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set CC flags. */
+      cpu->psl |= ( ( (REGISTER_BANK) ? cpu->register_5 : cpu->register_2 )
+		    != cpu->dbr) ? (CLEAR_CC | CC_LESS) : CLEAR_CC;
+
+      break;
+
+
+    case TMI_3: /* F7 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Set CC flags. */
+      cpu->psl |= ( ( (REGISTER_BANK) ? cpu->register_6 : cpu->register_3 )
+		    != cpu->dbr) ? (CLEAR_CC | CC_LESS) : CLEAR_CC;
+
+      break;
+
+
     case BDRR_0: /* F8 */
 
       /* Get next memory byte into data bus register. */
