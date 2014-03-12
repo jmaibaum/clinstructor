@@ -91,6 +91,8 @@ typedef enum CC_VALS {
 #define ID_CARRY      ( cpu->psl & PSL_IDC )
 #define C_CODE        ( cpu->psl & PSL_CC )
 
+#define CLEAR_II ( cpu->psu &= ~PSU_II );
+
 /* Clear CC. This has to be done in advance to any CC manipulation. */
 #define CLEAR_CC ( cpu->psl &= ~PSL_CC )
 
@@ -202,6 +204,16 @@ typedef enum IndexingModes {
                                                    lpart ) )] & I_HIGH_B ) \
                                                                   << 8 ) + \
     memory[MEMORY( ABSOLUTE_ADDRESS( hpart, (lpart) + 1 ) )] - 1 )
+
+
+/* Return Address Stack Operations */
+#define RAS_PUSH( ret_addr )					\
+  cpu->psu = ( ( ( STACK_POINTER + 1 ) % 8 ) & PSU_SP );	\
+  cpu->ras[ STACK_POINTER ] = (ret_addr)		
+
+#define RAS_POP					       	\
+  cpu->iar = cpu->ras[ STACK_POINTER ] - 1;	       	\
+  cpu->psu = ( ( ( STACK_POINTER - 1 ) % 8 ) & PSU_SP )
 
 
 /* Typedef for all the 2650's opcodes. */
@@ -617,6 +629,9 @@ typedef struct Cpu {
 
   /* Holding Register */
   unsigned char hr;
+
+  /* Return Address Stack */
+  short ras[8];
 
   /* Convenience variables */
   int rel_off;

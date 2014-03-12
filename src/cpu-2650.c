@@ -34,6 +34,15 @@ void cpu_init( Cpu *cpu )
   cpu->psu =
   cpu->psl =
 
+  cpu->ras[0] =
+  cpu->ras[1] =
+  cpu->ras[2] =
+  cpu->ras[3] =
+  cpu->ras[4] =
+  cpu->ras[5] =
+  cpu->ras[6] =
+  cpu->ras[7] =
+
   cpu->iar = 0;
 }
 
@@ -508,10 +517,29 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+    case RETC_0: /* 14 */
+    case RETC_1: /* 15 */
+    case RETC_2: /* 16 */
+    case RETC_3: /* 17 */
+
+      /* Extract CC code from Opcode and scale it to PSL format for
+	 comparison. */
+      cpu->cc = ( cpu->ir & 0x3 ) << 6;
+
+      if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
+	RAS_POP;
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
     case BCTR_0: /* 18 */
     case BCTR_1: /* 19 */
     case BCTR_2: /* 1A */
     case BCTR_3: /* 1B */
+
       /* Extract CC code from Opcode and scale it to PSL format for
 	 comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
@@ -545,6 +573,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BCTA_1: /* 1D */
     case BCTA_2: /* 1E */
     case BCTA_3: /* 1F */
+
       /* Extract CC code from Opcode and scale it to PSL format for
 	 comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
@@ -979,6 +1008,92 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
       }
+
+      break;
+
+
+    case RETE_0: /* 34 */
+    case RETE_1: /* 35 */
+    case RETE_2: /* 36 */
+    case RETE_3: /* 37 */
+
+      /* Extract CC code from Opcode and scale it to PSL format for
+	 comparison. */
+      cpu->cc = ( cpu->ir & 0x3 ) << 6;
+
+      if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
+	RAS_POP;
+      }
+
+      /* Enable Interrupts */
+      CLEAR_II;
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSTR_0: /* 38 */
+    case BSTR_1: /* 39 */
+    case BSTR_2: /* 3A */
+    case BSTR_3: /* 3B */
+
+      /* Extract CC code from Opcode and scale it to PSL format for
+	 comparison. */
+      cpu->cc = ( cpu->ir & 0x3 ) << 6;
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+								   cpu->rel_off
+								   ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSTA_0: /* 3C */
+    case BSTA_1: /* 3D */
+    case BSTA_2: /* 3E */
+    case BSTA_3: /* 3F */
+
+      /* Extract CC code from Opcode and scale it to PSL format for
+	 comparison. */
+      cpu->cc = ( cpu->ir & 0x3 ) << 6;
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+      }
+
+      /* No setting of CC required. */
 
       break;
 
@@ -2062,6 +2177,210 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+    case BSNR_0: /* 78 */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( cpu->register_0 ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+								   cpu->rel_off
+								   ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSNR_1: /* 79 */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( (REGISTER_BANK ? cpu->register_4 : cpu->register_1) ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar =
+	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+							  cpu->rel_off ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSNR_2: /* 7A */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( (REGISTER_BANK ? cpu->register_5 : cpu->register_2) ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar =
+	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+							  cpu->rel_off ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSNR_3: /* 7B */
+
+      /* Get next byte from memory into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( (REGISTER_BANK ? cpu->register_6 : cpu->register_3) ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar =
+	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+							  cpu->rel_off ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSNA_0: /* 7C */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( cpu->register_0 ) {
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSNA_1: /* 7D */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( (REGISTER_BANK ? cpu->register_4 : cpu->register_1) ) {
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSNA_2: /* 7E */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( (REGISTER_BANK ? cpu->register_5 : cpu->register_2) ) {
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSNA_3: /* 7F */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( (REGISTER_BANK ? cpu->register_6 : cpu->register_3) ) {
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
     case LPSU: /* 92 */
 
       /*
@@ -2223,6 +2542,115 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	this case, too.
       */
       cpu->psl |= (cpu->psl != cpu->dbr) ? (CLEAR_CC | CC_LESS) : CLEAR_CC;
+
+      break;
+
+
+    case BSFR_0: /* B8 */
+    case BSFR_1: /* B9 */
+    case BSFR_2: /* BA */
+      /* Extract CC code from Opcode and scale it to PSL format for
+	 comparison. */
+      cpu->cc = ( cpu->ir & 0x3 ) << 6;
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( cpu->cc != C_CODE ) {
+	cpu->rel_off = cpu->dbr & R_OFFSET;
+
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	/* Indirect or direct addressing? */
+	if ( cpu->dbr & INDIRECT ) {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+								   cpu->rel_off
+								   ) ) );
+	} else {
+	  /* Branch to specified address. */
+	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+							  cpu->rel_off ) ) );
+	}
+
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case ZBSR: /* BB */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Push return address into stack */
+      RAS_PUSH( cpu->iar + 1 );
+
+      cpu->iar = (cpu->dbr & INDIRECT) ?
+	MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) ):
+	BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSFA_0: /* BC */
+    case BSFA_1: /* BD */
+    case BSFA_2: /* BE */
+      /* Extract CC code from Opcode and scale it to PSL format for
+	 comparison. */
+      cpu->cc = ( cpu->ir & 0x3 ) << 6;
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( cpu->cc != C_CODE ) {
+	/* Push return address into stack */
+	RAS_PUSH( cpu->iar + 1 );
+
+	cpu->iar = (cpu->hr & INDIRECT) ?
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
+	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case BSXA: /* BF */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      /* Push return address into stack */
+      RAS_PUSH( cpu->iar + 1 );
+
+      /*
+	Implicit index register is #3/#6.
+
+	The instruction set manual is not clear about index control in BXA/BSXA
+	(cf. p. 49), however, it feels reasonable to assume simple indexing
+	(i.e. no auto increment/decrement).
+      */
+      cpu->iar = MEMORY( ( (cpu->hr & INDIRECT) ?
+			   BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+								cpu->dbr ) :
+			   BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )
+			 + (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
+			 );
+
+      /* No setting of CC required. */
 
       break;
 

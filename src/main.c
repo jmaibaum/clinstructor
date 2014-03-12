@@ -72,6 +72,10 @@ int main( int argc, char **argv )
 	    "|\tR4:%02X\tR5:%02X\tR6:%02X|\n"
 	    "|----------------------------|\n"
 	    "|PSW:%02X%02X                    |\n"
+	    "|----------------------------|\n"
+	    "|RAS:                        |\n"
+	    "| 0:%04X 1:%04X 2:%04X 3:%04X|\n"
+	    "| 4:%04X 5:%04X 6:%04X 7:%04X|\n"
 	    "\\----------------------------/\n",
 	    cpu.iar,
 	    cpu.ir,
@@ -83,7 +87,15 @@ int main( int argc, char **argv )
 	    cpu.register_5,
 	    cpu.register_6,
 	    cpu.psu,
-	    cpu.psl );
+	    cpu.psl,
+	    cpu.ras[0],
+	    cpu.ras[1],
+	    cpu.ras[2],
+	    cpu.ras[3],
+	    cpu.ras[4],
+	    cpu.ras[5],
+	    cpu.ras[6],
+	    cpu.ras[7] );
 
     if ( stop.tv_sec - start.tv_sec )
       printf( "Emulation lasted longer than one second. "
