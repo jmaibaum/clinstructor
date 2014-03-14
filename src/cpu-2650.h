@@ -92,12 +92,10 @@ typedef enum CC_VALS {
 #define C_CODE        ( cpu->psl & PSL_CC )
 
 /* Macros for clearing and setting specific PSW bits. */
-#define CLEAR_II ( cpu->psu &= ~PSU_II )
+#define CLEAR_ARITHMETIC_FLAGS (cpu->psl &= ~( PSL_IDC | PSL_OVF | PSL_C ))
 
-#define CLEAR_CARRY    ( cpu->psl &= ~PSL_C )
-#define CLEAR_OVERFLOW ( cpu->psl &= ~PSL_OVF )
-#define CLEAR_ID_CARRY ( cpu->psl &= ~PSL_IDC )
-#define CLEAR_CC       ( cpu->psl &= ~PSL_CC )
+#define CLEAR_II ( cpu->psu &= ~PSU_II )
+#define CLEAR_CC ( cpu->psl &= ~PSL_CC )
 
 #define SET_CARRY    ( cpu->psl |= PSL_C )
 #define SET_OVERFLOW ( cpu->psl |= PSL_OVF )
@@ -224,10 +222,9 @@ typedef enum IndexingModes {
 
 
 /* Macros for arithmetic operations */
-#define EIGHT_BIT (0xFF)
-#define FIVE_BIT  (0x1F)
-#define FOUR_BIT  (0x0F)
-#define OVF_CHECK (0x80)
+#define EIGHT_BIT     (0xFF)
+#define FOUR_BIT      (0x0F)
+#define OVF_CHECK     (0x80)
 
 #define DAR_CHECK     (0x21)
 #define NO_C_NO_IDC   (0x00)
