@@ -2395,15 +2395,143 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Check for Overflow. */
       CLEAR_OVERFLOW;
 
-      if( ((cpu->register_0 & OVF_CHECK) && !(cpu->adder & OVF_CHECK)) ||
-	  (!(cpu->register_0 & OVF_CHECK) && (cpu->adder & OVF_CHECK)) )
+      if ( (cpu->register_0 & OVF_CHECK) != (cpu->adder & OVF_CHECK) )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
       CLEAR_ID_CARRY;
 
-      if( ((cpu->adder & FIVE_BIT) > FOUR_BIT) &&
+      if ( ((cpu->adder & FIVE_BIT) > FOUR_BIT) &&
 	  ((cpu->register_0 & FIVE_BIT) <= FOUR_BIT) )
+	SET_ID_CARRY;
+
+      /* Set register value. */
+      cpu->register_0 = cpu->adder & EIGHT_BIT;
+
+      /* Set CC flags. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ADDZ_1: /* 81 */
+
+      /* Perform addition. */
+      cpu->adder = cpu->register_0 +
+	( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ) +
+	(WITH_CARRY ? CARRY : 0);
+
+      /* Check for Carry. */
+      CLEAR_CARRY;
+
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      CLEAR_OVERFLOW;
+
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
+
+      if ( (cpu->ovf_temp ==
+	    ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) & OVF_CHECK))
+	   && (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Check for Inter Digit Carry. */
+      CLEAR_ID_CARRY;
+
+      if ( ((cpu->adder & FIVE_BIT) > FOUR_BIT) &&
+	   ((cpu->register_0 & FIVE_BIT) <= FOUR_BIT) )
+	SET_ID_CARRY;
+
+      /* Set register value. */
+      cpu->register_0 = cpu->adder & EIGHT_BIT;
+
+      /* Set CC flags. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ADDZ_2: /* 82 */
+
+      /* Perform addition. */
+      cpu->adder = cpu->register_0 +
+	( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ) +
+	(WITH_CARRY ? CARRY : 0);
+
+      /* Check for Carry. */
+      CLEAR_CARRY;
+
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      CLEAR_OVERFLOW;
+
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
+
+      if ( (cpu->ovf_temp ==
+	    ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) & OVF_CHECK))
+	   && (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Check for Inter Digit Carry. */
+      CLEAR_ID_CARRY;
+
+      if ( ((cpu->adder & FIVE_BIT) > FOUR_BIT) &&
+	   ((cpu->register_0 & FIVE_BIT) <= FOUR_BIT) )
+	SET_ID_CARRY;
+
+      /* Set register value. */
+      cpu->register_0 = cpu->adder & EIGHT_BIT;
+
+      /* Set CC flags. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ADDZ_3:
+
+      /* Perform addition. */
+      cpu->adder = cpu->register_0 +
+	( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ) +
+	(WITH_CARRY ? CARRY : 0);
+
+      /* Check for Carry. */
+      CLEAR_CARRY;
+
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      CLEAR_OVERFLOW;
+
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
+
+      if ( (cpu->ovf_temp ==
+	    ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) & OVF_CHECK))
+	   && (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Check for Inter Digit Carry. */
+      CLEAR_ID_CARRY;
+
+      if ( ((cpu->adder & FIVE_BIT) > FOUR_BIT) &&
+	   ((cpu->register_0 & FIVE_BIT) <= FOUR_BIT) )
 	SET_ID_CARRY;
 
       /* Set register value. */
