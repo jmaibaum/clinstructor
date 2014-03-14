@@ -2381,6 +2381,41 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+    case ADDZ_0: /* 80 */
+
+      /* Perform addition. */
+      cpu->adder = cpu->register_0 + cpu->register_0 + (WITH_CARRY ? CARRY : 0);
+
+      /* Check for Carry. */
+      CLEAR_CARRY;
+
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      CLEAR_OVERFLOW;
+
+      if( ((cpu->register_0 & OVF_CHECK) && !(cpu->adder & OVF_CHECK)) ||
+	  (!(cpu->register_0 & OVF_CHECK) && (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Check for Inter Digit Carry. */
+      CLEAR_ID_CARRY;
+
+      if( ((cpu->adder & FIVE_BIT) > FOUR_BIT) &&
+	  ((cpu->register_0 & FIVE_BIT) <= FOUR_BIT) )
+	SET_ID_CARRY;
+
+      /* Set register value. */
+      cpu->register_0 = cpu->adder & EIGHT_BIT;
+
+      /* Set CC flags. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
     case LPSU: /* 92 */
 
       /*
@@ -2399,6 +2434,170 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case LPSL: /* 93 */
 
       cpu->psl = cpu->register_0;
+
+      break;
+
+
+      /*
+	The following truth table indicates which value gets added to the
+	affected register during a DAR instruction (from Instruction Manual, p.
+	89):
+
+	Carry | Inter Digit Carry | Added to Register r
+	------|-------------------|--------------------
+	    0 |                 0 |               0xAA
+	    0 |                 1 |               0xA0
+	    1 |                 0 |               0x0A
+	    1 |                 1 |               0x00
+      */
+
+    case DAR_0: /* 94 */
+
+      /* See truth table above. */
+
+      switch (cpu->psl & DAR_CHECK) {
+
+      case NO_C_NO_IDC:
+	cpu->register_0 += 0xAA;
+	break;
+
+      case NO_C_SET_IDC:
+	cpu->register_0 += 0xA0;
+	break;
+
+      case SET_C_NO_IDC:
+	cpu->register_0 += 0x0A;
+	break;
+
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case DAR_1: /* 95 */
+
+      /* See truth table above. */
+
+      switch (cpu->psl & DAR_CHECK) {
+
+      case NO_C_NO_IDC:
+
+	if ( REGISTER_BANK )
+	  cpu->register_4 += 0xAA;
+	else
+	  cpu->register_1 += 0xAA;
+
+	break;
+
+
+      case NO_C_SET_IDC:
+
+	if ( REGISTER_BANK )
+	  cpu->register_4 += 0xA0;
+	else
+	  cpu->register_1 += 0xA0;
+
+	break;
+
+
+      case SET_C_NO_IDC:
+
+	if ( REGISTER_BANK )
+	  cpu->register_4 += 0x0A;
+	else
+	  cpu->register_1 += 0x0A;
+
+	break;
+
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case DAR_2: /* 96 */
+
+      /* See truth table above. */
+
+      switch (cpu->psl & DAR_CHECK) {
+
+      case NO_C_NO_IDC:
+
+	if ( REGISTER_BANK )
+	  cpu->register_5 += 0xAA;
+	else
+	  cpu->register_2 += 0xAA;
+
+	break;
+
+
+      case NO_C_SET_IDC:
+
+	if ( REGISTER_BANK )
+	  cpu->register_5 += 0xA0;
+	else
+	  cpu->register_2 += 0xA0;
+
+	break;
+
+
+      case SET_C_NO_IDC:
+
+	if ( REGISTER_BANK )
+	  cpu->register_5 += 0x0A;
+	else
+	  cpu->register_2 += 0x0A;
+
+	break;
+
+      }
+
+      /* No setting of CC required. */
+
+      break;
+
+
+    case DAR_3: /* 97 */
+
+      /* See truth table above. */
+
+      switch (cpu->psl & DAR_CHECK) {
+
+      case NO_C_NO_IDC:
+
+	if ( REGISTER_BANK )
+	  cpu->register_6 += 0xAA;
+	else
+	  cpu->register_3 += 0xAA;
+
+	break;
+
+
+      case NO_C_SET_IDC:
+
+	if ( REGISTER_BANK )
+	  cpu->register_6 += 0xA0;
+	else
+	  cpu->register_3 += 0xA0;
+
+	break;
+
+
+      case SET_C_NO_IDC:
+
+	if ( REGISTER_BANK )
+	  cpu->register_6 += 0x0A;
+	else
+	  cpu->register_3 += 0x0A;
+
+	break;
+
+      }
+
+      /* No setting of CC required. */
 
       break;
 

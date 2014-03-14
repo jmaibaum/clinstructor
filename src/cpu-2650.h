@@ -91,10 +91,17 @@ typedef enum CC_VALS {
 #define ID_CARRY      ( cpu->psl & PSL_IDC )
 #define C_CODE        ( cpu->psl & PSL_CC )
 
-#define CLEAR_II ( cpu->psu &= ~PSU_II );
+/* Macros for clearing and setting specific PSW bits. */
+#define CLEAR_II ( cpu->psu &= ~PSU_II )
 
-/* Clear CC. This has to be done in advance to any CC manipulation. */
-#define CLEAR_CC ( cpu->psl &= ~PSL_CC )
+#define CLEAR_CARRY    ( cpu->psl &= ~PSL_C )
+#define CLEAR_OVERFLOW ( cpu->psl &= ~PSL_OVF )
+#define CLEAR_ID_CARRY ( cpu->psl &= ~PSL_IDC )
+#define CLEAR_CC       ( cpu->psl &= ~PSL_CC )
+
+#define SET_CARRY    ( cpu->psl |= PSL_C )
+#define SET_OVERFLOW ( cpu->psl |= PSL_OVF )
+#define SET_ID_CARRY ( cpu->psl |= PSL_IDC )
 
 /* This macro masks of bit 3 and 4 of any byte that gets to be written into or
    compared with the PSU in order to assure that those bits are never set to one
@@ -214,6 +221,18 @@ typedef enum IndexingModes {
 #define RAS_POP					       	\
   cpu->iar = cpu->ras[ STACK_POINTER ] - 1;	       	\
   cpu->psu = ( ( ( STACK_POINTER - 1 ) % 8 ) & PSU_SP )
+
+
+/* Macros for arithmetic operations */
+#define EIGHT_BIT (0xFF)
+#define FIVE_BIT  (0x1F)
+#define FOUR_BIT  (0x0F)
+#define OVF_CHECK (0x80)
+
+#define DAR_CHECK     (0x21)
+#define NO_C_NO_IDC   (0x00)
+#define NO_C_SET_IDC  (0x20)
+#define SET_C_NO_IDC  (0x01)
 
 
 /* Typedef for all the 2650's opcodes. */
@@ -637,6 +656,7 @@ typedef struct Cpu {
   int rel_off;
   int indexing;
   int cc;
+  int adder;
 } Cpu;
 
 /* Function prototypes */
