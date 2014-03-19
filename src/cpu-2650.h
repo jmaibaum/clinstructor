@@ -223,7 +223,8 @@ typedef enum IndexingModes {
 
 /* Macros for arithmetic operations */
 #define EIGHT_BIT     (0xFF)
-#define FOUR_BIT      (0x0F)
+#define HIGH_NIBBLE   (0xF0)
+#define LOW_NIBBLE    (0x0F)
 #define OVF_CHECK     (0x80)
 
 #define DAR_CHECK     (0x21)

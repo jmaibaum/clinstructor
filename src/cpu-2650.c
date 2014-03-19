@@ -2398,7 +2398,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) < (cpu->register_0 & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
@@ -2437,7 +2437,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) < (cpu->register_0 & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
@@ -2476,7 +2476,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) < (cpu->register_0 & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
@@ -2515,7 +2515,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) < (cpu->register_0 & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
@@ -2554,7 +2554,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) < (cpu->register_0 & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
@@ -2595,8 +2595,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) <
-	   ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) <
+	   ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
@@ -2640,15 +2640,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) <
-	   ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) <
+	   ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
       if ( REGISTER_BANK )
-	cpu->register_4 = cpu->adder & EIGHT_BIT;
+	cpu->register_5 = cpu->adder & EIGHT_BIT;
       else
-	cpu->register_1 = cpu->adder & EIGHT_BIT;
+	cpu->register_2 = cpu->adder & EIGHT_BIT;
 
       /* Set CC. */
       CLEAR_CC;
@@ -2685,8 +2685,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) <
-	   ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) <
+	   ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
@@ -2718,7 +2718,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
-      /* Perform addition with byte pointed to by offset. */
+      /* Perform addition. */
 	cpu->adder = cpu->register_0 + cpu->second_op +
 	  (WITH_CARRY ? CARRY : 0);
 
@@ -2740,7 +2740,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) < (cpu->register_0 & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
@@ -2792,8 +2792,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) <
-	   ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) <
+	   ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
@@ -2849,15 +2849,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) <
-	   ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) <
+	   ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
       if ( REGISTER_BANK ) {
-	cpu->register_2 = cpu->adder & EIGHT_BIT;
-      } else {
 	cpu->register_5 = cpu->adder & EIGHT_BIT;
+      } else {
+	cpu->register_2 = cpu->adder & EIGHT_BIT;
       }
 
       /* Set CC. */
@@ -2906,8 +2906,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & FOUR_BIT) <
-	   ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) & FOUR_BIT) )
+      if ( (cpu->adder & LOW_NIBBLE) <
+	   ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) & LOW_NIBBLE) )
 	SET_ID_CARRY;
 
       /* Set register value. */
@@ -2920,6 +2920,379 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      break;
+
+
+    case ADDA_0: /* 8C */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      /* Get second operand and store it temporarily. */
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ? ++cpu->register_0 : --cpu->register_0;
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
+						   cpu->dbr ) )];
+	}
+
+      } else {
+	cpu->second_op= ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+      }
+
+      /* Perform addition. */
+      cpu->adder = cpu->register_0 + cpu->second_op + (WITH_CARRY ? CARRY : 0);
+
+      /* Prepare PSL before setting flags. */
+      CLEAR_ARITHMETIC_FLAGS;
+
+      /* Check for Carry. */
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
+
+      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
+	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Check for Inter Digit Carry. */
+      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
+	SET_ID_CARRY;
+
+      /* Set register value. */
+      cpu->register_0 = cpu->adder & EIGHT_BIT;
+
+      /* Set CC flags. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ADDA_1: /* 8D */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      /* Get second operand through absolute addressing. */
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_4 : ++cpu->register_1 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_4 : --cpu->register_1 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Prepare some flag operations. */
+	cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
+
+	/* Perform addition. */
+	cpu->adder = cpu->register_0 + cpu->second_op +
+	  (WITH_CARRY ? CARRY : 0);
+
+      } else {
+
+	cpu->second_op = ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+
+	/* Prepare some flag operations. */
+	cpu->ovf_temp = (REGISTER_BANK ? cpu->register_4 : cpu->register_1)
+	  & OVF_CHECK;
+
+	/* Perform addition. */
+	cpu->adder = (REGISTER_BANK ? cpu->register_4 : cpu->register_1) +
+	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
+
+      }
+
+      /* Prepare PSL before setting flags. */
+      CLEAR_ARITHMETIC_FLAGS;
+
+      /* Check for Carry. */
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+
+      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
+	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Do IDC check, set register value + Condition Code. */
+      if ( cpu->indexing ) {
+
+	if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
+	  SET_ID_CARRY;
+
+	cpu->register_0 = cpu->adder & EIGHT_BIT;
+
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( (cpu->adder & LOW_NIBBLE) <
+	     ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) &
+	      LOW_NIBBLE) )
+	  SET_ID_CARRY;
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 = cpu->adder & EIGHT_BIT;
+	} else {
+	  cpu->register_1 = cpu->adder & EIGHT_BIT;
+	}
+
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      }
+
+      break;
+
+
+    case ADDA_2: /* 8E */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      /* Get second operand through absolute addressing. */
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_5 : ++cpu->register_2 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_5 : --cpu->register_2 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Prepare some flag operations. */
+	cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
+
+	/* Perform addition. */
+	cpu->adder = cpu->register_0 + cpu->second_op +
+	  (WITH_CARRY ? CARRY : 0);
+
+      } else {
+
+	cpu->second_op = ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+
+	/* Prepare some flag operations. */
+	cpu->ovf_temp = (REGISTER_BANK ? cpu->register_5 : cpu->register_2)
+	  & OVF_CHECK;
+
+	/* Perform addition. */
+	cpu->adder = (REGISTER_BANK ? cpu->register_5 : cpu->register_2) +
+	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
+
+      }
+
+      /* Prepare PSL before setting flags. */
+      CLEAR_ARITHMETIC_FLAGS;
+
+      /* Check for Carry. */
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+
+      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
+	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Do IDC check, set register value + Condition Code. */
+      if ( cpu->indexing ) {
+
+	if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
+	  SET_ID_CARRY;
+
+	cpu->register_0 = cpu->adder & EIGHT_BIT;
+
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( (cpu->adder & LOW_NIBBLE) <
+	     ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) &
+	      LOW_NIBBLE) )
+	  SET_ID_CARRY;
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_5 = cpu->adder & EIGHT_BIT;
+	} else {
+	  cpu->register_2 = cpu->adder & EIGHT_BIT;
+	}
+
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      }
+
+      break;
+
+
+    case ADDA_3: /* 8F */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      /* Get second operand through absolute addressing. */
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_6 : ++cpu->register_3 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_6 : --cpu->register_3 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* Prepare some flag operations. */
+	cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
+
+	/* Perform addition. */
+	cpu->adder = cpu->register_0 + cpu->second_op +
+	  (WITH_CARRY ? CARRY : 0);
+
+      } else {
+
+	cpu->second_op = ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+
+	/* Prepare some flag operations. */
+	cpu->ovf_temp = (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
+	  & OVF_CHECK;
+
+	/* Perform addition. */
+	cpu->adder = (REGISTER_BANK ? cpu->register_6 : cpu->register_3) +
+	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
+
+      }
+
+      /* Prepare PSL before setting flags. */
+      CLEAR_ARITHMETIC_FLAGS;
+
+      /* Check for Carry. */
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+
+      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
+	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Do IDC check, set register value + Condition Code. */
+      if ( cpu->indexing ) {
+
+	if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
+	  SET_ID_CARRY;
+
+	cpu->register_0 = cpu->adder & EIGHT_BIT;
+
+	CLEAR_CC;
+	cpu->psl |= CC_REG( cpu->register_0 );
+
+      } else {
+
+	if ( (cpu->adder & LOW_NIBBLE) <
+	     ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) &
+	      LOW_NIBBLE) )
+	  SET_ID_CARRY;
+
+	if ( REGISTER_BANK ) {
+	  cpu->register_6 = cpu->adder & EIGHT_BIT;
+	} else {
+	  cpu->register_3 = cpu->adder & EIGHT_BIT;
+	}
+
+	CLEAR_CC;
+	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      }
 
       break;
 
@@ -2949,7 +3322,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /*
 	The following truth table indicates which value gets added to the
 	affected register during a DAR instruction (from Instruction Manual, p.
-	89):
+	89) It is important to add A to each nibble separately (not causing any
+	interdigit carries)!
 
 	Carry | Inter Digit Carry | Added to Register r
 	------|-------------------|--------------------
@@ -2963,19 +3337,16 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* See truth table above. */
 
-      switch (cpu->psl & DAR_CHECK) {
+      if ( cpu->psl != DAR_CHECK ) {
 
-      case NO_C_NO_IDC:
-	cpu->register_0 += 0xAA;
-	break;
+	if ( !CARRY ) {
+	  cpu->register_0 += 0xA0;
+	}
 
-      case NO_C_SET_IDC:
-	cpu->register_0 += 0xA0;
-	break;
-
-      case SET_C_NO_IDC:
-	cpu->register_0 += 0x0A;
-	break;
+	if ( !ID_CARRY ) {
+	  cpu->register_0 = (cpu->register_0 & HIGH_NIBBLE) |
+	    ((cpu->register_0 + 0x0A) & LOW_NIBBLE);
+	}
 
       }
 
@@ -2988,36 +3359,27 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* See truth table above. */
 
-      switch (cpu->psl & DAR_CHECK) {
+      if ( cpu->psl != DAR_CHECK ) {
 
-      case NO_C_NO_IDC:
+	if ( !CARRY ) {
 
-	if ( REGISTER_BANK )
-	  cpu->register_4 += 0xAA;
-	else
-	  cpu->register_1 += 0xAA;
+	  if ( REGISTER_BANK )
+	    cpu->register_4 += 0xA0;
+	  else
+	    cpu->register_1 += 0xA0;
 
-	break;
+	}
 
+	if ( !ID_CARRY ) {
 
-      case NO_C_SET_IDC:
+	  if ( REGISTER_BANK )
+	    cpu->register_4 = (cpu->register_4 & HIGH_NIBBLE) |
+	      ((cpu->register_4 + 0x0A) & LOW_NIBBLE);
+	  else
+	    cpu->register_1 = (cpu->register_1 & HIGH_NIBBLE) |
+	      ((cpu->register_1 + 0x0A) & LOW_NIBBLE);
 
-	if ( REGISTER_BANK )
-	  cpu->register_4 += 0xA0;
-	else
-	  cpu->register_1 += 0xA0;
-
-	break;
-
-
-      case SET_C_NO_IDC:
-
-	if ( REGISTER_BANK )
-	  cpu->register_4 += 0x0A;
-	else
-	  cpu->register_1 += 0x0A;
-
-	break;
+	}
 
       }
 
@@ -3030,37 +3392,27 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* See truth table above. */
 
-      switch (cpu->psl & DAR_CHECK) {
+      if ( cpu->psl != DAR_CHECK ) {
 
-      case NO_C_NO_IDC:
+	if ( !CARRY ) {
 
-	if ( REGISTER_BANK )
-	  cpu->register_5 += 0xAA;
-	else
-	  cpu->register_2 += 0xAA;
+	  if ( REGISTER_BANK )
+	    cpu->register_5 += 0xA0;
+	  else
+	    cpu->register_2 += 0xA0;
 
-	break;
+	}
 
+	if ( !ID_CARRY ) {
 
-      case NO_C_SET_IDC:
+	  if ( REGISTER_BANK )
+	    cpu->register_5 = (cpu->register_5 & HIGH_NIBBLE) |
+	      ((cpu->register_5 + 0x0A) & LOW_NIBBLE);
+	  else
+	    cpu->register_2 = (cpu->register_2 & HIGH_NIBBLE) |
+	      ((cpu->register_2 + 0x0A) & LOW_NIBBLE);
 
-	if ( REGISTER_BANK )
-	  cpu->register_5 += 0xA0;
-	else
-	  cpu->register_2 += 0xA0;
-
-	break;
-
-
-      case SET_C_NO_IDC:
-
-	if ( REGISTER_BANK )
-	  cpu->register_5 += 0x0A;
-	else
-	  cpu->register_2 += 0x0A;
-
-	break;
-
+	}
       }
 
       /* No setting of CC required. */
@@ -3072,37 +3424,27 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* See truth table above. */
 
-      switch (cpu->psl & DAR_CHECK) {
+      if ( cpu->psl != DAR_CHECK ) {
 
-      case NO_C_NO_IDC:
+	if ( !CARRY ) {
 
-	if ( REGISTER_BANK )
-	  cpu->register_6 += 0xAA;
-	else
-	  cpu->register_3 += 0xAA;
+	  if ( REGISTER_BANK )
+	    cpu->register_6 += 0xA0;
+	  else
+	    cpu->register_3 += 0xA0;
 
-	break;
+	}
 
+	if ( !ID_CARRY ) {
 
-      case NO_C_SET_IDC:
+	  if ( REGISTER_BANK )
+	    cpu->register_6 = (cpu->register_6 & HIGH_NIBBLE) |
+	      ((cpu->register_6 + 0x0A) & LOW_NIBBLE);
+	  else
+	    cpu->register_3 = (cpu->register_3 & HIGH_NIBBLE) |
+	      ((cpu->register_3 + 0x0A) & LOW_NIBBLE);
 
-	if ( REGISTER_BANK )
-	  cpu->register_6 += 0xA0;
-	else
-	  cpu->register_3 += 0xA0;
-
-	break;
-
-
-      case SET_C_NO_IDC:
-
-	if ( REGISTER_BANK )
-	  cpu->register_6 += 0x0A;
-	else
-	  cpu->register_3 += 0x0A;
-
-	break;
-
+	}
       }
 
       /* No setting of CC required. */
