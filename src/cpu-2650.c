@@ -2702,6 +2702,228 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+    case ADDR_0: /* 88 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Temporarily store second operand for addition and flag checking. */
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Perform addition with byte pointed to by offset. */
+	cpu->adder = cpu->register_0 + cpu->second_op +
+	  (WITH_CARRY ? CARRY : 0);
+
+      /* Prepare PSL before setting flags. */
+      CLEAR_ARITHMETIC_FLAGS;
+
+      /* Check for Carry. */
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
+
+      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
+	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Check for Inter Digit Carry. */
+      if ( (cpu->adder & FOUR_BIT) < (cpu->register_0 & FOUR_BIT) )
+	SET_ID_CARRY;
+
+      /* Set register value. */
+      cpu->register_0 = cpu->adder & EIGHT_BIT;
+
+      /* Set CC flags. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
+    case ADDR_1: /* 89 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Temporarily store second operand for addition and flag checking. */
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Perform addition. */
+      cpu->adder = (REGISTER_BANK ? cpu->register_4 : cpu->register_1) +
+	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
+
+      /* Prepare PSL before setting flags. */
+      CLEAR_ARITHMETIC_FLAGS;
+
+      /* Check for Carry. */
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+      cpu->ovf_temp = (REGISTER_BANK ? cpu->register_4 : cpu->register_1)
+	& OVF_CHECK;
+
+      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
+	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Check for Inter Digit Carry. */
+      if ( (cpu->adder & FOUR_BIT) <
+	   ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) & FOUR_BIT) )
+	SET_ID_CARRY;
+
+      /* Set register value. */
+      if ( REGISTER_BANK ) {
+	cpu->register_4 = cpu->adder & EIGHT_BIT;
+      } else {
+	cpu->register_1 = cpu->adder & EIGHT_BIT;
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      break;
+
+
+    case ADDR_2: /* 8A */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Temporarily store second operand for addition and flag checking. */
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Perform addition. */
+      cpu->adder = (REGISTER_BANK ? cpu->register_5 : cpu->register_2) +
+	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
+
+      /* Prepare PSL before setting flags. */
+      CLEAR_ARITHMETIC_FLAGS;
+
+      /* Check for Carry. */
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+      cpu->ovf_temp = (REGISTER_BANK ? cpu->register_5 : cpu->register_2)
+	& OVF_CHECK;
+
+      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
+	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Check for Inter Digit Carry. */
+      if ( (cpu->adder & FOUR_BIT) <
+	   ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) & FOUR_BIT) )
+	SET_ID_CARRY;
+
+      /* Set register value. */
+      if ( REGISTER_BANK ) {
+	cpu->register_2 = cpu->adder & EIGHT_BIT;
+      } else {
+	cpu->register_5 = cpu->adder & EIGHT_BIT;
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      break;
+
+
+    case ADDR_3: /* 8B */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Temporarily store second operand for addition and flag checking. */
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      /* Perform addition. */
+      cpu->adder = (REGISTER_BANK ? cpu->register_6 : cpu->register_3) +
+	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
+
+      /* Prepare PSL before setting flags. */
+      CLEAR_ARITHMETIC_FLAGS;
+
+      /* Check for Carry. */
+      if ( cpu->adder > EIGHT_BIT )
+	SET_CARRY;
+
+      /* Check for Overflow. */
+      /* Since operands with different signs cannot cause overflow (cf.
+	 Instructoin Manual, p. 24), we only need to act if operands have the
+	 same sign. */
+      cpu->ovf_temp = (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
+	& OVF_CHECK;
+
+      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
+	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
+	SET_OVERFLOW;
+
+      /* Check for Inter Digit Carry. */
+      if ( (cpu->adder & FOUR_BIT) <
+	   ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) & FOUR_BIT) )
+	SET_ID_CARRY;
+
+      /* Set register value. */
+      if ( REGISTER_BANK ) {
+	cpu->register_6 = cpu->adder & EIGHT_BIT;
+      } else {
+	cpu->register_3 = cpu->adder & EIGHT_BIT;
+      }
+
+      /* Set CC. */
+      CLEAR_CC;
+      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      break;
+
+
     case LPSU: /* 92 */
 
       /*

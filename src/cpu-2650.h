@@ -654,6 +654,7 @@ typedef struct Cpu {
   int indexing;
   int cc;
   int adder;
+  int second_op;
   int ovf_temp;
 } Cpu;
 
