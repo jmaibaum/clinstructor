@@ -2390,7 +2390,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK )
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2422,7 +2422,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK )
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2461,7 +2461,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK )
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2500,7 +2500,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK )
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2540,7 +2540,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK )
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2551,7 +2551,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       if ( (cpu->ovf_temp == (cpu->dbr & OVF_CHECK)) &&
 	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
+	   SET_OVERFLOW;
 
       /* Check for Inter Digit Carry. */
       if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
@@ -2580,7 +2580,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK )
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2625,7 +2625,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK )
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2670,7 +2670,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK )
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2726,7 +2726,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK)
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2777,7 +2777,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK)
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2834,7 +2834,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK)
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2891,7 +2891,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK)
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -2964,7 +2964,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK)
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -3049,7 +3049,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK)
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -3151,7 +3151,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK)
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -3253,7 +3253,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_ARITHMETIC_FLAGS;
 
       /* Check for Carry. */
-      if ( cpu->adder > EIGHT_BIT )
+      if ( cpu->adder & CARRY_CHECK)
 	SET_CARRY;
 
       /* Check for Overflow. */
@@ -3545,6 +3545,388 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 			 );
 
       /* No setting of CC required. */
+
+      break;
+
+
+    case SUBZ_0: /* A0 */
+
+      /* Call SUB() macro. This also sets all appropriate registers. */
+      SUB( cpu->register_0, cpu->register_0 );
+
+      break;
+
+
+    case SUBZ_1: /* A1 */
+
+      /* Call SUB() macro for the appropriate register. This also sets CC for
+	 us. */
+      if ( REGISTER_BANK ) {
+	SUB( cpu->register_0, cpu->register_4 );
+      } else {
+	SUB( cpu->register_0, cpu->register_1 );
+      }
+
+      break;
+
+
+    case SUBZ_2: /* A2 */
+
+      if ( REGISTER_BANK ) {
+	SUB( cpu->register_0, cpu->register_5 );
+      } else {
+	SUB( cpu->register_0, cpu->register_2 );
+      }
+
+      break;
+
+
+    case SUBZ_3: /* A3 */
+
+      if ( REGISTER_BANK ) {
+	SUB( cpu->register_0, cpu->register_6 );
+      } else {
+	SUB( cpu->register_0, cpu->register_6 );
+      }
+
+      break;
+
+
+    case SUBI_0: /* A4 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      SUB( cpu->register_0, cpu->dbr );
+
+      break;
+
+
+    case SUBI_1: /* A5 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( REGISTER_BANK ) {
+	SUB( cpu->register_4, cpu->dbr );
+      } else {
+	SUB( cpu->register_1, cpu->dbr );
+      }
+
+      break;
+
+
+    case SUBI_2: /* A6 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( REGISTER_BANK ) {
+	SUB( cpu->register_5, cpu->dbr );
+      } else {
+	SUB( cpu->register_2, cpu->dbr );
+      }
+
+      break;
+
+
+    case SUBI_3: /* A7 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      if ( REGISTER_BANK ) {
+	SUB( cpu->register_6, cpu->dbr );
+      } else {
+	SUB( cpu->register_3, cpu->dbr );
+      }
+
+      break;
+
+
+    case SUBR_0: /* A8 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Temporarily store second operand for addition and flag checking. */
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      SUB( cpu->register_0, cpu->second_op );
+
+      break;
+
+
+    case SUBR_1: /* A9 */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Temporarily store second operand for addition and flag checking. */
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      if ( REGISTER_BANK ) {
+	SUB( cpu->register_4, cpu->second_op );
+      } else {
+	SUB( cpu->register_1, cpu->second_op );
+      }
+
+      break;
+
+
+    case SUBR_2: /* AA */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Temporarily store second operand for addition and flag checking. */
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      if ( REGISTER_BANK ) {
+	SUB( cpu->register_5, cpu->second_op );
+      } else {
+	SUB( cpu->register_2, cpu->second_op );
+      }
+
+      break;
+
+
+    case SUBR_3: /* AB */
+
+      /* Get next memory byte into data bus register. */
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+
+      cpu->rel_off = cpu->dbr & R_OFFSET;
+
+      /* Temporarily store second operand for addition and flag checking. */
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+      } else {
+	cpu->second_op =
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
+
+      if ( REGISTER_BANK ) {
+	SUB( cpu->register_6, cpu->second_op );
+      } else {
+	SUB( cpu->register_3, cpu->second_op );
+      }
+
+      break;
+
+
+    case SUBA_0: /* AC */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      /* Get second operand and store it temporarily. */
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ? ++cpu->register_0 : --cpu->register_0;
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
+						   cpu->dbr ) )];
+	}
+
+      } else {
+	cpu->second_op= ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+      }
+
+      SUB( cpu->register_0, cpu->second_op );
+
+      break;
+
+
+    case SUBA_1: /* AD */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      /* Get second operand through absolute addressing. */
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_4 : ++cpu->register_1 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_4 : --cpu->register_1 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* All indexing operations store result in R0. */
+	SUB( cpu->register_0, cpu->second_op );
+
+      } else {
+
+	cpu->second_op = ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+
+	if ( REGISTER_BANK ) {
+	  SUB( cpu->register_4, cpu->second_op );
+	} else {
+	  SUB( cpu->register_1, cpu->second_op );
+	}
+
+      }
+
+      break;
+
+
+    case SUBA_2: /* AE */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      /* Get second operand through absolute addressing. */
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_5 : ++cpu->register_2 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_5 : --cpu->register_2 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* All indexing operations store result in R0. */
+	SUB( cpu->register_0, cpu->second_op );
+
+      } else {
+
+	cpu->second_op = ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+
+	if ( REGISTER_BANK ) {
+	  SUB( cpu->register_5, cpu->second_op );
+	} else {
+	  SUB( cpu->register_2, cpu->second_op );
+	}
+
+      }
+
+      break;
+
+
+    case SUBA_3: /* AF */
+
+      /* Get high order address byte into holding register and low order address
+	 byte into data bus register. */
+      cpu->hr = memory[MEMORY( ++cpu->iar )];
+      cpu->dbr = memory[MEMORY( ++cpu->iar )];
+      cpu->indexing = cpu->hr & INDEXING;
+
+      /* Get second operand through absolute addressing. */
+      if ( cpu->indexing ) {
+
+	/* Increment/decrement index register. */
+	if ( cpu->indexing != SIMPLE_INDEXING ) {
+	  (cpu->indexing == INCREMENT) ?
+	    ( (REGISTER_BANK) ? ++cpu->register_6 : ++cpu->register_3 ) :
+	    ( (REGISTER_BANK) ? --cpu->register_6 : --cpu->register_3 );
+	}
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+							    cpu->hr,
+							    cpu->dbr) )];
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+	       ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+						   cpu->hr, cpu->dbr ) )];
+	}
+
+	/* All indexing operations store result in R0. */
+	SUB( cpu->register_0, cpu->second_op );
+
+      } else {
+
+	cpu->second_op = ( cpu->hr & INDIRECT ) ?
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+
+	if ( REGISTER_BANK ) {
+	  SUB( cpu->register_6, cpu->second_op );
+	} else {
+	  SUB( cpu->register_3, cpu->second_op );
+	}
+
+      }
 
       break;
 

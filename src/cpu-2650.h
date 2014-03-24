@@ -93,6 +93,7 @@ typedef enum CC_VALS {
 
 /* Macros for clearing and setting specific PSW bits. */
 #define CLEAR_ARITHMETIC_FLAGS (cpu->psl &= ~( PSL_IDC | PSL_OVF | PSL_C ))
+#define CLEAR_FLAGS (cpu->psl &= ~( PSL_CC | PSL_IDC | PSL_OVF | PSL_C ))
 
 #define CLEAR_II ( cpu->psu &= ~PSU_II )
 #define CLEAR_CC ( cpu->psl &= ~PSL_CC )
@@ -225,12 +226,56 @@ typedef enum IndexingModes {
 #define EIGHT_BIT     (0xFF)
 #define HIGH_NIBBLE   (0xF0)
 #define LOW_NIBBLE    (0x0F)
+#define CARRY_CHECK   (0x100)
 #define OVF_CHECK     (0x80)
+#define HIGH_POS_NUM  (0x7F)
+#define HIGH_NEG_NUM  (0x80)
 
 #define DAR_CHECK     (0x21)
 #define NO_C_NO_IDC   (0x00)
 #define NO_C_SET_IDC  (0x20)
 #define SET_C_NO_IDC  (0x01)
+
+#define BORROW        ((cpu->psl >> 3) & (cpu->psl ^ PSL_C) & PSL_C)
+
+/*
+  This is the macrofied inlined subtract() function from WinArcadia, 2650.c, in
+  order to be ANSI C conform.
+
+  Warning! Do NOT call with anything but variables for 'dest' and 'source'!
+*/
+#define SUB(dest, source)						\
+  cpu->before_arith = dest;						\
+  cpu->adder = dest - source - BORROW;					\
+  CLEAR_FLAGS;								\
+									\
+  /* Check for Carry. */						\
+  if ( (cpu->adder & CARRY_CHECK) == 0 ) {				\
+    SET_CARRY;								\
+  }									\
+									\
+  /* Write lower 8 bits to destination. */				\
+  dest = cpu->adder & EIGHT_BIT;					\
+									\
+  /* Check for Inter Digit Carry. */					\
+  if ( (dest & LOW_NIBBLE) <= (cpu->before_arith & LOW_NIBBLE) ) {	\
+    SET_ID_CARRY;							\
+  }									\
+									\
+  /* Check for Overflow. */						\
+  if ( source <= 0x7F) {						\
+    if ( cpu->before_arith <= HIGH_POS_NUM && dest >= HIGH_NEG_NUM ) {	\
+      SET_OVERFLOW;							\
+    }									\
+  } else {								\
+    if ( cpu->before_arith >= HIGH_POS_NUM && dest <= HIGH_POS_NUM ) {	\
+      SET_OVERFLOW;							\
+    }									\
+  }									\
+									\
+  /* Set Condition Code. */						\
+  cpu->psl |= CC_REG( dest );
+
 
 
 /* Typedef for all the 2650's opcodes. */
@@ -657,6 +702,8 @@ typedef struct Cpu {
   int adder;
   int second_op;
   int ovf_temp;
+
+  int before_arith;
 } Cpu;
 
 /* Function prototypes */
