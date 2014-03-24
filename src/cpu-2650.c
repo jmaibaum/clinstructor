@@ -3846,6 +3846,36 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+    case RRL_0: /* D0 */
+
+      cpu->before_arith = cpu->register_0;
+      cpu->adder = cpu->register_0 << 1;
+
+      if ( WITH_CARRY ) {
+
+	/* Current carry flag rotates into LSB of register. */
+	cpu->register_0 = cpu->adder | CARRY;
+
+	CLEAR_FLAGS;
+
+	/* MSB of 'adder' becomes new carry and bit #4 of register (now bit #5
+	   of 'adder') becomes IDC. */
+	cpu->psl |= ( (cpu->adder & PSL_IDC) | (cpu->adder >> 8) );
+
+      } else {
+	cpu->register_0 = (cpu->adder & EIGHT_BIT) | (cpu->adder >> 8);
+	CLEAR_ROT;
+      }
+
+      if ( (cpu->before_arith & OVF_CHECK) != (cpu->register_0 & OVF_CHECK) )
+	SET_OVERFLOW;
+
+      /* Set CC. */
+      cpu->psl |= CC_REG( cpu->register_0 );
+
+      break;
+
+
     case BIRR_0: /* D8 */
 
       /* Get next memory byte into data bus register. */

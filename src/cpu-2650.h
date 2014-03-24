@@ -85,13 +85,15 @@ typedef enum CC_VALS {
 
 #define CARRY         ( cpu->psl & PSL_C )
 #define COMPARE       ( cpu->psl & PSL_COM )
+#define WITH_CARRY    ( cpu->psl & PSL_WC )
 #define REGISTER_BANK ( cpu->psl & PSL_RS )
 #define ID_CARRY      ( cpu->psl & PSL_IDC )
 #define C_CODE        ( cpu->psl & PSL_CC )
 
 /* Macros for clearing and setting specific PSW bits. */
-#define CLEAR_ARITHMETIC_FLAGS (cpu->psl &= ~( PSL_IDC | PSL_OVF | PSL_C ))
 #define CLEAR_FLAGS (cpu->psl &= ~( PSL_CC | PSL_IDC | PSL_OVF | PSL_C ))
+#define CLEAR_ROT   (cpu->psl &= ~( PSL_CC | PSL_OVF ))
+
 
 #define CLEAR_II ( cpu->psu &= ~PSU_II )
 #define CLEAR_CC ( cpu->psl &= ~PSL_CC )
