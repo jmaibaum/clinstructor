@@ -2381,149 +2381,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+      /*
+	The following addition op codes all use the ADD() macro defined in
+	cpu-2650.h, which is derived from WinArcadias (2650.c) add() inline
+	function. This also sets all appropriate flags.
+      */
     case ADDZ_0: /* 80 */
 
-      /* Perform addition. */
-      cpu->adder = cpu->register_0 + cpu->register_0 + (WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK )
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      if ( (cpu->register_0 & OVF_CHECK) != (cpu->adder & OVF_CHECK) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
-      cpu->register_0 = cpu->adder & EIGHT_BIT;
-
-      /* Set CC flags. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( cpu->register_0 );
+      ADD( cpu->register_0, cpu->register_0 );
 
       break;
 
 
     case ADDZ_1: /* 81 */
 
-      /* Perform addition. */
-      cpu->adder = cpu->register_0 +
-	( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ) +
-	(WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK )
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
-
-      if ( (cpu->ovf_temp ==
-	    ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) & OVF_CHECK))
-	   && (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
-      cpu->register_0 = cpu->adder & EIGHT_BIT;
-
-      /* Set CC flags. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( cpu->register_0 );
+      if ( REGISTER_BANK ) {
+	ADD( cpu->register_0, cpu->register_4 );
+      } else {
+	ADD( cpu->register_0, cpu->register_1 );
+      }
 
       break;
 
 
     case ADDZ_2: /* 82 */
 
-      /* Perform addition. */
-      cpu->adder = cpu->register_0 +
-	( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ) +
-	(WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK )
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
-
-      if ( (cpu->ovf_temp ==
-	    ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) & OVF_CHECK))
-	   && (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
-      cpu->register_0 = cpu->adder & EIGHT_BIT;
-
-      /* Set CC flags. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( cpu->register_0 );
+      if ( REGISTER_BANK ) {
+	ADD( cpu->register_0, cpu->register_5 );
+      } else {
+	ADD( cpu->register_0, cpu->register_2 );
+      }
 
       break;
 
 
     case ADDZ_3:
 
-      /* Perform addition. */
-      cpu->adder = cpu->register_0 +
-	( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ) +
-	(WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK )
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
-
-      if ( (cpu->ovf_temp ==
-	    ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) & OVF_CHECK))
-	   && (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
-      cpu->register_0 = cpu->adder & EIGHT_BIT;
-
-      /* Set CC flags. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( cpu->register_0 );
+      if ( REGISTER_BANK ) {
+	ADD( cpu->register_0, cpu->register_6 );
+      } else {
+	ADD( cpu->register_0, cpu->register_3 );
+      }
 
       break;
 
@@ -2533,36 +2431,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      /* Perform addition. */
-      cpu->adder = cpu->register_0 + cpu->dbr + (WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK )
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
-
-      if ( (cpu->ovf_temp == (cpu->dbr & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	   SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
-      cpu->register_0 = cpu->adder & EIGHT_BIT;
-
-      /* Set CC flags. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( cpu->register_0 );
+      ADD( cpu->register_0, cpu->dbr );
 
       break;
 
@@ -2572,42 +2441,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      /* Perform addition. */
-      cpu->adder = ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ) +
-	cpu->dbr + (WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK )
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = (REGISTER_BANK ? cpu->register_4 : cpu->register_1) &
-	OVF_CHECK;
-
-      if ( (cpu->ovf_temp == (cpu->dbr & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) <
-	   ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
-      if ( REGISTER_BANK )
-	cpu->register_4 = cpu->adder & EIGHT_BIT;
-      else
-	cpu->register_1 = cpu->adder & EIGHT_BIT;
-
-      /* Set CC. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+      if ( REGISTER_BANK ) {
+	ADD( cpu->register_4, cpu->dbr );
+      } else {
+	ADD( cpu->register_1, cpu->dbr );
+      }
 
       break;
 
@@ -2617,42 +2455,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      /* Perform addition. */
-      cpu->adder = ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ) +
-	cpu->dbr + (WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK )
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = (REGISTER_BANK ? cpu->register_5 : cpu->register_2) &
-	OVF_CHECK;
-
-      if ( (cpu->ovf_temp == (cpu->dbr & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) <
-	   ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
-      if ( REGISTER_BANK )
-	cpu->register_5 = cpu->adder & EIGHT_BIT;
-      else
-	cpu->register_2 = cpu->adder & EIGHT_BIT;
-
-      /* Set CC. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+      if ( REGISTER_BANK ) {
+	ADD( cpu->register_5, cpu->dbr );
+      } else {
+	ADD( cpu->register_2, cpu->dbr );
+      }
 
       break;
 
@@ -2662,42 +2469,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      /* Perform addition. */
-      cpu->adder = ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ) +
-	cpu->dbr + (WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK )
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = (REGISTER_BANK ? cpu->register_6 : cpu->register_3) &
-	OVF_CHECK;
-
-      if ( (cpu->ovf_temp == (cpu->dbr & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) <
-	   ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
-      if ( REGISTER_BANK )
-	cpu->register_6 = cpu->adder & EIGHT_BIT;
-      else
-	cpu->register_3 = cpu->adder & EIGHT_BIT;
-
-      /* Set CC. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+      if ( REGISTER_BANK ) {
+	ADD( cpu->register_6, cpu->dbr );
+      } else {
+	ADD( cpu->register_3, cpu->dbr );
+      }
 
       break;
 
@@ -2718,37 +2494,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
-      /* Perform addition. */
-	cpu->adder = cpu->register_0 + cpu->second_op +
-	  (WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK)
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
-
-      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
-      cpu->register_0 = cpu->adder & EIGHT_BIT;
-
-      /* Set CC flags. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( cpu->register_0 );
+      ADD( cpu->register_0, cpu->second_op );
 
       break;
 
@@ -2769,43 +2515,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
-      /* Perform addition. */
-      cpu->adder = (REGISTER_BANK ? cpu->register_4 : cpu->register_1) +
-	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK)
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = (REGISTER_BANK ? cpu->register_4 : cpu->register_1)
-	& OVF_CHECK;
-
-      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) <
-	   ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
       if ( REGISTER_BANK ) {
-	cpu->register_4 = cpu->adder & EIGHT_BIT;
+	ADD( cpu->register_4, cpu->second_op );
       } else {
-	cpu->register_1 = cpu->adder & EIGHT_BIT;
+	ADD( cpu->register_1, cpu->second_op );
       }
-
-      /* Set CC. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
       break;
 
@@ -2826,43 +2540,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
-      /* Perform addition. */
-      cpu->adder = (REGISTER_BANK ? cpu->register_5 : cpu->register_2) +
-	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK)
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = (REGISTER_BANK ? cpu->register_5 : cpu->register_2)
-	& OVF_CHECK;
-
-      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) <
-	   ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
       if ( REGISTER_BANK ) {
-	cpu->register_5 = cpu->adder & EIGHT_BIT;
+	ADD( cpu->register_5, cpu->second_op );
       } else {
-	cpu->register_2 = cpu->adder & EIGHT_BIT;
+	ADD( cpu->register_2, cpu->second_op );
       }
-
-      /* Set CC. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
 
       break;
 
@@ -2883,43 +2565,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
-      /* Perform addition. */
-      cpu->adder = (REGISTER_BANK ? cpu->register_6 : cpu->register_3) +
-	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK)
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
-	& OVF_CHECK;
-
-      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) <
-	   ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
       if ( REGISTER_BANK ) {
-	cpu->register_6 = cpu->adder & EIGHT_BIT;
+	ADD( cpu->register_6, cpu->second_op );
       } else {
-	cpu->register_3 = cpu->adder & EIGHT_BIT;
+	ADD( cpu->register_3, cpu->second_op );
       }
-
-      /* Set CC. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
       break;
 
@@ -2957,36 +2607,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
       }
 
-      /* Perform addition. */
-      cpu->adder = cpu->register_0 + cpu->second_op + (WITH_CARRY ? CARRY : 0);
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK)
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-      cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
-
-      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Check for Inter Digit Carry. */
-      if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
-	SET_ID_CARRY;
-
-      /* Set register value. */
-      cpu->register_0 = cpu->adder & EIGHT_BIT;
-
-      /* Set CC flags. */
-      CLEAR_CC;
-      cpu->psl |= CC_REG( cpu->register_0 );
+      ADD( cpu->register_0, cpu->second_op );
 
       break;
 
@@ -3022,12 +2643,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 						   cpu->hr, cpu->dbr ) )];
 	}
 
-	/* Prepare some flag operations. */
-	cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
-
-	/* Perform addition. */
-	cpu->adder = cpu->register_0 + cpu->second_op +
-	  (WITH_CARRY ? CARRY : 0);
+	/* All indexing additions store result in R0. */
+	ADD( cpu->register_0, cpu->second_op );
 
       } else {
 
@@ -3035,58 +2652,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
 	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
 
-	/* Prepare some flag operations. */
-	cpu->ovf_temp = (REGISTER_BANK ? cpu->register_4 : cpu->register_1)
-	  & OVF_CHECK;
-
-	/* Perform addition. */
-	cpu->adder = (REGISTER_BANK ? cpu->register_4 : cpu->register_1) +
-	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
-
-      }
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK)
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-
-      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Do IDC check, set register value + Condition Code. */
-      if ( cpu->indexing ) {
-
-	if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
-	  SET_ID_CARRY;
-
-	cpu->register_0 = cpu->adder & EIGHT_BIT;
-
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->register_0 );
-
-      } else {
-
-	if ( (cpu->adder & LOW_NIBBLE) <
-	     ((REGISTER_BANK ? cpu->register_4 : cpu->register_1) &
-	      LOW_NIBBLE) )
-	  SET_ID_CARRY;
-
 	if ( REGISTER_BANK ) {
-	  cpu->register_4 = cpu->adder & EIGHT_BIT;
+	  ADD( cpu->register_4, cpu->second_op );
 	} else {
-	  cpu->register_1 = cpu->adder & EIGHT_BIT;
+	  ADD( cpu->register_1, cpu->second_op );
 	}
-
-	CLEAR_CC;
-	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
       }
 
@@ -3124,12 +2694,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 						   cpu->hr, cpu->dbr ) )];
 	}
 
-	/* Prepare some flag operations. */
-	cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
-
-	/* Perform addition. */
-	cpu->adder = cpu->register_0 + cpu->second_op +
-	  (WITH_CARRY ? CARRY : 0);
+	/* All indexing additions store result in R0. */
+	ADD( cpu->register_0, cpu->second_op );
 
       } else {
 
@@ -3137,58 +2703,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
 	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
 
-	/* Prepare some flag operations. */
-	cpu->ovf_temp = (REGISTER_BANK ? cpu->register_5 : cpu->register_2)
-	  & OVF_CHECK;
-
-	/* Perform addition. */
-	cpu->adder = (REGISTER_BANK ? cpu->register_5 : cpu->register_2) +
-	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
-
-      }
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK)
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-
-      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Do IDC check, set register value + Condition Code. */
-      if ( cpu->indexing ) {
-
-	if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
-	  SET_ID_CARRY;
-
-	cpu->register_0 = cpu->adder & EIGHT_BIT;
-
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->register_0 );
-
-      } else {
-
-	if ( (cpu->adder & LOW_NIBBLE) <
-	     ((REGISTER_BANK ? cpu->register_5 : cpu->register_2) &
-	      LOW_NIBBLE) )
-	  SET_ID_CARRY;
-
 	if ( REGISTER_BANK ) {
-	  cpu->register_5 = cpu->adder & EIGHT_BIT;
+	  ADD( cpu->register_5, cpu->second_op );
 	} else {
-	  cpu->register_2 = cpu->adder & EIGHT_BIT;
+	  ADD( cpu->register_2, cpu->second_op );
 	}
-
-	CLEAR_CC;
-	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
 
       }
 
@@ -3226,12 +2745,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 						   cpu->hr, cpu->dbr ) )];
 	}
 
-	/* Prepare some flag operations. */
-	cpu->ovf_temp = cpu->register_0 & OVF_CHECK;
-
-	/* Perform addition. */
-	cpu->adder = cpu->register_0 + cpu->second_op +
-	  (WITH_CARRY ? CARRY : 0);
+	/* All indexing additions store result in R0. */
+	ADD( cpu->register_0, cpu->second_op );
 
       } else {
 
@@ -3239,58 +2754,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
 	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
 
-	/* Prepare some flag operations. */
-	cpu->ovf_temp = (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
-	  & OVF_CHECK;
-
-	/* Perform addition. */
-	cpu->adder = (REGISTER_BANK ? cpu->register_6 : cpu->register_3) +
-	  cpu->second_op + (WITH_CARRY ? CARRY : 0);
-
-      }
-
-      /* Prepare PSL before setting flags. */
-      CLEAR_ARITHMETIC_FLAGS;
-
-      /* Check for Carry. */
-      if ( cpu->adder & CARRY_CHECK)
-	SET_CARRY;
-
-      /* Check for Overflow. */
-      /* Since operands with different signs cannot cause overflow (cf.
-	 Instructoin Manual, p. 24), we only need to act if operands have the
-	 same sign. */
-
-      if ( (cpu->ovf_temp == (cpu->second_op & OVF_CHECK)) &&
-	   (cpu->ovf_temp != (cpu->adder & OVF_CHECK)) )
-	SET_OVERFLOW;
-
-      /* Do IDC check, set register value + Condition Code. */
-      if ( cpu->indexing ) {
-
-	if ( (cpu->adder & LOW_NIBBLE) < (cpu->register_0 & LOW_NIBBLE) )
-	  SET_ID_CARRY;
-
-	cpu->register_0 = cpu->adder & EIGHT_BIT;
-
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->register_0 );
-
-      } else {
-
-	if ( (cpu->adder & LOW_NIBBLE) <
-	     ((REGISTER_BANK ? cpu->register_6 : cpu->register_3) &
-	      LOW_NIBBLE) )
-	  SET_ID_CARRY;
-
 	if ( REGISTER_BANK ) {
-	  cpu->register_6 = cpu->adder & EIGHT_BIT;
+	  ADD( cpu->register_6, cpu->second_op );
 	} else {
-	  cpu->register_3 = cpu->adder & EIGHT_BIT;
+	  ADD( cpu->register_3, cpu->second_op );
 	}
-
-	CLEAR_CC;
-	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
       }
 
@@ -3549,9 +3017,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+      /*
+	The following subtraction op codes all use the SUB() macro defined in
+	cpu-2650.h, which is derived from WinArcadias (2650.c) subtract() inline
+	function. This also sets all appropriate flags.
+      */
     case SUBZ_0: /* A0 */
 
-      /* Call SUB() macro. This also sets all appropriate registers. */
       SUB( cpu->register_0, cpu->register_0 );
 
       break;
@@ -3559,8 +3031,6 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
     case SUBZ_1: /* A1 */
 
-      /* Call SUB() macro for the appropriate register. This also sets CC for
-	 us. */
       if ( REGISTER_BANK ) {
 	SUB( cpu->register_0, cpu->register_4 );
       } else {
@@ -3880,7 +3350,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
-    case SUBA_3: /* AF */
+    case SUBA_3: /* AD */
 
       /* Get high order address byte into holding register and low order address
 	 byte into data bus register. */

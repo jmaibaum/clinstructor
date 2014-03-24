@@ -85,8 +85,6 @@ typedef enum CC_VALS {
 
 #define CARRY         ( cpu->psl & PSL_C )
 #define COMPARE       ( cpu->psl & PSL_COM )
-#define OVERFLOW      ( cpu->psl & PSL_OVF )
-#define WITH_CARRY    ( cpu->psl & PSL_WC )
 #define REGISTER_BANK ( cpu->psl & PSL_RS )
 #define ID_CARRY      ( cpu->psl & PSL_IDC )
 #define C_CODE        ( cpu->psl & PSL_CC )
@@ -236,17 +234,59 @@ typedef enum IndexingModes {
 #define NO_C_SET_IDC  (0x20)
 #define SET_C_NO_IDC  (0x01)
 
-#define BORROW        ((cpu->psl >> 3) & (cpu->psl ^ PSL_C) & PSL_C)
 
 /*
-  This is the macrofied inlined subtract() function from WinArcadia, 2650.c, in
-  order to be ANSI C conform.
+  This is a macro version of the inlined add() routine from WinArcadia,
+  2650.c, in order to be ANSI C conform.
 
   Warning! Do NOT call with anything but variables for 'dest' and 'source'!
 */
-#define SUB(dest, source)						\
-  cpu->before_arith = dest;						\
-  cpu->adder = dest - source - BORROW;					\
+#define CARRY_OR_NOT ((cpu->psl >> 3) & cpu->psl & PSL_C)
+
+#define ADD(destination, source)					\
+  cpu->before_arith = destination;					\
+  cpu->adder = destination + source + CARRY_OR_NOT;			\
+  CLEAR_FLAGS;								\
+									\
+  /* Check for Carry. */						\
+  if ( cpu->adder & CARRY_CHECK ) {					\
+    SET_CARRY;								\
+  }									\
+  									\
+  /* Write lower 8 bits to destination. */				\
+  destination = cpu->adder & EIGHT_BIT;					\
+									\
+  /* Check for Inter Digit Carry. */					\
+  if ( (destination & LOW_NIBBLE) < (cpu->before_arith & LOW_NIBBLE) ) { \
+    SET_ID_CARRY;							\
+  }									\
+									\
+  /* Check for Overflow. */						\
+  if ( source <= HIGH_POS_NUM ) {					\
+    if ( cpu->before_arith <= HIGH_POS_NUM && destination >= HIGH_NEG_NUM ) { \
+      SET_OVERFLOW;							\
+    }									\
+  } else {								\
+    if ( cpu->before_arith >= HIGH_POS_NUM && destination <= HIGH_POS_NUM ) { \
+      SET_OVERFLOW;							\
+    }									\
+  }									\
+									\
+  /* Set Condition Code. */						\
+  cpu->psl |= CC_REG( destination );
+
+
+/*
+  This is a macro version of the inlined subtract() routine from WinArcadia,
+  2650.c, in order to be ANSI C conform.
+
+  Warning! Do NOT call with anything but variables for 'dest' and 'source'!
+*/
+#define BORROW_OR_NOT ((cpu->psl >> 3) & (cpu->psl ^ PSL_C) & PSL_C)
+
+#define SUB(destination, source)					\
+  cpu->before_arith = destination;					\
+  cpu->adder = destination - source - BORROW_OR_NOT;			\
   CLEAR_FLAGS;								\
 									\
   /* Check for Carry. */						\
@@ -255,26 +295,26 @@ typedef enum IndexingModes {
   }									\
 									\
   /* Write lower 8 bits to destination. */				\
-  dest = cpu->adder & EIGHT_BIT;					\
+  destination = cpu->adder & EIGHT_BIT;					\
 									\
   /* Check for Inter Digit Carry. */					\
-  if ( (dest & LOW_NIBBLE) <= (cpu->before_arith & LOW_NIBBLE) ) {	\
+  if ( (destination & LOW_NIBBLE) <= (cpu->before_arith & LOW_NIBBLE) ) { \
     SET_ID_CARRY;							\
   }									\
 									\
   /* Check for Overflow. */						\
-  if ( source <= 0x7F) {						\
-    if ( cpu->before_arith <= HIGH_POS_NUM && dest >= HIGH_NEG_NUM ) {	\
+  if ( source <= HIGH_POS_NUM) {					\
+    if ( cpu->before_arith <= HIGH_POS_NUM && destination >= HIGH_NEG_NUM ) { \
       SET_OVERFLOW;							\
     }									\
   } else {								\
-    if ( cpu->before_arith >= HIGH_POS_NUM && dest <= HIGH_POS_NUM ) {	\
+    if ( cpu->before_arith >= HIGH_POS_NUM && destination <= HIGH_POS_NUM ) { \
       SET_OVERFLOW;							\
     }									\
   }									\
 									\
   /* Set Condition Code. */						\
-  cpu->psl |= CC_REG( dest );
+  cpu->psl |= CC_REG( destination );
 
 
 
@@ -700,10 +740,9 @@ typedef struct Cpu {
   int indexing;
   int cc;
   int adder;
-  int second_op;
-  int ovf_temp;
-
   int before_arith;
+  int second_op;
+
 } Cpu;
 
 /* Function prototypes */
