@@ -245,7 +245,7 @@ typedef enum IndexingModes {
 */
 #define CARRY_OR_NOT ((cpu->psl >> 3) & cpu->psl & PSL_C)
 
-#define ADD(destination, source)					\
+#define ADD( destination, source )					\
   cpu->before_arith = destination;					\
   cpu->adder = destination + source + CARRY_OR_NOT;			\
   CLEAR_FLAGS;								\
@@ -286,7 +286,7 @@ typedef enum IndexingModes {
 */
 #define BORROW_OR_NOT ((cpu->psl >> 3) & (cpu->psl ^ PSL_C) & PSL_C)
 
-#define SUB(destination, source)					\
+#define SUB( destination, source )					\
   cpu->before_arith = destination;					\
   cpu->adder = destination - source - BORROW_OR_NOT;			\
   CLEAR_FLAGS;								\
@@ -317,6 +317,33 @@ typedef enum IndexingModes {
 									\
   /* Set Condition Code. */						\
   cpu->psl |= CC_REG( destination );
+
+
+#define ROTATE_LEFT( reg )						\
+  cpu->before_arith = reg;						\
+  cpu->adder = reg << 1;						\
+									\
+  if ( WITH_CARRY ) {							\
+									\
+    /* Current carry flag rotates into LSB of register. */		\
+    reg = cpu->adder | CARRY;						\
+									\
+    CLEAR_FLAGS;							\
+									\
+    /* MSB of 'adder' becomes new carry and bit #4 of register */	\
+    /* (now bit #5 of 'adder') becomes IDC. */				\
+    cpu->psl |= ( (cpu->adder & PSL_IDC) | (cpu->adder >> 8) );		\
+									\
+  } else {								\
+    reg = (cpu->adder & EIGHT_BIT) | (cpu->adder >> 8);			\
+    CLEAR_ROT;								\
+  }									\
+									\
+  if ( (cpu->before_arith & OVF_CHECK) != (reg & OVF_CHECK) )		\
+    SET_OVERFLOW;							\
+									\
+  /* Set CC. */								\
+  cpu->psl |= CC_REG( reg );
 
 
 

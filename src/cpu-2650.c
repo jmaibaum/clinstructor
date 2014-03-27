@@ -3848,30 +3848,40 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
     case RRL_0: /* D0 */
 
-      cpu->before_arith = cpu->register_0;
-      cpu->adder = cpu->register_0 << 1;
+      ROTATE_LEFT( cpu->register_0 );
 
-      if ( WITH_CARRY ) {
+      break;
 
-	/* Current carry flag rotates into LSB of register. */
-	cpu->register_0 = cpu->adder | CARRY;
 
-	CLEAR_FLAGS;
+    case RRL_1: /* D1 */
 
-	/* MSB of 'adder' becomes new carry and bit #4 of register (now bit #5
-	   of 'adder') becomes IDC. */
-	cpu->psl |= ( (cpu->adder & PSL_IDC) | (cpu->adder >> 8) );
-
+      if( REGISTER_BANK ) {
+	ROTATE_LEFT( cpu->register_4 );
       } else {
-	cpu->register_0 = (cpu->adder & EIGHT_BIT) | (cpu->adder >> 8);
-	CLEAR_ROT;
+	ROTATE_LEFT( cpu->register_1 );
       }
 
-      if ( (cpu->before_arith & OVF_CHECK) != (cpu->register_0 & OVF_CHECK) )
-	SET_OVERFLOW;
+      break;
 
-      /* Set CC. */
-      cpu->psl |= CC_REG( cpu->register_0 );
+
+    case RRL_2: /* D2 */
+
+      if( REGISTER_BANK ) {
+	ROTATE_LEFT( cpu->register_5 );
+      } else {
+	ROTATE_LEFT( cpu->register_2 );
+      }
+
+      break;
+
+
+    case RRL_3: /* D1 */
+
+      if( REGISTER_BANK ) {
+	ROTATE_LEFT( cpu->register_6 );
+      } else {
+	ROTATE_LEFT( cpu->register_3 );
+      }
 
       break;
 
