@@ -21,6 +21,7 @@
 #include <sys/time.h>
 
 #include "cpu-2650.h"
+#include "debug.h"
 #include "parse-hex.h"
 
 int main( int argc, char **argv )
@@ -64,38 +65,7 @@ int main( int argc, char **argv )
       printf( "Error: Opcode %02X is not implemented, yet.\n\n", cpu.ir );
     }
 
-    printf( "CPU-DUMP:\n"
-	    "/----------------------------\\\n"
-	    "|IAR:%04X\tIR:%02X        |\n"
-	    "|----------------------------|\n"
-	    "|R0:%02X\tR1:%02X\tR2:%02X\tR3:%02X|\n"
-	    "|\tR4:%02X\tR5:%02X\tR6:%02X|\n"
-	    "|----------------------------|\n"
-	    "|PSW:%02X%02X                    |\n"
-	    "|----------------------------|\n"
-	    "|RAS:                        |\n"
-	    "| 0:%04X 1:%04X 2:%04X 3:%04X|\n"
-	    "| 4:%04X 5:%04X 6:%04X 7:%04X|\n"
-	    "\\----------------------------/\n",
-	    cpu.iar,
-	    cpu.ir,
-	    cpu.register_0,
-	    cpu.register_1,
-	    cpu.register_2,
-	    cpu.register_3,
-	    cpu.register_4,
-	    cpu.register_5,
-	    cpu.register_6,
-	    cpu.psu,
-	    cpu.psl,
-	    cpu.ras[0],
-	    cpu.ras[1],
-	    cpu.ras[2],
-	    cpu.ras[3],
-	    cpu.ras[4],
-	    cpu.ras[5],
-	    cpu.ras[6],
-	    cpu.ras[7] );
+    CPU_DUMP;
 
     if ( stop.tv_sec - start.tv_sec )
       printf( "Emulation lasted longer than one second. "
