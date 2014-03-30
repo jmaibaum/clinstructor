@@ -1511,6 +1511,46 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
+    case RRR_0: /* 50 */
+
+      ROTATE_RIGHT( cpu->register_0 );
+
+      break;
+
+
+    case RRR_1: /* 51 */
+
+      if( REGISTER_BANK ) {
+	ROTATE_RIGHT( cpu->register_4 );
+      } else {
+	ROTATE_RIGHT( cpu->register_1 );
+      }
+
+      break;
+
+
+    case RRR_2: /* 52 */
+
+      if( REGISTER_BANK ) {
+	ROTATE_RIGHT( cpu->register_5 );
+      } else {
+	ROTATE_RIGHT( cpu->register_2 );
+      }
+
+      break;
+
+
+    case RRR_3: /* 53 */
+
+      if( REGISTER_BANK ) {
+	ROTATE_RIGHT( cpu->register_6 );
+      } else {
+	ROTATE_RIGHT( cpu->register_3 );
+      }
+
+      break;
+
+
     case BRNR_0: /* 58 */
 
       /* Get next byte from memory into data bus register. */
@@ -3875,7 +3915,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       break;
 
 
-    case RRL_3: /* D1 */
+    case RRL_3: /* D3 */
 
       if( REGISTER_BANK ) {
 	ROTATE_LEFT( cpu->register_6 );

@@ -91,8 +91,8 @@ typedef enum CC_VALS {
 #define C_CODE        ( cpu->psl & PSL_CC )
 
 /* Macros for clearing and setting specific PSW bits. */
-#define CLEAR_FLAGS (cpu->psl &= ~( PSL_CC | PSL_IDC | PSL_OVF | PSL_C ))
-#define CLEAR_ROT   (cpu->psl &= ~( PSL_CC | PSL_OVF ))
+#define CLEAR_FLAGS ( cpu->psl &= ~( PSL_CC | PSL_IDC | PSL_OVF | PSL_C ) )
+#define CLEAR_ROT   ( cpu->psl &= ~( PSL_CC | PSL_OVF ) )
 
 
 #define CLEAR_II ( cpu->psu &= ~PSU_II )
@@ -327,7 +327,6 @@ typedef enum IndexingModes {
 									\
     /* Current carry flag rotates into LSB of register. */		\
     reg = cpu->adder | CARRY;						\
-									\
     CLEAR_FLAGS;							\
 									\
     /* MSB of 'adder' becomes new carry and bit #4 of register */	\
@@ -336,6 +335,32 @@ typedef enum IndexingModes {
 									\
   } else {								\
     reg = (cpu->adder & EIGHT_BIT) | (cpu->adder >> 8);			\
+    CLEAR_ROT;								\
+  }									\
+									\
+  if ( (cpu->before_arith & OVF_CHECK) != (reg & OVF_CHECK) )		\
+    SET_OVERFLOW;							\
+									\
+  /* Set CC. */								\
+  cpu->psl |= CC_REG( reg );
+
+
+#define ROTATE_RIGHT( reg )						\
+  cpu->before_arith = reg;						\
+  cpu->adder = reg >> 1;						\
+									\
+  if ( WITH_CARRY ) {							\
+									\
+    /* Current carry flag rotates into MSB of register. */		\
+    reg = (CARRY << 7) | cpu->adder;					\
+    CLEAR_FLAGS;							\
+									\
+    /* LSB of old reg value becomes new carry and bit #6 of register */	\
+    /* (now bit #5 of 'adder') becomes IDC. */				\
+    cpu->psl |= ( (cpu->adder & PSL_IDC) | (cpu->before_arith & PSL_C) ); \
+									\
+  } else {								\
+    reg = ((cpu->before_arith & PSL_C) << 7) | cpu->adder;		\
     CLEAR_ROT;								\
   }									\
 									\
