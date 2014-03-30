@@ -335,7 +335,7 @@ typedef enum IndexingModes {
 									\
   } else {								\
     reg = (cpu->adder & EIGHT_BIT) | (cpu->adder >> 8);			\
-    CLEAR_ROT;								\
+    CLEAR_ROT; /* Clears CC and OVF. */					\
   }									\
 									\
   if ( (cpu->before_arith & OVF_CHECK) != (reg & OVF_CHECK) )		\
@@ -361,7 +361,7 @@ typedef enum IndexingModes {
 									\
   } else {								\
     reg = ((cpu->before_arith & PSL_C) << 7) | cpu->adder;		\
-    CLEAR_ROT;								\
+    CLEAR_ROT; /* Clears CC and OVF. */					\
   }									\
 									\
   if ( (cpu->before_arith & OVF_CHECK) != (reg & OVF_CHECK) )		\

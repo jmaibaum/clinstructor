@@ -22,6 +22,7 @@
 
 #include "parse-hex.h"
 
+/* TODO: Should skip rest of line, allowing for comments in source file. */
 int parse_hex_file( FILE *fp, unsigned char *mem )
 {
   /* Reset memory array for debugging purposes (i.e. to assure that there each
