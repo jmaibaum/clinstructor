@@ -34,7 +34,9 @@ int main( int argc, char **argv )
 
   /* Check command line arguments. */
   if ( argc > 1 ) {
+
     if ( (fp = fopen( argv[1], "r" )) ) {
+
       if ( parse_hex_file( fp, memory ) ) {
 	printf( "Warning: Emulated memory is full, "
 		"but hex file still contains data.\n" );
@@ -55,9 +57,9 @@ int main( int argc, char **argv )
   /* Initialize cpu and enter emulation loop. */
   cpu_init( &cpu );
 
-  gettimeofday(&start, NULL);
+  gettimeofday( &start, NULL );
   err = cpu_loop( &cpu, memory );
-  gettimeofday(&stop, NULL);
+  gettimeofday( &stop, NULL );
 
   if ( err ) {
 
@@ -67,9 +69,10 @@ int main( int argc, char **argv )
 
     CPU_DUMP;
 
-    if ( stop.tv_sec - start.tv_sec )
+    if ( stop.tv_sec - start.tv_sec ) {
       printf( "Emulation lasted longer than one second. "
 	      "The next line does\n not tell the truth.\n" );
+    }
 
     printf( "Time Elapsed: %d µs.\n", stop.tv_usec - start.tv_usec );
   }
