@@ -28,7 +28,7 @@ int main( int argc, char **argv )
 {
   FILE *fp;
   unsigned char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
-  int err;
+  int i, err;
   struct timeval start;
   struct timeval stop;
 
@@ -67,14 +67,14 @@ int main( int argc, char **argv )
       printf( "Error: Opcode %02X is not implemented, yet.\n\n", cpu.ir );
     }
 
-    CPU_DUMP;
+    CPU_AND_MEMORY_DUMP( 0 );
 
     if ( stop.tv_sec - start.tv_sec ) {
       printf( "Emulation lasted longer than one second. "
 	      "The next line does\n not tell the truth.\n" );
     }
 
-    printf( "Time Elapsed: %d µs.\n", stop.tv_usec - start.tv_usec );
+    printf( "Emulation time: %d µs.\n", stop.tv_usec - start.tv_usec );
   }
 
   return err;
