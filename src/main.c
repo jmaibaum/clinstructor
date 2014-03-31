@@ -28,7 +28,7 @@ int main( int argc, char **argv )
 {
   FILE *fp;
   unsigned char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
-  int i, err;
+  int m, i, err;
   struct timeval start;
   struct timeval stop;
 
@@ -47,6 +47,24 @@ int main( int argc, char **argv )
       printf( "Error: Could not open hex file \"%s\".\n", argv[1] );
       return EXIT_FAILURE;
     }
+
+    if ( argv[2] ) {
+      m = atoi( argv[2] );
+
+      if ( m > 0x7F00 ) {
+	m = 0x7F00;
+	printf( "Warning: Memory dump start address is too high, "
+		"reset to 32512 (0x7F00).\n" );
+      } else if ( m < 0 ) {
+	m = 0;
+	printf( "Warning: Memory dump start address is negative, "
+		"reset to 0.\n" );
+      }
+
+    } else {
+      m = 0;
+    }
+
   } else {
     printf( "You have not specified any source files, so I will quit.\n" );
     return EXIT_SUCCESS;
@@ -67,7 +85,7 @@ int main( int argc, char **argv )
       printf( "Error: Opcode %02X is not implemented, yet.\n\n", cpu.ir );
     }
 
-    CPU_AND_MEMORY_DUMP( 0 );
+    CPU_AND_MEMORY_DUMP( m );
 
     if ( stop.tv_sec - start.tv_sec ) {
       printf( "Emulation lasted longer than one second. "
