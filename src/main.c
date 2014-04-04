@@ -92,7 +92,14 @@ int main( int argc, char **argv )
 	      "The next line does\n not tell the truth.\n" );
     }
 
+    /* GCC on linux defines "__suseconds_t" as long int, on APPLE/clang, this is
+       a simple int. */
+#ifdef __linux
+    printf( "Emulation time: %ld µs.\n", stop.tv_usec - start.tv_usec );
+#else
     printf( "Emulation time: %d µs.\n", stop.tv_usec - start.tv_usec );
+#endif
+
   }
 
   return err;

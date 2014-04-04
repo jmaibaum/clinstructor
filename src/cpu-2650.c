@@ -3461,8 +3461,12 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	that this would mean a positive test and therefore CC gets cleared in
 	this case, too.
       */
-      cpu->psl |= ( cpu->psu != PSU( cpu->dbr ) ) ?
-	(CLEAR_CC | CC_LESS) : CLEAR_CC;
+
+      CLEAR_CC;
+
+      if ( (cpu->psu & PSU(cpu->dbr)) < cpu->dbr ) {
+	cpu->psl |= CC_LESS;
+      }
 
       break;
 
@@ -3477,12 +3481,18 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	CC Code is set afterwards to indicate if all checks were positive, then
 	CC=0 else CC=2.
 
-	It is also not clear what the result of CC will be, if tested with 0x00
-	and the current contents of the PSL are 0x00 as well. For now, We assume
+	It is not clear what the result of CC will be, if tested with 0x00 and
+	the current contents of the PSL are 0x00 as well. For now, We assume
 	that this would mean a positive test and therefore CC gets cleared in
 	this case, too.
       */
-      cpu->psl |= (cpu->psl != cpu->dbr) ? (CLEAR_CC | CC_LESS) : CLEAR_CC;
+
+      if ( (cpu->psl & cpu->dbr) < cpu->dbr ) {
+	CLEAR_CC;
+	cpu->psl |=  CC_LESS;
+      } else {
+	CLEAR_CC;
+      }
 
       break;
 
@@ -4433,8 +4443,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       /* Set CC flags. */
-      cpu->psl |= (cpu->register_0 != cpu->dbr) ?
-	(CLEAR_CC | CC_LESS) : CLEAR_CC;
+      CLEAR_CC;
+
+      if ( (cpu->register_0 & cpu->dbr) < cpu->dbr ) {
+	cpu->psl |= CC_LESS;
+      }
 
       break;
 
@@ -4445,8 +4458,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       /* Set CC flags. */
-      cpu->psl |= ( ( (REGISTER_BANK) ? cpu->register_4 : cpu->register_1 )
-		    != cpu->dbr) ? (CLEAR_CC | CC_LESS) : CLEAR_CC;
+      CLEAR_CC;
+
+      if ( REGISTER_BANK ) {
+
+	if ( (cpu->register_4 & cpu->dbr) < cpu->dbr ) {
+	  cpu->psl |= CC_LESS;
+	}
+
+      } else {
+
+	if ( (cpu->register_1 & cpu->dbr) < cpu->dbr ) {
+	  cpu->psl |= CC_LESS;
+	}
+
+      }
 
       break;
 
@@ -4457,8 +4483,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       /* Set CC flags. */
-      cpu->psl |= ( ( (REGISTER_BANK) ? cpu->register_5 : cpu->register_2 )
-		    != cpu->dbr) ? (CLEAR_CC | CC_LESS) : CLEAR_CC;
+      CLEAR_CC;
+
+      if ( REGISTER_BANK ) {
+
+	if ( (cpu->register_5 & cpu->dbr) < cpu->dbr ) {
+	  cpu->psl |= CC_LESS;
+	}
+
+      } else {
+
+	if ( (cpu->register_2 & cpu->dbr) < cpu->dbr ) {
+	  cpu->psl |= CC_LESS;
+	}
+
+      }
 
       break;
 
@@ -4468,9 +4507,22 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
-      /* Set CC flags. */
-      cpu->psl |= ( ( (REGISTER_BANK) ? cpu->register_6 : cpu->register_3 )
-		    != cpu->dbr) ? (CLEAR_CC | CC_LESS) : CLEAR_CC;
+            /* Set CC flags. */
+      CLEAR_CC;
+
+      if ( REGISTER_BANK ) {
+
+	if ( (cpu->register_6 & cpu->dbr) < cpu->dbr ) {
+	  cpu->psl |= CC_LESS;
+	}
+
+      } else {
+
+	if ( (cpu->register_3 & cpu->dbr) < cpu->dbr ) {
+	  cpu->psl |= CC_LESS;
+	}
+
+      }
 
       break;
 
