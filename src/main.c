@@ -28,9 +28,9 @@ int main( int argc, char **argv )
 {
   FILE *fp;
   unsigned char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
-  int m, i, err;
-  struct timeval start;
-  struct timeval stop;
+  int m, err;
+  struct timeval emu_start;
+  struct timeval emu_stop;
 
   /* Check command line arguments. */
   if ( argc > 1 ) {
@@ -75,9 +75,9 @@ int main( int argc, char **argv )
   /* Initialize cpu and enter emulation loop. */
   cpu_init( &cpu );
 
-  gettimeofday( &start, NULL );
+  gettimeofday( &emu_start, NULL );
   err = cpu_loop( &cpu, memory );
-  gettimeofday( &stop, NULL );
+  gettimeofday( &emu_stop, NULL );
 
   if ( err ) {
 
@@ -87,7 +87,7 @@ int main( int argc, char **argv )
 
     CPU_AND_MEMORY_DUMP( m );
 
-    if ( stop.tv_sec - start.tv_sec ) {
+    if ( emu_stop.tv_sec - emu_start.tv_sec ) {
       printf( "Emulation lasted longer than one second. "
 	      "The next line does\n not tell the truth.\n" );
     }
@@ -95,9 +95,9 @@ int main( int argc, char **argv )
     /* GCC on linux defines "__suseconds_t" as long int, on APPLE/clang, this is
        a simple int. */
 #ifdef __linux
-    printf( "Emulation time: %ld µs.\n", stop.tv_usec - start.tv_usec );
+    printf( "Emulation time: %ld µs.\n", emu_stop.tv_usec - emu_start.tv_usec );
 #else
-    printf( "Emulation time: %d µs.\n", stop.tv_usec - start.tv_usec );
+    printf( "Emulation time: %d µs.\n", emu_stop.tv_usec - emu_start.tv_usec );
 #endif
 
   }

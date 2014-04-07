@@ -19,6 +19,8 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+int i, j;
+
 #define GET_BIT_FROM_BYTE( byte, bit )	\
   (((byte) & (EIGHT_BIT & (1 << (bit)))) >> (bit))
 
@@ -77,6 +79,7 @@
 	  cpu.ras[6],					\
 	  cpu.ras[7] );
 
+
 #define MEMORY_DUMP( start )						\
   printf( "Memory Dump from 0x%04X to 0x%04X:\n"			\
 	  "    + 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\n"	\
@@ -106,157 +109,90 @@
   }
 
 
-static int next_ctr(int *counter);
+#define NEXT_MEMORY_ROW( start )\
+  j = (start) + (i * 16);\
+  printf( "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "	\
+	  "%02X %02X %02X %02X %02X %02X %02X %02X\n",		\
+	  j,							\
+	  memory[j],						\
+	  memory[j + 1],					\
+	  memory[j + 2],					\
+	  memory[j + 3],					\
+	  memory[j + 4],					\
+	  memory[j + 5],					\
+	  memory[j + 6],					\
+	  memory[j + 7],					\
+	  memory[j + 8],					\
+	  memory[j + 9],					\
+	  memory[j + 10],					\
+	  memory[j + 11],					\
+	  memory[j + 12],					\
+	  memory[j + 13],					\
+	  memory[j + 14],					\
+	  memory[j + 15] );					\
+  i++
 
-
-#define NEXT_MEMORY_ROW				\
-  (i + 1),					\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )],			\
-    memory[next_ctr( &i )]
-  
 
 #define CPU_AND_MEMORY_DUMP( start )					\
-  i = (start);								\
-									\
   printf( "CPU dump:                  |"				\
-	  "Memory dump from 0x%04X to 0x%04X:\n"			\
-	  "IAR:%04X\tIR:%02X      |"					\
-	  "    + 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\n"	\
-	  "                           |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  "R0:%02X  R1:%02X  R2:%02X  R3:%02X |"			\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  "       R4:%02X  R5:%02X  R6:%02X |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  "                           |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  "PSW:                       |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  " Upper:                    |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  " |S|F|I|-|-|Stack|         |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  " |%d|%d|%d|%d|%d|%d|%d|%d|         |"			\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  "                           |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  " Lower:                    |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  " |CC |c|R|W|O|m|C|         |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  " |%d|%d|%d|%d|%d|%d|%d|%d|         |"			\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  "                           |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  "Return Address Stack:      |"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  "0:%04X 1:%04X 2:%04X 3:%04X|"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n"			\
-	  "4:%04X 5:%04X 6:%04X 7:%04X|"				\
-	  "%04X:%02X %02X %02X %02X %02X %02X %02X %02X "		\
-	  "%02X %02X %02X %02X %02X %02X %02X %02X\n",			\
-	  i,								\
-	  (i + 255),							\
-	  cpu.iar,							\
-	  cpu.ir,							\
-	  i,								\
-	  memory[i],							\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  memory[next_ctr( &i )],					\
-	  cpu.register_0,						\
-	  cpu.register_1,						\
-	  cpu.register_2,						\
-	  cpu.register_3,						\
-	  NEXT_MEMORY_ROW,						\
-	  cpu.register_4,						\
-	  cpu.register_5,						\
-	  cpu.register_6,						\
-	  NEXT_MEMORY_ROW,						\
-	  NEXT_MEMORY_ROW,						\
-	  NEXT_MEMORY_ROW,						\
-	  NEXT_MEMORY_ROW,						\
-	  NEXT_MEMORY_ROW,						\
-	  GET_BIT_FROM_BYTE( cpu.psu, 7 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psu, 6 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psu, 5 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psu, 4 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psu, 3 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psu, 2 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psu, 1 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psu, 0 ),				\
-	  NEXT_MEMORY_ROW,						\
-	  NEXT_MEMORY_ROW,						\
-	  NEXT_MEMORY_ROW,						\
-	  NEXT_MEMORY_ROW,						\
-	  GET_BIT_FROM_BYTE( cpu.psl, 7 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psl, 6 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psl, 5 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psl, 4 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psl, 3 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psl, 2 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psl, 1 ),				\
-	  GET_BIT_FROM_BYTE( cpu.psl, 0 ),				\
-	  NEXT_MEMORY_ROW,						\
-	  NEXT_MEMORY_ROW,						\
-	  NEXT_MEMORY_ROW,						\
-	  cpu.ras[0],							\
-	  cpu.ras[1],							\
-	  cpu.ras[2],							\
-	  cpu.ras[3],							\
-	  NEXT_MEMORY_ROW,						\
-	  cpu.ras[4],							\
-	  cpu.ras[5],							\
-	  cpu.ras[6],							\
-	  cpu.ras[7],							\
-	  NEXT_MEMORY_ROW );
+	  "Memory dump from 0x%04X to 0x%04X:\n", (start),		\
+	  (start + 255) );						\
+  printf( "IAR:%04X\tIR:%02X      |"					\
+	  "    + 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\n",	\
+	  cpu.iar, cpu.ir);						\
+  i = 0;								\
+  printf( "                           |");				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( "R0:%02X  R1:%02X  R2:%02X  R3:%02X |", cpu.register_0,	\
+	  cpu.register_1, cpu.register_2, cpu.register_3 );		\
+  NEXT_MEMORY_ROW(start);						\
+  printf( "       R4:%02X  R5:%02X  R6:%02X |", cpu.register_4,		\
+	  cpu.register_5, cpu.register_6 );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( "                           |" );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( "PSW:                       |" );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( " Upper:                    |" );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( " |S|F|I|-|-|Stack|         |" );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( " |%d|%d|%d|%d|%d|%d|%d|%d|         |",			\
+	  GET_BIT_FROM_BYTE(cpu.psu, 7),				\
+	  GET_BIT_FROM_BYTE(cpu.psu, 6),				\
+	  GET_BIT_FROM_BYTE(cpu.psu, 5),				\
+	  GET_BIT_FROM_BYTE(cpu.psu, 4),				\
+	  GET_BIT_FROM_BYTE(cpu.psu, 3),				\
+	  GET_BIT_FROM_BYTE(cpu.psu, 2),				\
+	  GET_BIT_FROM_BYTE(cpu.psu, 1),				\
+	  GET_BIT_FROM_BYTE(cpu.psu, 0) );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( "                           |" );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( " Lower:                    |" );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( " |CC |c|R|W|O|m|C|         |" );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( " |%d|%d|%d|%d|%d|%d|%d|%d|         |",			\
+	  GET_BIT_FROM_BYTE(cpu.psl, 7),				\
+	  GET_BIT_FROM_BYTE(cpu.psl, 6),				\
+	  GET_BIT_FROM_BYTE(cpu.psl, 5),				\
+	  GET_BIT_FROM_BYTE(cpu.psl, 4),				\
+	  GET_BIT_FROM_BYTE(cpu.psl, 3),				\
+	  GET_BIT_FROM_BYTE(cpu.psl, 2),				\
+	  GET_BIT_FROM_BYTE(cpu.psl, 1),				\
+	  GET_BIT_FROM_BYTE(cpu.psl, 0) );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( "                           |" );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( "Return Address Stack:      |" );				\
+  NEXT_MEMORY_ROW(start);						\
+  printf( "0:%04X 1:%04X 2:%04X 3:%04X|", cpu.ras[0], cpu.ras[1],	\
+	  cpu.ras[2], cpu.ras[3] );					\
+  NEXT_MEMORY_ROW(start);						\
+  printf( "4:%04X 5:%04X 6:%04X 7:%04X|", cpu.ras[4], cpu.ras[5],	\
+	  cpu.ras[6], cpu.ras[7] );					\
+  NEXT_MEMORY_ROW(start);
 
-
-static int next_ctr(int *counter)
-{
-  *counter += 1;
-  return *counter;
-}
 
 #endif /* DEBUG_H */
