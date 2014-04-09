@@ -21,6 +21,8 @@
 
 int i, j;
 
+#define MICRO_SECONDS (1000000)
+
 #define GET_BIT_FROM_BYTE( byte, bit )	\
   (((byte) & (EIGHT_BIT & (1 << (bit)))) >> (bit))
 

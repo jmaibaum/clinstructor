@@ -371,6 +371,13 @@ typedef enum IndexingModes {
   cpu->psl |= CC_REG( reg );
 
 
+/* Timing */
+#define ONE_CPU_CYCLE    cycle_count +=  3 /* This is for NOP and HALT. */
+#define TWO_CPU_CYCLES   cycle_count +=  6
+#define THREE_CPU_CYCLES cycle_count +=  9
+#define FOUR_CPU_CYCLES  cycle_count += 12
+
+
 
 /* Typedef for all the 2650's opcodes. */
 typedef enum Opcodes {
@@ -796,6 +803,9 @@ typedef struct Cpu {
   int adder;
   int before_arith;
   int second_op;
+
+  /* Misc variables for emulator interna. */
+  int error;
 
 } Cpu;
 

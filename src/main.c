@@ -22,13 +22,16 @@
 
 #include "cpu-2650.h"
 #include "debug.h"
+#include "machine.h"
 #include "parse-hex.h"
 
 int main( int argc, char **argv )
 {
   FILE *fp;
   unsigned char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
-  int m, err;
+  int m;
+  long cycles, cpu_cycles, real_time;
+  double emu_time, speed;
   struct timeval emu_start;
   struct timeval emu_stop;
 
@@ -76,12 +79,12 @@ int main( int argc, char **argv )
   cpu_init( &cpu );
 
   gettimeofday( &emu_start, NULL );
-  err = cpu_loop( &cpu, memory );
+  cycles = cpu_loop( &cpu, memory );
   gettimeofday( &emu_stop, NULL );
 
-  if ( err ) {
+  if ( cpu.error ) {
 
-    if ( err == 2 ) {
+    if ( cpu.error == 2 ) {
       printf( "Error: Opcode %02X is not implemented, yet.\n\n", cpu.ir );
     }
 
@@ -92,15 +95,24 @@ int main( int argc, char **argv )
 	      "The next line does\n not tell the truth.\n" );
     }
 
+    cpu_cycles = cycles / 3;
+    real_time = emu_stop.tv_usec - emu_start.tv_usec;
+    emu_time = (1.f / CPU_CLOCK) * cycles * MICRO_SECONDS;
+    speed = (emu_time * 100) / real_time;
+
+    printf( "Emulated %ld CPU cycles. ", cpu_cycles );
+
     /* GCC on linux defines "__suseconds_t" as long int, on APPLE/clang, this is
        a simple int. */
-#ifdef __linux
-    printf( "Emulation time: %ld µs.\n", emu_stop.tv_usec - emu_start.tv_usec );
-#else
-    printf( "Emulation time: %d µs.\n", emu_stop.tv_usec - emu_start.tv_usec );
-#endif
+/* #ifdef __linux */
+    printf( "Real time: %ldµs.\n", real_time );
+/* #else
+    printf( "Real time: %dµs.\n", real_time );
+#endif */
+
+    printf( "Emulation time: %.02fµs. Speed: %.02f%%.\n", emu_time, speed );
 
   }
 
-  return err;
+  return cpu.error;
 }

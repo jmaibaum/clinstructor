@@ -48,16 +48,20 @@ void cpu_init( Cpu *cpu )
 
 int cpu_loop( Cpu *cpu, unsigned char *memory )
 {
-  int cpu_error = 0;
+  long cycle_count = 0;
 
-  while ( !cpu_error ) {
+  cpu->error = 0;
+
+  while ( !cpu->error ) {
     cpu->ir = memory[MEMORY( cpu->iar )];
 
     switch( cpu->ir ) {
 
     case LODZ_0: /* 00 */
 
-      cpu_error = 1;
+      cpu->error = 1;
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -71,6 +75,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -82,6 +88,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -95,6 +103,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -106,6 +116,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -137,6 +149,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -151,6 +165,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -167,6 +183,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	/* Set register value. */
 	cpu->register_0 =
 	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	/* Set register value. */
 	cpu->register_0 =
@@ -176,6 +194,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -198,6 +218,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->register_1 =
 	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 						      cpu->rel_off) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	/* Set register value. */
 	if ( REGISTER_BANK )
@@ -211,6 +233,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -233,6 +257,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->register_2 =
 	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 						      cpu->rel_off) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	/* Set register value. */
 	if ( REGISTER_BANK )
@@ -246,6 +272,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -268,6 +296,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->register_3 =
 	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 						      cpu->rel_off) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	/* Set register value. */
 	if ( REGISTER_BANK )
@@ -281,6 +311,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -305,6 +337,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0,
@@ -315,6 +349,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	if ( cpu->hr & INDIRECT ) {
 	  cpu->register_0 =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
 							     cpu->dbr ) )];
@@ -324,6 +360,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -351,6 +389,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -365,20 +405,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_4 = ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_4 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	      
+	  } else {
+	    cpu->register_1 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_1 = ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_4 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_1 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -406,6 +459,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -420,20 +475,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_5 = ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_5 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	      
+	  } else {
+	    cpu->register_2 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_2 = ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_5 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_2 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -461,6 +529,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -475,20 +545,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_6 = ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_6 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	      
+	  } else {
+	    cpu->register_3 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_3 = ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_6 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_3 =
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -502,6 +585,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -513,6 +598,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -531,6 +618,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -556,6 +645,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -565,6 +656,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -584,12 +677,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -603,6 +703,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -614,6 +716,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -627,6 +731,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -638,6 +744,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -653,6 +761,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -672,6 +782,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -689,6 +801,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -708,6 +822,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -719,13 +835,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      cpu->register_0 ^= (cpu->dbr & INDIRECT) ?
-	memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )] :
-	memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->register_0 ^=
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->register_0 ^=
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -738,21 +862,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      if ( REGISTER_BANK ) {
-	cpu->register_4 ^= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	} else {
+	  cpu->register_1 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	}
+
+	TWO_CPU_CYCLES;
       } else {
-	cpu->register_1 ^= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	} else {
+	  cpu->register_1 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -765,21 +901,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      if ( REGISTER_BANK ) {
-	cpu->register_5 ^= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	if ( REGISTER_BANK ) {
+	  cpu->register_5 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	} else {
+	  cpu->register_2 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	}
+
+	TWO_CPU_CYCLES;
       } else {
-	cpu->register_2 ^= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	if ( REGISTER_BANK ) {
+	  cpu->register_5 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	} else {
+	  cpu->register_2 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -792,21 +940,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      if ( REGISTER_BANK ) {
-	cpu->register_6 ^= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	if ( REGISTER_BANK ) {
+	  cpu->register_6 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	} else {
+	  cpu->register_3 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	}
+
+	TWO_CPU_CYCLES;
       } else {
-	cpu->register_3 ^= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	if ( REGISTER_BANK ) {
+	  cpu->register_6 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	} else {
+	  cpu->register_3 ^=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -831,6 +991,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 ^=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
@@ -838,14 +1000,22 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       } else {
-	cpu->register_0 ^= ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 ^=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->register_0 ^=
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -873,6 +1043,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 ^=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -886,20 +1058,32 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_4 ^= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_4 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_1 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_1 ^= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_4 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_1 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -927,6 +1111,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 ^=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -940,20 +1126,32 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_4 ^= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_5 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_2 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_1 ^= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_5 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_2 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -981,6 +1179,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 ^=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -994,20 +1194,32 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_4 ^= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_6 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_3 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_1 ^= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_6 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_3 ^=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -1029,6 +1241,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_II;
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1057,6 +1271,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -1066,6 +1282,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1088,19 +1306,28 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	/* Push return address into stack */
 	RAS_PUSH( cpu->iar + 1 );
 
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	    TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
 
     case HALT: /* 40 */
 
-      cpu_error = 1;
+      cpu->error = 1;
+
+      ONE_CPU_CYCLE;
 
       break;
 
@@ -1114,6 +1341,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -1126,6 +1355,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -1137,6 +1368,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC value. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -1152,6 +1385,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -1171,6 +1406,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -1188,6 +1425,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -1207,6 +1446,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -1218,13 +1459,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      cpu->register_0 &= (cpu->dbr & INDIRECT) ?
-	memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )] :
-	memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if (cpu->dbr & INDIRECT) {
+	cpu->register_0 &=
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->register_0 &=
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1237,21 +1486,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      if ( REGISTER_BANK ) {
-	cpu->register_4 &= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 &=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	} else {
+	  cpu->register_1 &=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	}
+
+	TWO_CPU_CYCLES;
       } else {
-	cpu->register_1 &= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 &=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	} else {
+	  cpu->register_1 &=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1264,21 +1525,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      if ( REGISTER_BANK ) {
-	cpu->register_5 &= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	if ( REGISTER_BANK ) {
+	  cpu->register_5 &=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	} else {
+	  cpu->register_2 &=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	}
+
+	TWO_CPU_CYCLES;
       } else {
-	cpu->register_2 &= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	if ( REGISTER_BANK ) {
+	  cpu->register_5 &=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	} else {
+	  cpu->register_2 &=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1291,21 +1564,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      if ( REGISTER_BANK ) {
-	cpu->register_6 &= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	if ( REGISTER_BANK ) {
+	  cpu->register_6 &=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	} else {
+	  cpu->register_3 &=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	}
+
+	TWO_CPU_CYCLES;
       } else {
-	cpu->register_3 &= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	if ( REGISTER_BANK ) {
+	  cpu->register_6 &=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	} else {
+	  cpu->register_3 &=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1330,6 +1615,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 &=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
@@ -1337,14 +1624,22 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       } else {
-	cpu->register_0 &= ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 &=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->register_0 &=
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -1372,6 +1667,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 &=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -1385,20 +1682,32 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_4 &= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_4 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_1 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_1 &= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_4 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_1 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -1426,6 +1735,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 &=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -1439,20 +1750,32 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_4 &= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_5 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_2 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_1 &= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_5 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_2 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -1480,6 +1803,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 &=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -1493,14 +1818,24 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_4 &= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_6 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_3 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_1 &= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_6 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_3 &=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
@@ -1508,12 +1843,16 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
       }
 
+      FOUR_CPU_CYCLES;
+
       break;
 
 
     case RRR_0: /* 50 */
 
       ROTATE_RIGHT( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -1526,6 +1865,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	ROTATE_RIGHT( cpu->register_1 );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -1537,6 +1878,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	ROTATE_RIGHT( cpu->register_2 );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -1547,6 +1890,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	ROTATE_RIGHT( cpu->register_3 );
       }
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -1565,6 +1910,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -1574,6 +1921,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1592,6 +1941,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar =
 	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 							  cpu->rel_off ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -1601,6 +1952,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1619,6 +1972,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar =
 	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 							  cpu->rel_off ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -1628,6 +1983,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1646,6 +2003,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar =
 	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 							  cpu->rel_off ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -1655,6 +2014,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1667,12 +2028,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->register_0 ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1685,12 +2053,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( (REGISTER_BANK ? cpu->register_4 : cpu->register_1) ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1703,12 +2078,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( (REGISTER_BANK ? cpu->register_5 : cpu->register_2) ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1721,12 +2103,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( (REGISTER_BANK ? cpu->register_6 : cpu->register_3) ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1745,6 +2134,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -1756,6 +2147,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -1769,6 +2162,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -1780,6 +2175,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -1795,6 +2192,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -1814,6 +2213,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -1831,6 +2232,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -1850,6 +2253,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -1861,13 +2266,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      cpu->register_0 |= (cpu->dbr & INDIRECT) ?
-	memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )] :
-	memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->register_0 |=
+	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->register_0 |=
+	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1880,21 +2293,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      if ( REGISTER_BANK ) {
-	cpu->register_4 |= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 |=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	} else {
+	  cpu->register_1 |=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	}
+
+	TWO_CPU_CYCLES;
       } else {
-	cpu->register_1 |= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	if ( REGISTER_BANK ) {
+	  cpu->register_4 |=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	} else {
+	  cpu->register_1 |=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1907,21 +2332,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      if ( REGISTER_BANK ) {
-	cpu->register_5 |= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	if ( REGISTER_BANK ) {
+	  cpu->register_5 |=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	} else {
+	  cpu->register_2 |=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	}
+
+	TWO_CPU_CYCLES;
       } else {
-	cpu->register_2 |= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	if ( REGISTER_BANK ) {
+	  cpu->register_5 |=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	} else {
+	  cpu->register_2 |=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1934,21 +2371,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Set register value */
-      if ( REGISTER_BANK ) {
-	cpu->register_6 |= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+      if ( cpu->dbr & INDIRECT ) {
+	if ( REGISTER_BANK ) {
+	  cpu->register_6 |=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	} else {
+	  cpu->register_3 |=
+	    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+						      cpu->rel_off ) )];
+	}
+
+	TWO_CPU_CYCLES;
       } else {
-	cpu->register_3 |= (cpu->dbr & INDIRECT) ?
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-						    cpu->rel_off ) )] :
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	if ( REGISTER_BANK ) {
+	  cpu->register_6 |=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	} else {
+	  cpu->register_3 |=
+	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -1973,6 +2422,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 |=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
@@ -1980,14 +2431,22 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       } else {
-	cpu->register_0 |= ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->register_0 |=
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->register_0 |=
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
       }
 
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( cpu->register_0 );
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -2015,6 +2474,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 |=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -2028,20 +2489,32 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_4 |= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_4 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_1 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_1 |= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_4 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_1 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -2069,6 +2542,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 |=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -2082,20 +2557,32 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_4 |= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_5 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_2 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_1 |= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_5 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_2 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -2123,6 +2610,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->register_0 |=
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -2136,20 +2625,32 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	if ( REGISTER_BANK ) {
-	  cpu->register_4 |= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  if ( REGISTER_BANK ) {
+	    cpu->register_6 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_3 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+	  }
+
+	  TWO_CPU_CYCLES;
 	} else {
-	  cpu->register_1 |= ( cpu->hr & INDIRECT ) ?
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  if ( REGISTER_BANK ) {
+	    cpu->register_6 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  } else {
+	    cpu->register_3 |=
+	      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	  }
 	}
 
 	/* Set CC. */
 	CLEAR_CC;
 	cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -2165,6 +2666,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* No setting of CC required. */
 
+      THREE_CPU_CYCLES;
+
       break;
 
 
@@ -2178,6 +2681,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->psl &= ~cpu->dbr;
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2200,6 +2705,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* No setting of CC required. */
 
+      THREE_CPU_CYCLES;
+
       break;
 
 
@@ -2213,6 +2720,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->psl |= cpu->dbr;
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2234,6 +2743,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -2243,6 +2754,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2264,6 +2777,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar =
 	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 							  cpu->rel_off ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -2273,6 +2788,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2294,6 +2811,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar =
 	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 							  cpu->rel_off ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -2303,6 +2822,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2324,6 +2845,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar =
 	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 							  cpu->rel_off ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -2333,6 +2856,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2348,12 +2873,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	/* Push return address into stack */
 	RAS_PUSH( cpu->iar + 1 );
 
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2369,12 +2901,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	/* Push return address into stack */
 	RAS_PUSH( cpu->iar + 1 );
 
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2390,12 +2929,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	/* Push return address into stack */
 	RAS_PUSH( cpu->iar + 1 );
 
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2411,12 +2957,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	/* Push return address into stack */
 	RAS_PUSH( cpu->iar + 1 );
 
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2430,6 +2983,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       ADD( cpu->register_0, cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -2440,6 +2995,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	ADD( cpu->register_0, cpu->register_1 );
       }
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -2452,6 +3009,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	ADD( cpu->register_0, cpu->register_2 );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -2463,6 +3022,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	ADD( cpu->register_0, cpu->register_3 );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -2472,6 +3033,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       ADD( cpu->register_0, cpu->dbr );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -2487,6 +3050,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	ADD( cpu->register_1, cpu->dbr );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -2500,6 +3065,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	ADD( cpu->register_2, cpu->dbr );
       }
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -2515,6 +3082,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	ADD( cpu->register_3, cpu->dbr );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -2529,12 +3098,16 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       if ( cpu->dbr & INDIRECT ) {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       ADD( cpu->register_0, cpu->second_op );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2550,6 +3123,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       if ( cpu->dbr & INDIRECT ) {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
@@ -2560,6 +3135,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	ADD( cpu->register_1, cpu->second_op );
       }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2575,6 +3152,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       if ( cpu->dbr & INDIRECT ) {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
@@ -2585,6 +3164,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	ADD( cpu->register_2, cpu->second_op );
       }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2600,6 +3181,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       if ( cpu->dbr & INDIRECT ) {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
@@ -2610,6 +3193,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	ADD( cpu->register_3, cpu->second_op );
       }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2635,6 +3220,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->second_op =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
@@ -2648,6 +3235,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       ADD( cpu->register_0, cpu->second_op );
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -2676,6 +3265,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->second_op =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -2688,9 +3279,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	cpu->second_op = ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
 
 	if ( REGISTER_BANK ) {
 	  ADD( cpu->register_4, cpu->second_op );
@@ -2699,6 +3296,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -2727,6 +3326,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->second_op =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -2739,9 +3340,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	cpu->second_op = ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
 
 	if ( REGISTER_BANK ) {
 	  ADD( cpu->register_5, cpu->second_op );
@@ -2750,6 +3357,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -2778,6 +3387,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->second_op =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -2790,9 +3401,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	cpu->second_op = ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
 
 	if ( REGISTER_BANK ) {
 	  ADD( cpu->register_6, cpu->second_op );
@@ -2801,6 +3418,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -2817,12 +3436,16 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
        */
       cpu->psu = PSU( cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
     case LPSL: /* 93 */
 
       cpu->psl = cpu->register_0;
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -2860,6 +3483,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* No setting of CC required. */
 
+      THREE_CPU_CYCLES;
+
       break;
 
 
@@ -2893,6 +3518,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* No setting of CC required. */
 
+      THREE_CPU_CYCLES;
+
       break;
 
 
@@ -2924,6 +3551,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2957,6 +3586,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* No setting of CC required. */
 
+      THREE_CPU_CYCLES;
+
       break;
 
 
@@ -2979,6 +3610,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -2988,6 +3621,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -2999,11 +3634,17 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
-      cpu->iar = (cpu->dbr & INDIRECT) ?
-	MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) ):
-	BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->iar = MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) );
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->iar = BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
+      }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3021,12 +3662,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->cc != C_CODE ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3045,14 +3693,22 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	(cf. p. 49), however, it feels reasonable to assume simple indexing
 	(i.e. no auto increment/decrement).
       */
-      cpu->iar = MEMORY( ( (cpu->hr & INDIRECT) ?
-			   BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								cpu->dbr ) :
-			   BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )
-			 + (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
-			 );
+      if ( cpu->hr & INDIRECT ) {
+	cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+								cpu->dbr )
+			   + (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
+			   );
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr )
+			   + (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
+			   );
+      }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3066,6 +3722,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       SUB( cpu->register_0, cpu->register_0 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -3076,6 +3734,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	SUB( cpu->register_0, cpu->register_1 );
       }
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -3088,6 +3748,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SUB( cpu->register_0, cpu->register_2 );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -3099,6 +3761,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SUB( cpu->register_0, cpu->register_6 );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -3108,6 +3772,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       SUB( cpu->register_0, cpu->dbr );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -3123,6 +3789,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SUB( cpu->register_1, cpu->dbr );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -3136,6 +3804,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	SUB( cpu->register_2, cpu->dbr );
       }
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -3151,6 +3821,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	SUB( cpu->register_3, cpu->dbr );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -3165,12 +3837,16 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       if ( cpu->dbr & INDIRECT ) {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       SUB( cpu->register_0, cpu->second_op );
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3186,6 +3862,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       if ( cpu->dbr & INDIRECT ) {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
@@ -3196,6 +3874,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	SUB( cpu->register_1, cpu->second_op );
       }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3211,6 +3891,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       if ( cpu->dbr & INDIRECT ) {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
@@ -3221,6 +3903,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	SUB( cpu->register_2, cpu->second_op );
       }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3236,6 +3920,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       if ( cpu->dbr & INDIRECT ) {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+
+	TWO_CPU_CYCLES;
       } else {
 	cpu->second_op =
 	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
@@ -3246,6 +3932,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	SUB( cpu->register_3, cpu->second_op );
       }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3271,6 +3959,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->second_op =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
@@ -3278,12 +3968,22 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       } else {
-	cpu->second_op= ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
+
       }
 
       SUB( cpu->register_0, cpu->second_op );
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -3312,6 +4012,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->second_op =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -3324,9 +4026,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	cpu->second_op = ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
 
 	if ( REGISTER_BANK ) {
 	  SUB( cpu->register_4, cpu->second_op );
@@ -3335,6 +4043,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -3363,6 +4073,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->second_op =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -3375,9 +4087,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	cpu->second_op = ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
 
 	if ( REGISTER_BANK ) {
 	  SUB( cpu->register_5, cpu->second_op );
@@ -3386,6 +4104,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -3414,6 +4134,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 		        ( REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
 							    cpu->hr,
 							    cpu->dbr) )];
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  cpu->second_op =
 	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
@@ -3426,9 +4148,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       } else {
 
-	cpu->second_op = ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->second_op =
+	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+	}
 
 	if ( REGISTER_BANK ) {
 	  SUB( cpu->register_6, cpu->second_op );
@@ -3437,6 +4165,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -3468,6 +4198,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	cpu->psl |= CC_LESS;
       }
 
+      THREE_CPU_CYCLES;
+
       break;
 
 
@@ -3494,6 +4226,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	CLEAR_CC;
       }
 
+      THREE_CPU_CYCLES;
+
       break;
 
 
@@ -3519,6 +4253,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -3528,6 +4264,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3542,11 +4280,17 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Push return address into stack */
       RAS_PUSH( cpu->iar + 1 );
 
-      cpu->iar = (cpu->dbr & INDIRECT) ?
-	MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) ):
-	BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->iar = MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) );
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->iar = BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
+      }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3567,12 +4311,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	/* Push return address into stack */
 	RAS_PUSH( cpu->iar + 1 );
 
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3594,19 +4345,29 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	(cf. p. 49), however, it feels reasonable to assume simple indexing
 	(i.e. no auto increment/decrement).
       */
-      cpu->iar = MEMORY( ( (cpu->hr & INDIRECT) ?
-			   BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								cpu->dbr ) :
-			   BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )
-			 + (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
-			 );
+      if (cpu->hr & INDIRECT) {
+	cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+								cpu->dbr )
+			   + (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
+			   );
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr )
+			   + (REGISTER_BANK ? cpu->register_6 : cpu->register_3)
+			   );
+      }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
 
     case NOP: /* C0 */
+
+      ONE_CPU_CYCLE;
 
       break;
 
@@ -3623,6 +4384,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -3638,6 +4401,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -3652,6 +4417,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC. */
       CLEAR_CC;
       cpu->psl |= CC_REG( REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -3669,12 +4436,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Store contents of R0 in memory address calculated from relative
 	 offset. */
-      memory[(cpu->dbr & INDIRECT) ?
-	     MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) ) :
-	     MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
-	= cpu->register_0;
+      if ( cpu->dbr & INDIRECT ) {
+	memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
+	  = cpu->register_0;
+
+	TWO_CPU_CYCLES;
+      } else {
+	memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
+	  = cpu->register_0;
+      }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3688,12 +4462,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Store contents of R1/4 in memory address calculated from relative
 	 offset. */
-      memory[(cpu->dbr & INDIRECT) ?
-	     MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) ) :
-	     MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
-	= (REGISTER_BANK) ? cpu->register_4 : cpu->register_1;
+      if (cpu->dbr & INDIRECT) {
+	memory[MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
+	  = (REGISTER_BANK) ? cpu->register_4 : cpu->register_1;
+
+	TWO_CPU_CYCLES;
+      } else {
+	memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
+	  = (REGISTER_BANK) ? cpu->register_4 : cpu->register_1;
+      }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3707,12 +4488,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Store contents of R2/5 in memory address calculated from relative
 	 offset. */
-      memory[(cpu->dbr & INDIRECT) ?
-	     MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) ) :
-	     MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
-	= (REGISTER_BANK) ? cpu->register_5 : cpu->register_2;
+      if (cpu->dbr & INDIRECT) {
+	memory[MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
+	  = (REGISTER_BANK) ? cpu->register_5 : cpu->register_2;
+
+	TWO_CPU_CYCLES;
+      } else {
+	memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
+	  = (REGISTER_BANK) ? cpu->register_5 : cpu->register_2;
+      }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3726,12 +4514,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Store contents of R3/6 in memory address calculated from relative
 	 offset. */
-      memory[(cpu->dbr & INDIRECT) ?
-	     MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) ) :
-	     MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
-	= (REGISTER_BANK) ? cpu->register_6 : cpu->register_3;
+      if (cpu->dbr & INDIRECT) {
+	memory[MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
+	  = (REGISTER_BANK) ? cpu->register_6 : cpu->register_3;
+
+	TWO_CPU_CYCLES;
+      } else {
+	memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]
+	  = (REGISTER_BANK) ? cpu->register_6 : cpu->register_3;
+      }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3751,21 +4546,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  (cpu->indexing == INCREMENT) ? ++cpu->register_0 : --cpu->register_0;
 	}
 
-	memory[(cpu->hr & INDIRECT) ?
-	       MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
-							cpu->hr, cpu->dbr) ) :
-	       MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
-					       cpu->dbr ) )]
-	  = cpu->register_0;
+	if ( cpu->hr & INDIRECT ) {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->register_0,
+							  cpu->hr, cpu->dbr) )]
+	    = cpu->register_0;
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->register_0, cpu->hr,
+						 cpu->dbr ) )]
+	    = cpu->register_0;
+	}
 
       } else {
-	memory[(cpu->hr & INDIRECT) ?
-	       MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	       MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
-	  = cpu->register_0;
+	if ( cpu->hr & INDIRECT ) {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
+	    = cpu->register_0;
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
+	    = cpu->register_0;
+	}
       }
 
       /* No setting of CC required. */
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -3789,25 +4596,35 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
 	/* Store contents of R0 into memory location specified by absolute
 	   address + index in R1/4. */
-	memory[(cpu->hr & INDIRECT) ?
-	       MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+	if ( cpu->hr & INDIRECT ) {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
 			  ((REGISTER_BANK) ? cpu->register_4 : cpu->register_1),
-						        cpu->hr, cpu->dbr) ) :
-	       MEMORY( ABSOLUTE_ADDRESS_INDEX(
+			  cpu->hr, cpu->dbr) )] = cpu->register_0;
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
 			  ((REGISTER_BANK) ? cpu->register_4 : cpu->register_1),
-                                               cpu->hr,cpu->dbr ) )]
-	  = cpu->register_0;
+			  cpu->hr, cpu->dbr ) )] = cpu->register_0;
+	}
 
       } else {
 	/* Store contents of R1/4 into memory location specified by absolute
 	   address. */
-	memory[(cpu->hr & INDIRECT) ?
-	       MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	       MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
-	  = (REGISTER_BANK) ? cpu->register_4 : cpu->register_1;
+	if ( cpu->hr & INDIRECT ) {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
+	    = (REGISTER_BANK) ? cpu->register_4 : cpu->register_1;
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
+	    = (REGISTER_BANK) ? cpu->register_4 : cpu->register_1;
+	}
       }
 
       /* No setting of CC required. */
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -3831,25 +4648,35 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
 	/* Store contents of R0 into memory location specified by absolute
 	   address + index in R2/5. */
-	memory[(cpu->hr & INDIRECT) ?
-	       MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+	if ( cpu->hr & INDIRECT ) {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
 			  ((REGISTER_BANK) ? cpu->register_5 : cpu->register_2),
-						        cpu->hr, cpu->dbr) ) :
-	       MEMORY( ABSOLUTE_ADDRESS_INDEX(
+			  cpu->hr, cpu->dbr) )] = cpu->register_0;
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
 			  ((REGISTER_BANK) ? cpu->register_5 : cpu->register_2),
-                                               cpu->hr,cpu->dbr ) )]
-	  = cpu->register_0;
+			  cpu->hr, cpu->dbr ) )] = cpu->register_0;
+	}
 
       } else {
 	/* Store contents of R2/5 into memory location specified by absolute
 	   address. */
-	memory[(cpu->hr & INDIRECT) ?
-	       MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	       MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
-	  = (REGISTER_BANK) ? cpu->register_5 : cpu->register_2;
+	if ( cpu->hr & INDIRECT ) {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
+	    = (REGISTER_BANK) ? cpu->register_5 : cpu->register_2;
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
+	    = (REGISTER_BANK) ? cpu->register_5 : cpu->register_2;
+	}
       }
 
       /* No setting of CC required. */
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -3873,25 +4700,35 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
 	/* Store contents of R0 into memory location specified by absolute
 	   address + index in R3/6. */
-	memory[(cpu->hr & INDIRECT) ?
-	       MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+	if ( cpu->hr & INDIRECT ) {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
 			  ((REGISTER_BANK) ? cpu->register_6 : cpu->register_3),
-						        cpu->hr, cpu->dbr) ) :
-	       MEMORY( ABSOLUTE_ADDRESS_INDEX(
+			  cpu->hr, cpu->dbr) )] = cpu->register_0;
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
 			  ((REGISTER_BANK) ? cpu->register_6 : cpu->register_3),
-                                               cpu->hr,cpu->dbr ) )]
-	  = cpu->register_0;
+			  cpu->hr, cpu->dbr ) )] = cpu->register_0;
+	}
 
       } else {
 	/* Store contents of R3/6 into memory location specified by absolute
 	   address. */
-	memory[(cpu->hr & INDIRECT) ?
-	       MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	       MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
-	  = (REGISTER_BANK) ? cpu->register_6 : cpu->register_3;
+	if ( cpu->hr & INDIRECT ) {
+	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
+	    = (REGISTER_BANK) ? cpu->register_6 : cpu->register_3;
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )]
+	    = (REGISTER_BANK) ? cpu->register_6 : cpu->register_3;
+	}
       }
 
       /* No setting of CC required. */
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -3899,6 +4736,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case RRL_0: /* D0 */
 
       ROTATE_LEFT( cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -3911,6 +4750,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	ROTATE_LEFT( cpu->register_1 );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -3922,6 +4763,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	ROTATE_LEFT( cpu->register_2 );
       }
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -3932,6 +4775,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       } else {
 	ROTATE_LEFT( cpu->register_3 );
       }
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -3950,6 +4795,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -3959,6 +4806,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -3977,6 +4826,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -3986,6 +4837,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4004,6 +4857,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -4013,6 +4868,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4031,6 +4888,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -4040,6 +4899,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4052,12 +4913,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( ++cpu->register_0 ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if (cpu->hr & INDIRECT) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4070,12 +4938,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( (REGISTER_BANK ? ++cpu->register_4 : ++cpu->register_1) ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if (cpu->hr & INDIRECT) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4088,12 +4963,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( (REGISTER_BANK ? ++cpu->register_5 : ++cpu->register_2) ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if (cpu->hr & INDIRECT) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4106,12 +4988,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( (REGISTER_BANK ? ++cpu->register_6 : ++cpu->register_3) ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if (cpu->hr & INDIRECT) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4121,6 +5010,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Set CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_COM( cpu->register_0, cpu->register_0 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -4132,6 +5023,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->psl |= CC_COM( cpu->register_0,
 			  REGISTER_BANK ? cpu->register_4 : cpu->register_1 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -4142,6 +5035,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->psl |= CC_COM( cpu->register_0,
 			  REGISTER_BANK ? cpu->register_5 : cpu->register_2 );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -4151,6 +5046,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_COM( cpu->register_0,
 			  REGISTER_BANK ? cpu->register_6 : cpu->register_3 );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -4163,6 +5060,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* SET CC flags. */
       CLEAR_CC;
       cpu->psl |= CC_COM( cpu->register_0, cpu->dbr );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -4177,6 +5076,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->psl |= CC_COM( REGISTER_BANK ? cpu->register_4 : cpu->register_1,
 			  cpu->dbr );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -4189,6 +5090,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
       cpu->psl |= CC_COM( REGISTER_BANK ? cpu->register_5 : cpu->register_2,
 			  cpu->dbr );
+
+      TWO_CPU_CYCLES;
 
       break;
 
@@ -4203,6 +5106,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->psl |= CC_COM( REGISTER_BANK ? cpu->register_6 : cpu->register_3,
 			  cpu->dbr );
 
+      TWO_CPU_CYCLES;
+
       break;
 
 
@@ -4214,12 +5119,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* SET CC flags. */
       CLEAR_CC;
-      cpu->psl |= CC_COM( cpu->register_0, (cpu->dbr & INDIRECT) ?
-			  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-								    cpu->rel_off
-								    ) )] :
-			  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							   cpu->rel_off ) )]);
+
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->psl |=
+	  CC_COM( cpu->register_0,
+		  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+							    cpu->rel_off ) )]);
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->psl |=
+	  CC_COM( cpu->register_0,
+		  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]);
+      }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4232,13 +5146,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* SET CC flags. */
       CLEAR_CC;
-      cpu->psl |= CC_COM( REGISTER_BANK ? cpu->register_4 : cpu->register_1,
-			  (cpu->dbr & INDIRECT) ?
-			  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-								    cpu->rel_off
-								    ) )] :
-			  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							   cpu->rel_off ) )]);
+
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->psl |=
+	  CC_COM( REGISTER_BANK ? cpu->register_4 : cpu->register_1,
+		  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+							    cpu->rel_off ) )]);
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->psl |=
+	  CC_COM( REGISTER_BANK ? cpu->register_4 : cpu->register_1,
+		  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]);
+      }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4251,13 +5173,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* SET CC flags. */
       CLEAR_CC;
-      cpu->psl |= CC_COM( REGISTER_BANK ? cpu->register_5 : cpu->register_2,
-			  (cpu->dbr & INDIRECT) ?
-			  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-								    cpu->rel_off
-								    ) )] :
-			  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							   cpu->rel_off ) )]);
+
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->psl |=
+	  CC_COM( REGISTER_BANK ? cpu->register_5 : cpu->register_2,
+		  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+							    cpu->rel_off ) )]);
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->psl |=
+	  CC_COM( REGISTER_BANK ? cpu->register_5 : cpu->register_2,
+		  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]);
+      }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4270,13 +5200,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* SET CC flags. */
       CLEAR_CC;
-      cpu->psl |= CC_COM( REGISTER_BANK ? cpu->register_6 : cpu->register_3,
-			  (cpu->dbr & INDIRECT) ?
-			  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-								    cpu->rel_off
-								    ) )] :
-			  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							   cpu->rel_off ) )]);
+
+      if ( cpu->dbr & INDIRECT ) {
+	cpu->psl |=
+	  CC_COM( REGISTER_BANK ? cpu->register_6 : cpu->register_3,
+		  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+							    cpu->rel_off ) )]);
+
+	TWO_CPU_CYCLES;
+      } else {
+	cpu->psl |=
+	  CC_COM( REGISTER_BANK ? cpu->register_6 : cpu->register_3,
+		  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )]);
+      }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4311,6 +5249,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] );
       }
 
+      FOUR_CPU_CYCLES;
+
       break;
 
 
@@ -4334,23 +5274,38 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	    ( (REGISTER_BANK) ? --cpu->register_4 : --cpu->register_1 );
 	}
 
-	cpu->psl |= CC_COM( cpu->register_0, (cpu->hr & INDIRECT) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
-	    (REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
-	    cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
-	    (REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
-	    cpu->hr, cpu->dbr ) )] );
+	if (cpu->hr & INDIRECT) {
+	  cpu->psl |=
+	    CC_COM( cpu->register_0,
+		    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+			   (REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+			   cpu->hr, cpu->dbr ) )] );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->psl |=
+	    CC_COM( cpu->register_0,
+		    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+			   (REGISTER_BANK ? cpu->register_4 : cpu->register_1 ),
+			   cpu->hr, cpu->dbr ) )] );
+	}
 
       } else {
-	cpu->psl |= CC_COM( REGISTER_BANK ? cpu->register_4 : cpu->register_1,
-			    (cpu->hr & INDIRECT) ?
-			    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								      cpu->dbr )
-					   )] :
-			    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr )
-					   )] );
+	if (cpu->hr & INDIRECT) {
+	  cpu->psl |=
+	    CC_COM( REGISTER_BANK ? cpu->register_4 : cpu->register_1,
+		    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+							      cpu->dbr ) )] );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->psl |=
+	    CC_COM( REGISTER_BANK ? cpu->register_4 : cpu->register_1,
+		    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] );
+	}
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -4375,23 +5330,38 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	    ( (REGISTER_BANK) ? --cpu->register_5 : --cpu->register_2 );
 	}
 
-	cpu->psl |= CC_COM( cpu->register_0, (cpu->hr & INDIRECT) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
-	    (REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
-	    cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
-	    (REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
-	    cpu->hr, cpu->dbr ) )] );
+	if (cpu->hr & INDIRECT) {
+	  cpu->psl |=
+	    CC_COM( cpu->register_0,
+		    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+			   (REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+			   cpu->hr, cpu->dbr ) )] );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->psl |=
+	    CC_COM( cpu->register_0,
+		    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+			   (REGISTER_BANK ? cpu->register_5 : cpu->register_2 ),
+			   cpu->hr, cpu->dbr ) )] );
+	}
 
       } else {
-	cpu->psl |= CC_COM( REGISTER_BANK ? cpu->register_5 : cpu->register_2,
-			    (cpu->hr & INDIRECT) ?
-			    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								      cpu->dbr )
-					   )] :
-			    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr )
-					   )] );
+	if (cpu->hr & INDIRECT) {
+	  cpu->psl |=
+	    CC_COM( REGISTER_BANK ? cpu->register_5 : cpu->register_2,
+		    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+							      cpu->dbr ) )] );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->psl |=
+	    CC_COM( REGISTER_BANK ? cpu->register_5 : cpu->register_2,
+		    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] );
+	}
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -4416,23 +5386,38 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	    ( (REGISTER_BANK) ? --cpu->register_6 : --cpu->register_3 );
 	}
 
-	cpu->psl |= CC_COM( cpu->register_0, (cpu->hr & INDIRECT) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
-	    (REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
-	    cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
-	    (REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
-	    cpu->hr, cpu->dbr ) )] );
+	if (cpu->hr & INDIRECT) {
+	  cpu->psl |=
+	    CC_COM( cpu->register_0,
+		    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT(
+			   (REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+			   cpu->hr, cpu->dbr ) )] );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->psl |=
+	    CC_COM( cpu->register_0,
+		    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX(
+			   (REGISTER_BANK ? cpu->register_6 : cpu->register_3 ),
+			   cpu->hr, cpu->dbr ) )] );
+	}
 
       } else {
-	cpu->psl |= CC_COM( REGISTER_BANK ? cpu->register_6 : cpu->register_3,
-			    (cpu->hr & INDIRECT) ?
-			    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								      cpu->dbr )
-					   )] :
-			    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr )
-					   )] );
+	if (cpu->hr & INDIRECT) {
+	  cpu->psl |=
+	    CC_COM( REGISTER_BANK ? cpu->register_6 : cpu->register_3,
+		    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+							      cpu->dbr ) )] );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->psl |=
+	    CC_COM( REGISTER_BANK ? cpu->register_6 : cpu->register_3,
+		    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] );
+	}
       }
+
+      FOUR_CPU_CYCLES;
 
       break;
 
@@ -4448,6 +5433,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       if ( (cpu->register_0 & cpu->dbr) < cpu->dbr ) {
 	cpu->psl |= CC_LESS;
       }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4474,6 +5461,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      THREE_CPU_CYCLES;
+
       break;
 
 
@@ -4498,6 +5487,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	}
 
       }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4524,6 +5515,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       }
 
+      THREE_CPU_CYCLES;
+
       break;
 
 
@@ -4541,6 +5534,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -4550,6 +5545,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4568,6 +5565,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -4577,6 +5576,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4595,6 +5596,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -4604,6 +5607,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4622,6 +5627,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
 								   cpu->rel_off
 								   ) ) );
+
+	  TWO_CPU_CYCLES;
 	} else {
 	  /* Branch to specified address. */
 	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
@@ -4631,6 +5638,8 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4643,10 +5652,17 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( --cpu->register_0 ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4659,12 +5675,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( (REGISTER_BANK ? --cpu->register_4 : --cpu->register_1) ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4677,12 +5700,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( (REGISTER_BANK ? --cpu->register_5 : --cpu->register_2) ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
@@ -4695,24 +5725,31 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( (REGISTER_BANK ? --cpu->register_6 : --cpu->register_3) ) {
-	cpu->iar = (cpu->hr & INDIRECT) ?
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) ) :
-	  MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	if ( cpu->hr & INDIRECT ) {
+	  cpu->iar =
+	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+
+	  TWO_CPU_CYCLES;
+	} else {
+	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+	}
       }
 
       /* No setting of CC required. */
+
+      THREE_CPU_CYCLES;
 
       break;
 
 
     default:
 
-      cpu_error = 2;
+      cpu->error = 2;
 
     }
 
     ++cpu->iar;
   }
 
-  return cpu_error;
+  return cycle_count;
 }
