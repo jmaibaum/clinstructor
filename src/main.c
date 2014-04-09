@@ -100,17 +100,9 @@ int main( int argc, char **argv )
     emu_time = (1.f / CPU_CLOCK) * cycles * MICRO_SECONDS;
     speed = (emu_time * 100) / real_time;
 
-    printf( "Emulated %ld CPU cycles. ", cpu_cycles );
-
-    /* GCC on linux defines "__suseconds_t" as long int, on APPLE/clang, this is
-       a simple int. */
-/* #ifdef __linux */
-    printf( "Real time: %ldµs.\n", real_time );
-/* #else
-    printf( "Real time: %dµs.\n", real_time );
-#endif */
-
-    printf( "Emulation time: %.02fµs. Speed: %.02f%%.\n", emu_time, speed );
+    printf( "Emulated %ld CPU cycles. Real time: %ldµs.\n"
+	    "Emulation time: %.02fµs. Speed: %.02f%%.\n",
+	    cpu_cycles, real_time, emu_time, speed );
 
   }
 
