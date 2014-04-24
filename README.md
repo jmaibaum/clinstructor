@@ -32,3 +32,18 @@ __MEMORY-START-ADDRESS__ is an optional parameter that is only used for the
 command line debugging interface that currently shows the contents of 255 bytes
 (one "page") from the emulated memory. With this parameter you can specify the
 start address of the displayed page.
+
+
+Usage Note
+----------
+
+Currently, this is pure alpha software---or even less. There is nothing more
+inside than a basic Signetics 2650 emulation loop with 32 kB of emulated memory.
+No interrupts, no other I/O operations. And don't expect correct timing. It will
+just run as fast as your machine is able to execute my non-optimized first
+attempt to program in C. It will, however, show you how fast this was compared
+to a real 2650 running at a clock speed of ~895 kHz.
+
+Nevertheless, I welcome any feedback on this code. Test it and send me bug
+reports or fork it, improve it, and send me pull requests! Perhaps/hopefully,
+this will once become a useful emulation software for this old system...
