@@ -18,12 +18,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/time.h>
 
 #include "cpu-2650.h"
 #include "debug.h"
 #include "machine.h"
 #include "parse-hex.h"
+#include "os.h"
+#include "os-timer.h"
 
 int main( int argc, char **argv )
 {
@@ -32,8 +33,6 @@ int main( int argc, char **argv )
   int m;
   long cycles, cpu_cycles, real_time;
   double emu_time, speed;
-  struct timeval emu_start;
-  struct timeval emu_stop;
 
   /* Check command line arguments. */
   if ( argc > 1 ) {
@@ -78,9 +77,9 @@ int main( int argc, char **argv )
   /* Initialize cpu and enter emulation loop. */
   cpu_init( &cpu );
 
-  gettimeofday( &emu_start, NULL );
+  timer_start();
   cycles = cpu_loop( &cpu, memory );
-  gettimeofday( &emu_stop, NULL );
+  timer_stop();
 
   if ( cpu.error ) {
 
@@ -90,19 +89,16 @@ int main( int argc, char **argv )
 
     CPU_AND_MEMORY_DUMP( m );
 
-    if ( emu_stop.tv_sec - emu_start.tv_sec ) {
-      printf( "Emulation lasted longer than one second. "
-	      "The next line does\n not tell the truth.\n" );
-    }
+    timer_warn();
 
     cpu_cycles = cycles / 3;
-    real_time = emu_stop.tv_usec - emu_start.tv_usec;
+    real_time = timer_elapsed_microsecs();
     emu_time = (1.f / CPU_CLOCK) * cycles * MICRO_SECONDS;
     speed = (emu_time * 100) / real_time;
 
-    printf( "Emulated %ld CPU cycles. Real time: %ldµs.\n"
-	    "Emulation time: %.02fµs. Speed: %.02f%%.\n",
-	    cpu_cycles, real_time, emu_time, speed );
+    printf( "Emulated %ld CPU cycles. Real time: %ld%ss.\n"
+	    "Emulation time: %.02f%ss. Speed: %.02f%%.\n",
+	    cpu_cycles, real_time, MICRO_SIGN, emu_time, MICRO_SIGN, speed );
 
   }
 
