@@ -25,12 +25,6 @@
 /* TODO: Should skip rest of line, allowing for comments in source file. */
 int parse_hex_file( FILE *fp, unsigned char *mem )
 {
-  /* Reset memory array for debugging purposes (i.e. to assure that there each
-     stored byte is either from hex file or ZERO. ) */
-  int i;
-  for ( i = 0; i < 0x8000; ++i )
-    mem[i] = 0;
-
   int bytecount = 0;
   char byte[3];      /* Because of the terminating null byte! */
 

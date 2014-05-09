@@ -29,10 +29,19 @@
 int main( int argc, char **argv )
 {
   FILE *fp;
-  unsigned char memory[0x7FFF]; /* We have 32.768 bytes of memory. */
-  int m;
+
   long cycles, cpu_cycles, real_time;
+  int m;
+  unsigned char *memory;
+
   double emu_time, speed;
+
+  /* Allocate space for emulated memory. */
+  memory = (unsigned char*) calloc( 0x7FFF, sizeof(unsigned char) );
+  if ( memory == NULL ) {
+    puts( "Error: Could not allocate space for emulated memory.\n" );
+    goto error;
+  }
 
   /* Check command line arguments. */
   if ( argc > 1 ) {
@@ -72,9 +81,8 @@ int main( int argc, char **argv )
     return EXIT_SUCCESS;
   }
 
-  Cpu cpu; /* Data structure that represents the Signetics 2650. */
-
   /* Initialize cpu and enter emulation loop. */
+  Cpu cpu;
   cpu_init( &cpu );
 
   timer_start();
@@ -102,5 +110,9 @@ int main( int argc, char **argv )
 
   }
 
+  /* Free dynamic memory. */
+  free( memory );
+
+ error:
   return cpu.error;
 }
