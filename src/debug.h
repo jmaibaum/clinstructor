@@ -49,7 +49,7 @@ int i, j;
 	  "\\----------------------------/\n",		\
 	  cpu.iar,					\
 	  cpu.ir,					\
-	  cpu.register_0,				\
+	  cpu.r0,					\
 	  cpu.register_1,				\
 	  cpu.register_2,				\
 	  cpu.register_3,				\
@@ -145,7 +145,7 @@ int i, j;
   i = 0;								\
   printf( "                           |");				\
   NEXT_MEMORY_ROW(start);						\
-  printf( "R0:%02X  R1:%02X  R2:%02X  R3:%02X |", cpu.register_0,	\
+  printf( "R0:%02X  R1:%02X  R2:%02X  R3:%02X |", cpu.r0,		\
 	  cpu.register_1, cpu.register_2, cpu.register_3 );		\
   NEXT_MEMORY_ROW(start);						\
   printf( "       R4:%02X  R5:%02X  R6:%02X |", cpu.register_4,		\

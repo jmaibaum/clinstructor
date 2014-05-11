@@ -19,6 +19,18 @@
 #ifndef CPU_2650_H
 #define CPU_2650_H
 
+/* Register bank swap macros. */
+#define SELECT_REGISTER_BANK1			\
+  cpu->r1 = &cpu->register_1;			\
+  cpu->r2 = &cpu->register_2;			\
+  cpu->r3 = &cpu->register_3
+
+#define SELECT_REGISTER_BANK2			\
+  cpu->r1 = &cpu->register_4;			\
+  cpu->r2 = &cpu->register_5;			\
+  cpu->r3 = &cpu->register_6
+
+
 /* The compiler (or the operating system's memory management on Mac OSX) seems
    to allocate some more bytes than specified in main.c (probably due to machine
    word boundaries?!). So the program does not throw an error, if memory a
@@ -30,7 +42,7 @@
 
 
 /* Enums, Definitions, and Macros for managing the PSW. */
-typedef enum PSU_Masks {
+typedef enum {
 
   /*
      Program Status Upper:
@@ -48,7 +60,7 @@ typedef enum PSU_Masks {
   PSU_NU = 0xE7  /* Mask for clearing not used bits 3 and 4. */
 } PSU_Masks;
 
-typedef enum PSL_Masks {
+typedef enum {
 
   /*
      Program Status Lower:
@@ -68,7 +80,7 @@ typedef enum PSL_Masks {
   PSL_CC  = 0xC0  /* Condition code (2 most significant bits) */
 } PSL_Masks;
 
-typedef enum CC_VALS {
+typedef enum {
   CC_ZERO     = 0x00,
   CC_POSITIVE = 0x40,
   CC_NEGATIVE = 0x80,
@@ -127,7 +139,7 @@ typedef enum CC_VALS {
 
 
 /* Typedef for Address Mode Masking */
-typedef enum AddressMasks {
+typedef enum {
   INDIRECT = 0x80,
   R_OFFSET = 0x7F,
   I_HIGH_B = 0x7F, /* Indirect high byte is only lower 7 bits. */
@@ -182,7 +194,7 @@ typedef enum AddressMasks {
 
 /* Macros for absolute addressing. */
 
-typedef enum IndexingModes {
+typedef enum {
   NO_INDEXING     = 0x00,
   INCREMENT       = 0x20,
   DECREMENT       = 0x40,
@@ -380,7 +392,7 @@ typedef enum IndexingModes {
 
 
 /* Typedef for all the 2650's opcodes. */
-typedef enum Opcodes {
+typedef enum {
   /* Load register zero. */
   LODZ_0 = 0x00, /* Officially, this is illegal, but it does work. */
   LODZ_1 = 0x01,
@@ -766,10 +778,28 @@ typedef enum Opcodes {
   BDRA_3 = 0xFF
 } Opcodes;
 
-typedef struct Cpu {
 
-  /* General purpose registers */
-  unsigned char register_0;
+/* This struct represents the internal structure of the 2650 CPU. */
+typedef struct {
+
+  /*
+    General purpose registers:
+    --------------------------
+
+    *r1 - *r3, act as interface to the general purpose registers of the 2650.
+    Together with r0 they should be the only way to access the registers, as
+    they point to the currently active register bank (either register_1 -
+    register_3 or register_4 - register_6). During a register bank switch, the
+    pointers should be changed to the currently inactive set.
+
+    The "actual" registers (register_1 - register 6) should never be accessed
+    directly.
+   */
+  unsigned char r0;
+  unsigned char *r1;
+  unsigned char *r2;
+  unsigned char *r3;
+
   unsigned char register_1;
   unsigned char register_2;
   unsigned char register_3;
@@ -806,12 +836,10 @@ typedef struct Cpu {
 
   /* Misc variables for emulator interna. */
   int error;
-
 } Cpu;
 
 /* Function prototypes */
 void cpu_init( Cpu *cpu );
-
-int cpu_loop( Cpu *cpu, unsigned char *memory );
+int  cpu_loop( Cpu *cpu, unsigned char *memory );
 
 #endif /* CPU_2650_H */
