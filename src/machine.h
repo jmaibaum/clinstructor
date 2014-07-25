@@ -21,8 +21,13 @@
   configuration of the Signetics Instructor 50.
 */
 
+#ifndef MACHINE_H
+#define MACHINE_H
+
 #define CLOCK         (3579548)   /* Instructor 50 says 3579545, but the chosen
                                      value allows for correct integer
                                      division. */
 #define CPU_CLOCK     (CLOCK / 4) /* = 894887, otherwise it would be
                                      894886.25. */
+
+#endif /* MACHINE_H */

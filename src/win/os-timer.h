@@ -25,4 +25,5 @@ void timer_stop( void );
 double timer_elapsed_microsecs( void );
 
 static inline void timer_warn( void ) { }
+
 #endif /* OS_TIMER_H */
