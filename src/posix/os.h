@@ -19,8 +19,6 @@
 #ifndef POSIX_OS_H
 #define POSIX_OS_H
 
+#define MICRO_SIGN "\xC2\xB5" /* UTF-8 */
 
-#define MICRO_SIGN "\xC2\xB5"	/* UTF-8 */
-
-
-#endif
+#endif /* POSIX_OS_H */

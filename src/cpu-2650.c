@@ -173,14 +173,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Indirect or direct addressing? */
       if ( cpu->dbr & INDIRECT ) {
-	/* Set register value. */
-	cpu->r0 =
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off) )];
+        /* Set register value. */
+        cpu->r0 =
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	/* Set register value. */
-	cpu->r0 = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+        /* Set register value. */
+        cpu->r0 = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -201,14 +201,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Indirect or direct addressing? */
       if ( cpu->dbr & INDIRECT ) {
-	/* Set register value. */
-	*cpu->r1 = memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							     cpu->rel_off) )];
+        /* Set register value. */
+        *cpu->r1 = memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                             cpu->rel_off) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	/* Set register value. */
-	*cpu->r1 = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+        /* Set register value. */
+        *cpu->r1 = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -229,14 +229,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Indirect or direct addressing? */
       if ( cpu->dbr & INDIRECT ) {
-	/* Set register value. */
-	*cpu->r2 = memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							     cpu->rel_off) )];
+        /* Set register value. */
+        *cpu->r2 = memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                             cpu->rel_off) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	/* Set register value. */
-	*cpu->r2 = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+        /* Set register value. */
+        *cpu->r2 = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -257,14 +257,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Indirect or direct addressing? */
       if ( cpu->dbr & INDIRECT ) {
-	/* Set register value. */
-	*cpu->r3 = memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							     cpu->rel_off) )];
+        /* Set register value. */
+        *cpu->r3 = memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                             cpu->rel_off) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	/* Set register value. */
-	*cpu->r3 = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+        /* Set register value. */
+        *cpu->r3 = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -279,37 +279,37 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case LODA_0: /* 0C */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 = memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
-							   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 = memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
+                                                           cpu->dbr ) )];
+        }
       } else {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
       }
 
       /* Set CC. */
@@ -324,47 +324,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case LODA_1: /* 0D */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 = memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
-							   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 = memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
+                                                           cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r1 = memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-							       cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r1 = memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                               cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r1 = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r1 = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r1 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r1 );
       }
 
       FOUR_CPU_CYCLES;
@@ -375,48 +375,48 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case LODA_2: /* 0E */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
-						   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
+                                                   cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r2 = memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-							       cpu->dbr ) )];
-	  
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r2 = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r2 = memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                               cpu->dbr ) )];
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r2 );
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r2 = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
+
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r2 );
       }
 
       FOUR_CPU_CYCLES;
@@ -427,47 +427,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case LODA_3: /* 0F */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 = memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
-							   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 = memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
+                                                           cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r3 = memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-							       cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r3 = memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                               cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r3 = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r3 = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r3 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r3 );
       }
 
       FOUR_CPU_CYCLES;
@@ -509,11 +509,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case RETC_3: /* 17 */
 
       /* Extract CC code from Opcode and scale it to PSL format for
-	 comparison. */
+         comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
-	RAS_POP;
+        RAS_POP;
       }
 
       /* No setting of CC required. */
@@ -529,28 +529,28 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BCTR_3: /* 1B */
 
       /* Extract CC code from Opcode and scale it to PSL format for
-	 comparison. */
+         comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-								   cpu->rel_off
-								   ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                                   cpu->rel_off
+                                                                   ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -566,23 +566,23 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BCTA_3: /* 1F */
 
       /* Extract CC code from Opcode and scale it to PSL format for
-	 comparison. */
+         comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -725,12 +725,12 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	cpu->r0 ^=
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+        cpu->r0 ^=
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->r0 ^= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+        cpu->r0 ^= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -751,13 +751,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	*cpu->r1 ^= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							      cpu->rel_off ) )];
+        *cpu->r1 ^= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                              cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	*cpu->r1 ^= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-						     cpu->rel_off ) )];
+        *cpu->r1 ^= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                     cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -778,13 +778,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	*cpu->r2 ^= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							      cpu->rel_off ) )];
+        *cpu->r2 ^= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                              cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	*cpu->r2 ^= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-						     cpu->rel_off ) )];
+        *cpu->r2 ^= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                     cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -805,13 +805,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	*cpu->r3 ^= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							      cpu->rel_off ) )];
+        *cpu->r3 ^= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                              cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	*cpu->r3 ^= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-						     cpu->rel_off ) )];
+        *cpu->r3 ^= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                     cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -826,38 +826,38 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case EORA_0: /* 2C */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 ^=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
-							    cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 ^=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
+                                                            cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 ^= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 ^= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 ^=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 ^=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 ^= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 ^= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
       }
 
       /* Set CC. */
@@ -872,47 +872,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case EORA_1: /* 2D */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 ^=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 ^=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 ^= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 ^= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r1 ^=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r1 ^=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r1 ^= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r1 ^= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r1 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r1 );
       }
 
       FOUR_CPU_CYCLES;
@@ -923,47 +923,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case EORA_2: /* 2E */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 ^=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 ^=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 ^= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 ^= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r2 ^=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r2 ^=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r2 ^= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r2 ^= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r2 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r2 );
       }
 
       FOUR_CPU_CYCLES;
@@ -974,47 +974,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case EORA_3: /* 2F */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 ^=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 ^=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 ^= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 ^= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r3 ^=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r3 ^=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r3 ^= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r3 ^= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r3 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r3 );
       }
 
       FOUR_CPU_CYCLES;
@@ -1028,11 +1028,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case RETE_3: /* 37 */
 
       /* Extract CC code from Opcode and scale it to PSL format for
-	 comparison. */
+         comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
-	RAS_POP;
+        RAS_POP;
       }
 
       /* Enable Interrupts */
@@ -1051,31 +1051,31 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BSTR_3: /* 3B */
 
       /* Extract CC code from Opcode and scale it to PSL format for
-	 comparison. */
+         comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -1091,26 +1091,26 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BSTA_3: /* 3F */
 
       /* Extract CC code from Opcode and scale it to PSL format for
-	 comparison. */
+         comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->cc == C_CODE || cpu->cc == PSL_CC ) {
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -1248,12 +1248,12 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if (cpu->dbr & INDIRECT) {
-	cpu->r0 &=
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+        cpu->r0 &=
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->r0 &= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+        cpu->r0 &= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -1274,13 +1274,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	*cpu->r1 &= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							      cpu->rel_off ) )];
+        *cpu->r1 &= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                              cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	*cpu->r1 &=
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+        *cpu->r1 &=
+          memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -1301,13 +1301,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	*cpu->r2 &= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							      cpu->rel_off ) )];
+        *cpu->r2 &= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                              cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	*cpu->r2 &=
-	  memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+        *cpu->r2 &=
+          memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -1328,13 +1328,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	*cpu->r3 &= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							      cpu->rel_off ) )];
+        *cpu->r3 &= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                              cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	*cpu->r3 &=
-	    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+        *cpu->r3 &=
+          memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -1349,38 +1349,38 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case ANDA_0: /* 4C */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 &=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 &=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
       } else {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-							       cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                               cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
       }
 
       /* Set CC. */
@@ -1395,47 +1395,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case ANDA_1: /* 4D */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 &=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 &=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r1 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r1 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r1 &= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r1 &= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r1 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r1 );
       }
 
       FOUR_CPU_CYCLES;
@@ -1446,47 +1446,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case ANDA_2: /* 4E */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 &=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 &=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r2 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r2 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r2 &= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r2 &= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r2 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r2 );
       }
 
       FOUR_CPU_CYCLES;
@@ -1497,47 +1497,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case ANDA_3: /* 4F */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 &=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 &=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r3 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r3 &= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r3 &= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r3 &= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r3 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r3 );
       }
 
       FOUR_CPU_CYCLES;
@@ -1587,21 +1587,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->r0 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-								   cpu->rel_off
-								   ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                                   cpu->rel_off
+                                                                   ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -1617,21 +1617,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r1 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -1647,21 +1647,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r2 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
 
       }
 
@@ -1678,21 +1678,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r3 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
 
       }
 
@@ -1706,19 +1706,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BRNA_0: /* 5C */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->r0 ) {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -1731,19 +1731,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BRNA_1: /* 5D */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r1 ) {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -1756,19 +1756,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BRNA_2: /* 5E */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r2 ) {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -1781,19 +1781,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BRNA_3: /* 5F */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r3 ) {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -1806,11 +1806,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case IORZ_0: /* 60 */
 
       /*
-	Set register value is not necessary, since this:
+        Set register value is not necessary, since this:
 
-	  cpu->r0 |= cpu->r0;
+        cpu->r0 |= cpu->r0;
 
-	does not change the value of Reg 0.
+        does not change the value of Reg 0.
       */
 
       /* Set CC. */
@@ -1941,12 +1941,12 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	cpu->r0 |= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							     cpu->rel_off ) )];
+        cpu->r0 |= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                             cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->r0 |= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
+        cpu->r0 |= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -1967,13 +1967,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	*cpu->r1 |= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							      cpu->rel_off ) )];
+        *cpu->r1 |= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                              cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	*cpu->r1 |= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-						     cpu->rel_off ) )];
+        *cpu->r1 |= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                     cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -1994,13 +1994,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	*cpu->r2 |= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							      cpu->rel_off ) )];
+        *cpu->r2 |= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                              cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	*cpu->r2 |= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-						     cpu->rel_off ) )];
+        *cpu->r2 |= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                     cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -2021,13 +2021,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Set register value */
       if ( cpu->dbr & INDIRECT ) {
-	*cpu->r3 |= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							      cpu->rel_off ) )];
+        *cpu->r3 |= memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                              cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	*cpu->r3 |= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-						     cpu->rel_off ) )];
+        *cpu->r3 |= memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                     cpu->rel_off ) )];
       }
 
       /* Set CC. */
@@ -2042,38 +2042,38 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case IORA_0: /* 6C */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 |=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 |=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
       } else {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-							       cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                               cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
       }
 
       /* Set CC. */
@@ -2088,47 +2088,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case IORA_1: /* 6D */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 |=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 |=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r1 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r1 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r1 |= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r1 |= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r1 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r1 );
       }
 
       FOUR_CPU_CYCLES;
@@ -2139,47 +2139,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case IORA_2: /* 6E */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 |=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 |=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
+                  cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r2 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r2 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r2 |= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r2 |= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r2 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r2 );
       }
 
       FOUR_CPU_CYCLES;
@@ -2190,47 +2190,47 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case IORA_3: /* 6F */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->r0 |=
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->r0 |=
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->r0 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( cpu->r0 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( cpu->r0 );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  *cpu->r3 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          *cpu->r3 |= memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  *cpu->r3 |= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          *cpu->r3 |= memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        }
 
-	/* Set CC. */
-	CLEAR_CC;
-	cpu->psl |= CC_REG( *cpu->r3 );
+        /* Set CC. */
+        CLEAR_CC;
+        cpu->psl |= CC_REG( *cpu->r3 );
       }
 
       FOUR_CPU_CYCLES;
@@ -2244,7 +2244,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       /* Data byte is used to clear selective (logically NAND) selective
-	 bits in the PSU. All other bits should be left untouched. */
+         bits in the PSU. All other bits should be left untouched. */
       cpu->psu &= ~cpu->dbr;
 
       /* No setting of CC required. */
@@ -2261,11 +2261,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Register bank may change. */
       if ( REGISTER_BANK && (cpu->dbr & PSL_RS) ) {
-	SELECT_REGISTER_BANK1;
+        SELECT_REGISTER_BANK1;
       }
 
       /* Data byte is used to clear selective (logically NAND) selective bits in
-	 the PSL. All other bits should be left untouched. */
+         the PSL. All other bits should be left untouched. */
       cpu->psl &= ~cpu->dbr;
 
       /* No setting of CC required. */
@@ -2281,13 +2281,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       /*
-	Data byte is used to turn on (logically OR) selective bits in the
-	PSU. All other bits should be left untouched.
+        Data byte is used to turn on (logically OR) selective bits in the
+        PSU. All other bits should be left untouched.
 
-	It is not really clear from the instruction manual (p. 70) if bits 3 and
-	4 of the PSU, which are normally unused, can be set to one with this
-	instruction. For the time being, assume that this is not the case and
-	mask them out via the PSU() macro.
+        It is not really clear from the instruction manual (p. 70) if bits 3 and
+        4 of the PSU, which are normally unused, can be set to one with this
+        instruction. For the time being, assume that this is not the case and
+        mask them out via the PSU() macro.
       */
       cpu->psu |= PSU( cpu->dbr );
 
@@ -2305,11 +2305,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Register bank may change. */
       if ( !REGISTER_BANK && (cpu->dbr & PSL_RS) ) {
-	SELECT_REGISTER_BANK2;
+        SELECT_REGISTER_BANK2;
       }
 
       /* Data byte is used to turn on (logically OR) selective bits in the
-	 PSL. All other bits should be left untouched. */
+         PSL. All other bits should be left untouched. */
       cpu->psl |= cpu->dbr;
 
       /* No setting of CC required. */
@@ -2325,24 +2325,24 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->r0 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -2358,24 +2358,24 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r1 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -2391,24 +2391,24 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r2 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -2424,24 +2424,24 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r2 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -2454,22 +2454,22 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BSNA_0: /* 7C */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->r0 ) {
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -2482,22 +2482,22 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BSNA_1: /* 7D */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r1 ) {
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								  cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                  cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -2510,22 +2510,22 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BSNA_2: /* 7E */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r2 ) {
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								  cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                  cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -2538,22 +2538,22 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BSNA_3: /* 7F */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( *cpu->r3 ) {
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								  cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                  cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -2564,9 +2564,9 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
 
       /*
-	The following addition op codes all use the ADD() macro defined in
-	cpu-2650.h, which is derived from WinArcadias (2650.c) add() inline
-	function. This also sets all appropriate flags.
+        The following addition op codes all use the ADD() macro defined in
+        cpu-2650.h, which is derived from WinArcadias (2650.c) add() inline
+        function. This also sets all appropriate flags.
       */
     case ADDZ_0: /* 80 */
 
@@ -2661,13 +2661,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Temporarily store second operand for addition and flag checking. */
       if ( cpu->dbr & INDIRECT ) {
-	cpu->second_op =
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+        cpu->second_op =
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) )];
+        cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) )];
       }
 
       ADD( cpu->r0, cpu->second_op );
@@ -2686,13 +2686,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Temporarily store second operand for addition and flag checking. */
       if ( cpu->dbr & INDIRECT ) {
-	cpu->second_op =
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+        cpu->second_op =
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) )];
+        cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) )];
       }
 
       ADD( *cpu->r1, cpu->second_op );
@@ -2711,13 +2711,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Temporarily store second operand for addition and flag checking. */
       if ( cpu->dbr & INDIRECT ) {
-	cpu->second_op =
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+        cpu->second_op =
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) )];
+        cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) )];
       }
 
       ADD( *cpu->r2, cpu->second_op );
@@ -2736,13 +2736,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Temporarily store second operand for addition and flag checking. */
       if ( cpu->dbr & INDIRECT ) {
-	cpu->second_op =
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+        cpu->second_op =
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) )];
+        cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) )];
       }
 
       ADD( *cpu->r3, cpu->second_op );
@@ -2755,7 +2755,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case ADDA_0: /* 8C */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -2763,27 +2763,27 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get second operand and store it temporarily. */
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0,
-								  cpu->hr,
-								  cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0,
+                                                                  cpu->hr,
+                                                                  cpu->dbr ) )];
+        }
 
       } else {
-	cpu->second_op= ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
+        cpu->second_op= ( cpu->hr & INDIRECT ) ?
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+          memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )];
       }
 
       ADD( cpu->r0, cpu->second_op );
@@ -2796,7 +2796,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case ADDA_1: /* 8D */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -2804,39 +2804,39 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get second operand through absolute addressing. */
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
-						   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
+                                                   cpu->dbr ) )];
+        }
 
-	/* All indexing additions store result in R0. */
-	ADD( cpu->r0, cpu->second_op );
+        /* All indexing additions store result in R0. */
+        ADD( cpu->r0, cpu->second_op );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	ADD( *cpu->r1, cpu->second_op );
+        ADD( *cpu->r1, cpu->second_op );
       }
 
       FOUR_CPU_CYCLES;
@@ -2847,7 +2847,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case ADDA_2: /* 8E */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -2855,39 +2855,39 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get second operand through absolute addressing. */
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
-						   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
+                                                   cpu->dbr ) )];
+        }
 
-	/* All indexing additions store result in R0. */
-	ADD( cpu->r0, cpu->second_op );
+        /* All indexing additions store result in R0. */
+        ADD( cpu->r0, cpu->second_op );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	  ADD( *cpu->r2, cpu->second_op );
+        ADD( *cpu->r2, cpu->second_op );
       }
 
       FOUR_CPU_CYCLES;
@@ -2898,7 +2898,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case ADDA_3: /* 8F */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -2906,39 +2906,39 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get second operand through absolute addressing. */
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
-						   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
+                                                   cpu->dbr ) )];
+        }
 
-	/* All indexing additions store result in R0. */
-	ADD( cpu->r0, cpu->second_op );
+        /* All indexing additions store result in R0. */
+        ADD( cpu->r0, cpu->second_op );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	ADD( *cpu->r3, cpu->second_op );
+        ADD( *cpu->r3, cpu->second_op );
       }
 
       FOUR_CPU_CYCLES;
@@ -2949,13 +2949,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case LPSU: /* 92 */
 
       /*
-	From the Instruction Manual, p. 68:
+        From the Instruction Manual, p. 68:
 
-	  "Bits #4 and #3 of the PSU are unassigned and will always be regarded
-	  as containing zeroes."
+        "Bits #4 and #3 of the PSU are unassigned and will always be regarded
+        as containing zeroes."
 
         Thus, we have to mask the PSU with PSU_NU, which is 0b11100111.
-       */
+      */
       cpu->psu = PSU( cpu->r0 );
 
       TWO_CPU_CYCLES;
@@ -2967,9 +2967,9 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Register bank may change. */
       if ( REGISTER_BANK && !(cpu->r0 & PSL_RS) ) {
-	SELECT_REGISTER_BANK1;
+        SELECT_REGISTER_BANK1;
       } else if ( !REGISTER_BANK && (cpu->r0 & PSL_RS) ) {
-	SELECT_REGISTER_BANK2;
+        SELECT_REGISTER_BANK2;
       }
 
       cpu->psl = cpu->r0;
@@ -2980,17 +2980,17 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
 
       /*
-	The following truth table indicates which value gets added to the
-	affected register during a DAR instruction (from Instruction Manual, p.
-	89) It is important to add A to each nibble separately (not causing any
-	interdigit carries)!
+        The following truth table indicates which value gets added to the
+        affected register during a DAR instruction (from Instruction Manual, p.
+        89) It is important to add A to each nibble separately (not causing any
+        interdigit carries)!
 
-	Carry | Inter Digit Carry | Added to Register r
-	------|-------------------|--------------------
-	    0 |                 0 |               0xAA
-	    0 |                 1 |               0xA0
-	    1 |                 0 |               0x0A
-	    1 |                 1 |               0x00
+        Carry | Inter Digit Carry | Added to Register r
+        ------|-------------------|--------------------
+            0 |                 0 |               0xAA
+            0 |                 1 |               0xA0
+            1 |                 0 |               0x0A
+            1 |                 1 |               0x00
       */
 
     case DAR_0: /* 94 */
@@ -2999,14 +2999,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       if ( cpu->psl != DAR_CHECK ) {
 
-	if ( !CARRY ) {
-	  cpu->r0 += 0xA0;
-	}
+        if ( !CARRY ) {
+          cpu->r0 += 0xA0;
+        }
 
-	if ( !ID_CARRY ) {
-	  cpu->r0 = (cpu->r0 & HIGH_NIBBLE) |
-	    ((cpu->r0 + 0x0A) & LOW_NIBBLE);
-	}
+        if ( !ID_CARRY ) {
+          cpu->r0 = (cpu->r0 & HIGH_NIBBLE) |
+            ((cpu->r0 + 0x0A) & LOW_NIBBLE);
+        }
 
       }
 
@@ -3023,14 +3023,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       if ( cpu->psl != DAR_CHECK ) {
 
-	if ( !CARRY ) {
-	  *cpu->r1 += 0xA0;
-	}
+        if ( !CARRY ) {
+          *cpu->r1 += 0xA0;
+        }
 
-	if ( !ID_CARRY ) {
-	  *cpu->r1 = (*cpu->r1 & HIGH_NIBBLE) |
-	    ((*cpu->r1 + 0x0A) & LOW_NIBBLE);
-	}
+        if ( !ID_CARRY ) {
+          *cpu->r1 = (*cpu->r1 & HIGH_NIBBLE) |
+            ((*cpu->r1 + 0x0A) & LOW_NIBBLE);
+        }
       }
 
       /* No setting of CC required. */
@@ -3046,14 +3046,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       if ( cpu->psl != DAR_CHECK ) {
 
-	if ( !CARRY ) {
-	  *cpu->r2 += 0xA0;
-	}
+        if ( !CARRY ) {
+          *cpu->r2 += 0xA0;
+        }
 
-	if ( !ID_CARRY ) {
-	  *cpu->r2 = (*cpu->r2 & HIGH_NIBBLE) |
-	    ((*cpu->r2 + 0x0A) & LOW_NIBBLE);
-	}
+        if ( !ID_CARRY ) {
+          *cpu->r2 = (*cpu->r2 & HIGH_NIBBLE) |
+            ((*cpu->r2 + 0x0A) & LOW_NIBBLE);
+        }
       }
 
       /* No setting of CC required. */
@@ -3069,14 +3069,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       if ( cpu->psl != DAR_CHECK ) {
 
-	if ( !CARRY ) {
-	  *cpu->r3 += 0xA0;
-	}
+        if ( !CARRY ) {
+          *cpu->r3 += 0xA0;
+        }
 
-	if ( !ID_CARRY ) {
-	  *cpu->r3 = (*cpu->r3 & HIGH_NIBBLE) |
-	    ((*cpu->r3 + 0x0A) & LOW_NIBBLE);
-	}
+        if ( !ID_CARRY ) {
+          *cpu->r3 = (*cpu->r3 & HIGH_NIBBLE) |
+            ((*cpu->r3 + 0x0A) & LOW_NIBBLE);
+        }
       }
 
       /* No setting of CC required. */
@@ -3090,28 +3090,28 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BCFR_1: /* 99 */
     case BCFR_2: /* 9A */
       /* Extract CC code from Opcode and scale it to PSL format for
-	 comparison. */
+         comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->cc != C_CODE ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
 
       }
 
@@ -3130,11 +3130,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       if ( cpu->dbr & INDIRECT ) {
-	cpu->iar = MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) );
+        cpu->iar = MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) );
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->iar = BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
+        cpu->iar = BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
       }
 
       /* No setting of CC required. */
@@ -3148,23 +3148,23 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BCFA_1: /* 9D */
     case BCFA_2: /* 9E */
       /* Extract CC code from Opcode and scale it to PSL format for
-	 comparison. */
+         comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->cc != C_CODE ) {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								  cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                  cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -3177,26 +3177,26 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BXA: /* 9F */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       /*
-	Implicit index register is #3.
+        Implicit index register is #3.
 
-	The instruction set manual is not clear about index control in BXA/BSXA
-	(cf. p. 49), however, it feels reasonable to assume simple indexing
-	(i.e. no auto increment/decrement).
+        The instruction set manual is not clear about index control in BXA/BSXA
+        (cf. p. 49), however, it feels reasonable to assume simple indexing
+        (i.e. no auto increment/decrement).
       */
       if ( cpu->hr & INDIRECT ) {
-	cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								cpu->dbr )
-			   + *cpu->r3 );
+        cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                cpu->dbr )
+                           + *cpu->r3 );
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr )
-			   + *cpu->r3 );
+        cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr )
+                           + *cpu->r3 );
       }
 
       /* No setting of CC required. */
@@ -3207,9 +3207,9 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
 
       /*
-	The following subtraction op codes all use the SUB() macro defined in
-	cpu-2650.h, which is derived from WinArcadias (2650.c) subtract() inline
-	function. This also sets all appropriate flags.
+        The following subtraction op codes all use the SUB() macro defined in
+        cpu-2650.h, which is derived from WinArcadias (2650.c) subtract() inline
+        function. This also sets all appropriate flags.
       */
     case SUBZ_0: /* A0 */
 
@@ -3304,13 +3304,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Temporarily store second operand for addition and flag checking. */
       if ( cpu->dbr & INDIRECT ) {
-	cpu->second_op =
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+        cpu->second_op =
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) )];
+        cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) )];
       }
 
       SUB( cpu->r0, cpu->second_op );
@@ -3329,13 +3329,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Temporarily store second operand for addition and flag checking. */
       if ( cpu->dbr & INDIRECT ) {
-	cpu->second_op =
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+        cpu->second_op =
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) )];
+        cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) )];
       }
 
       SUB( *cpu->r1, cpu->second_op );
@@ -3354,13 +3354,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Temporarily store second operand for addition and flag checking. */
       if ( cpu->dbr & INDIRECT ) {
-	cpu->second_op =
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+        cpu->second_op =
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) )];
+        cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) )];
       }
 
       SUB( *cpu->r2, cpu->second_op );
@@ -3379,13 +3379,13 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       /* Temporarily store second operand for addition and flag checking. */
       if ( cpu->dbr & INDIRECT ) {
-	cpu->second_op =
-	  memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
+        cpu->second_op =
+          memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )];
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) )];
+        cpu->second_op = memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) )];
       }
 
       SUB( *cpu->r3, cpu->second_op );
@@ -3398,7 +3398,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case SUBA_0: /* AC */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -3406,34 +3406,34 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get second operand and store it temporarily. */
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
-						   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
+                                                   cpu->dbr ) )];
+        }
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
       }
 
@@ -3447,7 +3447,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case SUBA_1: /* AD */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -3455,39 +3455,39 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get second operand through absolute addressing. */
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
-						   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
+                                                   cpu->dbr ) )];
+        }
 
-	/* All indexing operations store result in R0. */
-	SUB( cpu->r0, cpu->second_op );
+        /* All indexing operations store result in R0. */
+        SUB( cpu->r0, cpu->second_op );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	SUB( *cpu->r1, cpu->second_op );
+        SUB( *cpu->r1, cpu->second_op );
       }
 
       FOUR_CPU_CYCLES;
@@ -3498,7 +3498,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case SUBA_2: /* AE */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -3506,39 +3506,39 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get second operand through absolute addressing. */
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
-						   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
+                                                   cpu->dbr ) )];
+        }
 
-	/* All indexing operations store result in R0. */
-	SUB( cpu->r0, cpu->second_op );
+        /* All indexing operations store result in R0. */
+        SUB( cpu->r0, cpu->second_op );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	SUB( *cpu->r2, cpu->second_op );
+        SUB( *cpu->r2, cpu->second_op );
       }
 
       FOUR_CPU_CYCLES;
@@ -3549,7 +3549,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case SUBA_3: /* AD */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -3557,39 +3557,39 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       /* Get second operand through absolute addressing. */
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
-							    cpu->dbr) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
+                                                            cpu->dbr) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
-						   cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
+                                                   cpu->dbr ) )];
+        }
 
-	/* All indexing operations store result in R0. */
-	SUB( cpu->r0, cpu->second_op );
+        /* All indexing operations store result in R0. */
+        SUB( cpu->r0, cpu->second_op );
 
       } else {
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->second_op =
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
+        if ( cpu->hr & INDIRECT ) {
+          cpu->second_op =
+            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )];
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
-							    cpu->dbr ) )];
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->second_op = memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
+                                                            cpu->dbr ) )];
+        }
 
-	SUB( *cpu->r3, cpu->second_op );
+        SUB( *cpu->r3, cpu->second_op );
       }
 
       FOUR_CPU_CYCLES;
@@ -3603,25 +3603,25 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       /*
-	Data byte is used to check if selective bits in the PSU are set or not.
-	CC Code is set afterwards to indicate if all checks were positive, then
-	CC=0 else CC=2.
+        Data byte is used to check if selective bits in the PSU are set or not.
+        CC Code is set afterwards to indicate if all checks were positive, then
+        CC=0 else CC=2.
 
-	It is not really clear from the instruction manual (p. 72) if bits 3 and
-	4 are really tested with this instruction or not even if they are
-	otherwise unused. For the time being, mask them out of the test byte
-	with the PSU() macro.
+        It is not really clear from the instruction manual (p. 72) if bits 3 and
+        4 are really tested with this instruction or not even if they are
+        otherwise unused. For the time being, mask them out of the test byte
+        with the PSU() macro.
 
-	It is also not clear what the result of CC will be, if tested with 0x00
-	and the current contents of the PSU are 0x00 as well. For now, We assume
-	that this would mean a positive test and therefore CC gets cleared in
-	this case, too.
+        It is also not clear what the result of CC will be, if tested with 0x00
+        and the current contents of the PSU are 0x00 as well. For now, We assume
+        that this would mean a positive test and therefore CC gets cleared in
+        this case, too.
       */
 
       CLEAR_CC;
 
       if ( (cpu->psu & PSU(cpu->dbr)) < cpu->dbr ) {
-	cpu->psl |= CC_LESS;
+        cpu->psl |= CC_LESS;
       }
 
       THREE_CPU_CYCLES;
@@ -3635,21 +3635,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       /*
-	Data byte is used to check if selective bits in the PSL are set or not.
-	CC Code is set afterwards to indicate if all checks were positive, then
-	CC=0 else CC=2.
+        Data byte is used to check if selective bits in the PSL are set or not.
+        CC Code is set afterwards to indicate if all checks were positive, then
+        CC=0 else CC=2.
 
-	It is not clear what the result of CC will be, if tested with 0x00 and
-	the current contents of the PSL are 0x00 as well. For now, We assume
-	that this would mean a positive test and therefore CC gets cleared in
-	this case, too.
+        It is not clear what the result of CC will be, if tested with 0x00 and
+        the current contents of the PSL are 0x00 as well. For now, We assume
+        that this would mean a positive test and therefore CC gets cleared in
+        this case, too.
       */
 
       if ( (cpu->psl & cpu->dbr) < cpu->dbr ) {
-	CLEAR_CC;
-	cpu->psl |=  CC_LESS;
+        CLEAR_CC;
+        cpu->psl |=  CC_LESS;
       } else {
-	CLEAR_CC;
+        CLEAR_CC;
       }
 
       THREE_CPU_CYCLES;
@@ -3661,31 +3661,31 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BSFR_1: /* B9 */
     case BSFR_2: /* BA */
       /* Extract CC code from Opcode and scale it to PSL format for
-	 comparison. */
+         comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       /* Get next memory byte into data bus register. */
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->cc != C_CODE ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
 
       }
 
@@ -3707,11 +3707,11 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       RAS_PUSH( cpu->iar + 1 );
 
       if ( cpu->dbr & INDIRECT ) {
-	cpu->iar = MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) );
+        cpu->iar = MEMORY( BRANCH_TO( ZERO_BRANCH_INDIRECT( cpu->rel_off ) ) );
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->iar = BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
+        cpu->iar = BRANCH_TO( ZERO_BRANCH( cpu->rel_off ) );
       }
 
       /* No setting of CC required. */
@@ -3725,26 +3725,26 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BSFA_1: /* BD */
     case BSFA_2: /* BE */
       /* Extract CC code from Opcode and scale it to PSL format for
-	 comparison. */
+         comparison. */
       cpu->cc = ( cpu->ir & 0x3 ) << 6;
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( cpu->cc != C_CODE ) {
-	/* Push return address into stack */
-	RAS_PUSH( cpu->iar + 1 );
+        /* Push return address into stack */
+        RAS_PUSH( cpu->iar + 1 );
 
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -3757,7 +3757,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BSXA: /* BF */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
@@ -3765,21 +3765,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       RAS_PUSH( cpu->iar + 1 );
 
       /*
-	Implicit index register is #3.
+        Implicit index register is #3.
 
-	The instruction set manual is not clear about index control in BXA/BSXA
-	(cf. p. 49), however, it feels reasonable to assume simple indexing
-	(i.e. no auto increment/decrement).
+        The instruction set manual is not clear about index control in BXA/BSXA
+        (cf. p. 49), however, it feels reasonable to assume simple indexing
+        (i.e. no auto increment/decrement).
       */
       if (cpu->hr & INDIRECT) {
-	cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
-								cpu->dbr )
-			   + *cpu->r3 );
+        cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr,
+                                                                cpu->dbr )
+                           + *cpu->r3 );
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr )
-			   + *cpu->r3 );
+        cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr )
+                           + *cpu->r3 );
       }
 
       /* No setting of CC required. */
@@ -3839,7 +3839,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
 
       /* Note: There are no 'STRI' operations. Consequently, opcodes C4 to C7 do
-	 not exist. */
+         not exist. */
 
 
     case STRR_0: /* C8 */
@@ -3850,14 +3850,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Store contents of R0 in memory address calculated from relative
-	 offset. */
+         offset. */
       if ( cpu->dbr & INDIRECT ) {
-	memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
-	  = cpu->r0;
+        memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
+          = cpu->r0;
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )] = cpu->r0;
+        memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )] = cpu->r0;
       }
 
       /* No setting of CC required. */
@@ -3875,14 +3875,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Store contents of R1 in memory address calculated from relative
-	 offset. */
+         offset. */
       if (cpu->dbr & INDIRECT) {
-	memory[MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
-	  = *cpu->r1;
+        memory[MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
+          = *cpu->r1;
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )] = *cpu->r1;
+        memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )] = *cpu->r1;
       }
 
       /* No setting of CC required. */
@@ -3900,14 +3900,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Store contents of R2 in memory address calculated from relative
-	 offset. */
+         offset. */
       if (cpu->dbr & INDIRECT) {
-	memory[MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
-	  = *cpu->r2;
+        memory[MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
+          = *cpu->r2;
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )] = *cpu->r2;
+        memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )] = *cpu->r2;
       }
 
       /* No setting of CC required. */
@@ -3925,14 +3925,14 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->rel_off = cpu->dbr & R_OFFSET;
 
       /* Store contents of R3 in memory address calculated from relative
-	 offset. */
+         offset. */
       if (cpu->dbr & INDIRECT) {
-	memory[MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
-	  = *cpu->r3;
+        memory[MEMORY(RELATIVE_ADDRESS_INDIRECT( cpu->iar, cpu->rel_off ) )]
+          = *cpu->r3;
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )] = *cpu->r3;
+        memory[MEMORY(RELATIVE_ADDRESS( cpu->iar, cpu->rel_off ) )] = *cpu->r3;
       }
 
       /* No setting of CC required. */
@@ -3945,38 +3945,38 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case STRA_0: /* CC */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
+        }
 
-	if ( cpu->hr & INDIRECT ) {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
-							  cpu->dbr) )]
-	    = cpu->r0;
+        if ( cpu->hr & INDIRECT ) {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
+                                                          cpu->dbr) )]
+            = cpu->r0;
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr, cpu->dbr ) )]
-	    = cpu->r0;
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr, cpu->dbr ) )]
+            = cpu->r0;
+        }
 
       } else {
-	if ( cpu->hr & INDIRECT ) {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
-	    = cpu->r0;
+        if ( cpu->hr & INDIRECT ) {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
+            = cpu->r0;
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] = cpu->r0;
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] = cpu->r0;
+        }
       }
 
       /* No setting of CC required. */
@@ -3989,42 +3989,42 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case STRA_1: /* CD */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
+        }
 
-	/* Store contents of R0 into memory location specified by absolute
-	   address + index in R1. */
-	if ( cpu->hr & INDIRECT ) {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
-							  cpu->dbr) )]
-	    = cpu->r0;
+        /* Store contents of R0 into memory location specified by absolute
+           address + index in R1. */
+        if ( cpu->hr & INDIRECT ) {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
+                                                          cpu->dbr) )]
+            = cpu->r0;
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
-						 cpu->dbr ) )] = cpu->r0;
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
+                                                 cpu->dbr ) )] = cpu->r0;
+        }
 
       } else {
-	/* Store contents of R1 into memory location specified by absolute
-	   address. */
-	if ( cpu->hr & INDIRECT ) {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
-	    = *cpu->r1;
+        /* Store contents of R1 into memory location specified by absolute
+           address. */
+        if ( cpu->hr & INDIRECT ) {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
+            = *cpu->r1;
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] = *cpu->r1;
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] = *cpu->r1;
+        }
       }
 
       /* No setting of CC required. */
@@ -4037,42 +4037,42 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case STRA_2: /* CE */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
+        }
 
-	/* Store contents of R0 into memory location specified by absolute
-	   address + index in R2. */
-	if ( cpu->hr & INDIRECT ) {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
-							  cpu->dbr) )]
-	    = cpu->r0;
+        /* Store contents of R0 into memory location specified by absolute
+           address + index in R2. */
+        if ( cpu->hr & INDIRECT ) {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
+                                                          cpu->dbr) )]
+            = cpu->r0;
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
-						 cpu->dbr ) )] = cpu->r0;
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
+                                                 cpu->dbr ) )] = cpu->r0;
+        }
 
       } else {
-	/* Store contents of R2 into memory location specified by absolute
-	   address. */
-	if ( cpu->hr & INDIRECT ) {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
-	    = *cpu->r2;
+        /* Store contents of R2 into memory location specified by absolute
+           address. */
+        if ( cpu->hr & INDIRECT ) {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
+            = *cpu->r2;
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] = *cpu->r2;
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] = *cpu->r2;
+        }
       }
 
       /* No setting of CC required. */
@@ -4085,42 +4085,42 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case STRA_3: /* CF */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
+        }
 
-	/* Store contents of R0 into memory location specified by absolute
-	   address + index in R3. */
-	if ( cpu->hr & INDIRECT ) {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
-							  cpu->dbr) )]
-	    = cpu->r0;
+        /* Store contents of R0 into memory location specified by absolute
+           address + index in R3. */
+        if ( cpu->hr & INDIRECT ) {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
+                                                          cpu->dbr) )]
+            = cpu->r0;
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
-						 cpu->dbr ) )] = cpu->r0;
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
+                                                 cpu->dbr ) )] = cpu->r0;
+        }
 
       } else {
-	/* Store contents of R3 into memory location specified by absolute
-	   address. */
-	if ( cpu->hr & INDIRECT ) {
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
-	    = *cpu->r3;
+        /* Store contents of R3 into memory location specified by absolute
+           address. */
+        if ( cpu->hr & INDIRECT ) {
+          memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )]
+            = *cpu->r3;
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] = *cpu->r3;
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] = *cpu->r3;
+        }
       }
 
       /* No setting of CC required. */
@@ -4172,21 +4172,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( ++cpu->r0 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4202,21 +4202,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( ++*cpu->r1 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4232,21 +4232,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( ++*cpu->r2 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4262,21 +4262,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( ++*cpu->r3 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4289,19 +4289,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BIRA_0: /* DC */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( ++cpu->r0 ) {
-	if (cpu->hr & INDIRECT) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if (cpu->hr & INDIRECT) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4314,19 +4314,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BIRA_1: /* DD */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( ++*cpu->r1 ) {
-	if (cpu->hr & INDIRECT) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if (cpu->hr & INDIRECT) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4339,19 +4339,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BIRA_2: /* DE */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( ++*cpu->r2 ) {
-	if (cpu->hr & INDIRECT) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if (cpu->hr & INDIRECT) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4364,19 +4364,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BIRA_3: /* DF */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( ++*cpu->r3 ) {
-	if (cpu->hr & INDIRECT) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if (cpu->hr & INDIRECT) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4496,15 +4496,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
 
       if ( cpu->dbr & INDIRECT ) {
-	cpu->psl |= CC_COM( cpu->r0,
-			    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							     cpu->rel_off ) )]);
+        cpu->psl |= CC_COM( cpu->r0,
+                   memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                             cpu->rel_off ) )]);
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->psl |= CC_COM( cpu->r0,
-			    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							     cpu->rel_off ) )]);
+        cpu->psl |= CC_COM( cpu->r0,
+                            memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                             cpu->rel_off ) )]);
       }
 
       THREE_CPU_CYCLES;
@@ -4522,15 +4522,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
 
       if ( cpu->dbr & INDIRECT ) {
-	cpu->psl |= CC_COM( *cpu->r1,
-			    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							     cpu->rel_off ) )]);
+        cpu->psl |= CC_COM( *cpu->r1,
+                   memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                             cpu->rel_off ) )]);
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->psl |= CC_COM( *cpu->r1,
-			    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							     cpu->rel_off ) )]);
+        cpu->psl |= CC_COM( *cpu->r1,
+                            memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                             cpu->rel_off ) )]);
       }
 
       THREE_CPU_CYCLES;
@@ -4548,15 +4548,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
 
       if ( cpu->dbr & INDIRECT ) {
-	cpu->psl |= CC_COM( *cpu->r2,
-			    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							     cpu->rel_off ) )]);
+        cpu->psl |= CC_COM( *cpu->r2,
+                   memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                             cpu->rel_off ) )]);
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->psl |= CC_COM( *cpu->r2,
-			    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							     cpu->rel_off ) )]);
+        cpu->psl |= CC_COM( *cpu->r2,
+                            memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                             cpu->rel_off ) )]);
       }
 
       THREE_CPU_CYCLES;
@@ -4574,15 +4574,15 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
 
       if ( cpu->dbr & INDIRECT ) {
-	cpu->psl |= CC_COM( *cpu->r3,
-			    memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							     cpu->rel_off ) )]);
+        cpu->psl |= CC_COM( *cpu->r3,
+                   memory[MEMORY( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                             cpu->rel_off ) )]);
 
-	TWO_CPU_CYCLES;
+        TWO_CPU_CYCLES;
       } else {
-	cpu->psl |= CC_COM( *cpu->r3,
-			    memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
-							     cpu->rel_off ) )]);
+        cpu->psl |= CC_COM( *cpu->r3,
+                            memory[MEMORY( RELATIVE_ADDRESS( cpu->iar,
+                                                             cpu->rel_off ) )]);
       }
 
       THREE_CPU_CYCLES;
@@ -4593,7 +4593,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case COMA_0: /* EC */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -4603,20 +4603,20 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++cpu->r0 : --cpu->r0;
+        }
 
-	cpu->psl |= CC_COM( cpu->r0, (cpu->hr & INDIRECT) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
-							  cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
-						 cpu->dbr ) )] );
+        cpu->psl |= CC_COM( cpu->r0, (cpu->hr & INDIRECT) ?
+               memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( cpu->r0, cpu->hr,
+                                                               cpu->dbr ) )] :
+               memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( cpu->r0, cpu->hr,
+                                                      cpu->dbr ) )] );
       } else {
-	cpu->psl |= CC_COM( cpu->r0, ( cpu->hr & INDIRECT ) ?
-	  memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
-	  memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] );
+        cpu->psl |= CC_COM( cpu->r0, ( cpu->hr & INDIRECT ) ?
+              memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] :
+              memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] );
       }
 
       FOUR_CPU_CYCLES;
@@ -4627,7 +4627,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case COMA_1: /* ED */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -4637,34 +4637,34 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r1 : --*cpu->r1;
+        }
 
-	if (cpu->hr & INDIRECT) {
-	  cpu->psl |= CC_COM( cpu->r0,
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
-							    cpu->dbr ) )] );
+        if (cpu->hr & INDIRECT) {
+          cpu->psl |= CC_COM( cpu->r0,
+              memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r1, cpu->hr,
+                                                              cpu->dbr ) )] );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->psl |= CC_COM( cpu->r0,
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
-						   cpu->dbr ) )] );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->psl |= CC_COM( cpu->r0,
+                       memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r1, cpu->hr,
+                                                              cpu->dbr ) )] );
+        }
 
       } else {
-	if (cpu->hr & INDIRECT) {
-	  cpu->psl |= CC_COM( *cpu->r1,
-            memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] );
+        if (cpu->hr & INDIRECT) {
+          cpu->psl |= CC_COM( *cpu->r1,
+             memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->psl |= CC_COM( *cpu->r1,
-			      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
-							       cpu->dbr ) )] );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->psl |= CC_COM( *cpu->r1,
+                              memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
+                                                               cpu->dbr ) )] );
+        }
       }
 
       FOUR_CPU_CYCLES;
@@ -4675,7 +4675,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case COMA_2: /* EE */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -4685,34 +4685,34 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r2 : --*cpu->r2;
+        }
 
-	if (cpu->hr & INDIRECT) {
-	  cpu->psl |= CC_COM( cpu->r0,
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
-							    cpu->dbr ) )] );
+        if (cpu->hr & INDIRECT) {
+          cpu->psl |= CC_COM( cpu->r0,
+              memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r2, cpu->hr,
+                                                              cpu->dbr ) )] );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->psl |= CC_COM( cpu->r0,
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
-						   cpu->dbr ) )] );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->psl |= CC_COM( cpu->r0,
+                       memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r2, cpu->hr,
+                                                              cpu->dbr ) )] );
+        }
 
       } else {
-	if (cpu->hr & INDIRECT) {
-	  cpu->psl |= CC_COM( *cpu->r2,
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] );
+        if (cpu->hr & INDIRECT) {
+          cpu->psl |= CC_COM( *cpu->r2,
+             memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->psl |= CC_COM( *cpu->r2,
-			      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
-							       cpu->dbr ) )] );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->psl |= CC_COM( *cpu->r2,
+                              memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr,
+                                                               cpu->dbr ) )] );
+        }
       }
 
       FOUR_CPU_CYCLES;
@@ -4723,7 +4723,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case COMA_3: /* EF */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
       cpu->indexing = cpu->hr & INDEXING;
@@ -4733,33 +4733,33 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
 
       if ( cpu->indexing ) {
 
-	/* Increment/decrement index register. */
-	if ( cpu->indexing != SIMPLE_INDEXING ) {
-	  (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
-	}
+        /* Increment/decrement index register. */
+        if ( cpu->indexing != SIMPLE_INDEXING ) {
+          (cpu->indexing == INCREMENT) ? ++*cpu->r3 : --*cpu->r3;
+        }
 
-	if (cpu->hr & INDIRECT) {
-	  cpu->psl |= CC_COM( cpu->r0,
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
-							    cpu->dbr ) )] );
+        if (cpu->hr & INDIRECT) {
+          cpu->psl |= CC_COM( cpu->r0,
+              memory[MEMORY( ABSOLUTE_ADDRESS_INDEX_INDIRECT( *cpu->r3, cpu->hr,
+                                                              cpu->dbr ) )] );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->psl |= CC_COM( cpu->r0,
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
-						   cpu->dbr ) )] );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->psl |= CC_COM( cpu->r0,
+                       memory[MEMORY( ABSOLUTE_ADDRESS_INDEX( *cpu->r3, cpu->hr,
+                                                              cpu->dbr ) )] );
+        }
 
       } else {
-	if (cpu->hr & INDIRECT) {
-	  cpu->psl |= CC_COM( *cpu->r3,
-	    memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] );
+        if (cpu->hr & INDIRECT) {
+          cpu->psl |= CC_COM( *cpu->r3,
+             memory[MEMORY( ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) )] );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->psl |= CC_COM( *cpu->r3,
-	    memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->psl |= CC_COM( *cpu->r3,
+                      memory[MEMORY( ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) )] );
+        }
       }
 
       FOUR_CPU_CYCLES;
@@ -4776,7 +4776,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
 
       if ( (cpu->r0 & cpu->dbr) < cpu->dbr ) {
-	cpu->psl |= CC_LESS;
+        cpu->psl |= CC_LESS;
       }
 
       THREE_CPU_CYCLES;
@@ -4793,7 +4793,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
 
       if ( (*cpu->r1 & cpu->dbr) < cpu->dbr ) {
-	cpu->psl |= CC_LESS;
+        cpu->psl |= CC_LESS;
       }
 
       THREE_CPU_CYCLES;
@@ -4810,7 +4810,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
 
       if ( (*cpu->r2 & cpu->dbr) < cpu->dbr ) {
-	cpu->psl |= CC_LESS;
+        cpu->psl |= CC_LESS;
       }
 
       THREE_CPU_CYCLES;
@@ -4827,7 +4827,7 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       CLEAR_CC;
 
       if ( (*cpu->r3 & cpu->dbr) < cpu->dbr ) {
-	cpu->psl |= CC_LESS;
+        cpu->psl |= CC_LESS;
       }
 
       THREE_CPU_CYCLES;
@@ -4841,21 +4841,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( --cpu->r0 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4871,21 +4871,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( --*cpu->r1 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4901,21 +4901,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( --*cpu->r2 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4931,21 +4931,21 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( --*cpu->r3 ) {
-	cpu->rel_off = cpu->dbr & R_OFFSET;
+        cpu->rel_off = cpu->dbr & R_OFFSET;
 
-	/* Indirect or direct addressing? */
-	if ( cpu->dbr & INDIRECT ) {
-	  /* Branch to specified address. */
-	  cpu->iar =
-	    MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
-							  cpu->rel_off ) ) );
+        /* Indirect or direct addressing? */
+        if ( cpu->dbr & INDIRECT ) {
+          /* Branch to specified address. */
+          cpu->iar =
+            MEMORY( BRANCH_TO( RELATIVE_ADDRESS_INDIRECT( cpu->iar,
+                                                          cpu->rel_off ) ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  /* Branch to specified address. */
-	  cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
-							  cpu->rel_off ) ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          /* Branch to specified address. */
+          cpu->iar = MEMORY( BRANCH_TO( RELATIVE_ADDRESS( cpu->iar,
+                                                          cpu->rel_off ) ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -4958,19 +4958,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BDRA_0: /* FC */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( --cpu->r0 ) {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       THREE_CPU_CYCLES;
@@ -4981,19 +4981,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BDRA_1: /* FD */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( --*cpu->r1 ) {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -5006,19 +5006,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BDRA_2: /* FE */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( --*cpu->r2 ) {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */
@@ -5031,19 +5031,19 @@ int cpu_loop( Cpu *cpu, unsigned char *memory )
     case BDRA_3: /* FF */
 
       /* Get high order address byte into holding register and low order address
-	 byte into data bus register. */
+         byte into data bus register. */
       cpu->hr = memory[MEMORY( ++cpu->iar )];
       cpu->dbr = memory[MEMORY( ++cpu->iar )];
 
       if ( --*cpu->r3 ) {
-	if ( cpu->hr & INDIRECT ) {
-	  cpu->iar =
-	    MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
+        if ( cpu->hr & INDIRECT ) {
+          cpu->iar =
+            MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( cpu->hr, cpu->dbr ) );
 
-	  TWO_CPU_CYCLES;
-	} else {
-	  cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
-	}
+          TWO_CPU_CYCLES;
+        } else {
+          cpu->iar = MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( cpu->hr, cpu->dbr ) );
+        }
       }
 
       /* No setting of CC required. */

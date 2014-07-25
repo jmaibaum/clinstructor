@@ -31,10 +31,10 @@ int parse_hex_file( FILE *fp, unsigned char *mem )
   while ( fgets( byte, 3, fp ) ) {
     if ( isxdigit( byte[0] ) && isxdigit( byte[1] ) ) {
       if ( bytecount < 0x8000 ) {
-	*mem++ = strtol( byte, NULL, 16 );
-	++bytecount;
+        *mem++ = strtol( byte, NULL, 16 );
+        ++bytecount;
       } else {
-	return EXIT_FAILURE;
+        return EXIT_FAILURE;
       }
     }
   }

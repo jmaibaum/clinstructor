@@ -19,10 +19,10 @@
 #ifndef OS_TIMER_H
 #define OS_TIMER_H
 
-void timer_start(void);
-void timer_stop(void);
+void timer_start( void );
+void timer_stop( void );
 
-double timer_elapsed_microsecs(void);
+double timer_elapsed_microsecs( void );
 
-static inline void timer_warn(void) { }
-#endif
+static inline void timer_warn( void ) { }
+#endif /* OS_TIMER_H */

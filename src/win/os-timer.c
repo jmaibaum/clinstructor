@@ -24,25 +24,25 @@ static LARGE_INTEGER emu_start;
 static LARGE_INTEGER emu_stop;
 static LARGE_INTEGER freq;
 
-void timer_start(void) {
-  QueryPerformanceFrequency(&freq);
-  QueryPerformanceCounter(&emu_start);
+void timer_start( void ) {
+  QueryPerformanceFrequency( &freq );
+  QueryPerformanceCounter( &emu_start );
 }
 
-void timer_stop(void) {
-  QueryPerformanceCounter(&emu_stop);
+void timer_stop( void ) {
+  QueryPerformanceCounter( &emu_stop );
 }
 
-double timer_elapsed_microsecs(void) {
+double timer_elapsed_microsecs( void ) {
   LARGE_INTEGER elapsed_microsecs;
 
   elapsed_microsecs.QuadPart = emu_stop.QuadPart - emu_start.QuadPart;
 
-  /* We now have the elapsed number of ticks, along with the
-     number of ticks-per-second. We use these values to convert
-     the number of elapsed microseconds.
-     To guard against loss-of-precision, we convert to
-     microseconds *before* dividing by ticks-per-second.
+  /*
+    We now have the elapsed number of ticks, along with the number of
+    ticks-per-second. We use these values to convert the number of elapsed
+    microseconds. To guard against loss-of-precision, we convert to microseconds
+    *before* dividing by ticks-per-second.
   */
 
   elapsed_microsecs.QuadPart *= 1000000;

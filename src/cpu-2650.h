@@ -20,24 +20,26 @@
 #define CPU_2650_H
 
 /* Register bank swap macros. */
-#define SELECT_REGISTER_BANK1			\
-  cpu->r1 = &cpu->register_1;			\
-  cpu->r2 = &cpu->register_2;			\
+#define SELECT_REGISTER_BANK1     \
+  cpu->r1 = &cpu->register_1;     \
+  cpu->r2 = &cpu->register_2;     \
   cpu->r3 = &cpu->register_3
 
-#define SELECT_REGISTER_BANK2			\
-  cpu->r1 = &cpu->register_4;			\
-  cpu->r2 = &cpu->register_5;			\
+#define SELECT_REGISTER_BANK2     \
+  cpu->r1 = &cpu->register_4;     \
+  cpu->r2 = &cpu->register_5;     \
   cpu->r3 = &cpu->register_6
 
 
-/* The compiler (or the operating system's memory management on Mac OSX) seems
-   to allocate some more bytes than specified in main.c (probably due to machine
-   word boundaries?!). So the program does not throw an error, if memory a
-   little above 0x7FFF gets adressed (like 0x8000 or 0x8001). Therefore, all
-   memory access should only be through the following macro, GET_MEMORY(), which
-   wraps addresses > 0x7FFF around. Feels a little hacky, but I have not come to
-   a better solution, yet. */
+/*
+  The compiler (or the operating system's memory management on Mac OSX) seems
+  to allocate some more bytes than specified in main.c (probably due to machine
+  word boundaries?!). So the program does not throw an error, if memory a
+  little above 0x7FFF gets adressed (like 0x8000 or 0x8001). Therefore, all
+  memory access should only be through the following macro, GET_MEMORY(), which
+  wraps addresses > 0x7FFF around. Feels a little hacky, but I have not come to
+  a better solution, yet.
+*/
 #define MEMORY( address ) ( ( address ) % 0x8000 )
 
 
@@ -106,7 +108,6 @@ typedef enum {
 #define CLEAR_FLAGS ( cpu->psl &= ~( PSL_CC | PSL_IDC | PSL_OVF | PSL_C ) )
 #define CLEAR_ROT   ( cpu->psl &= ~( PSL_CC | PSL_OVF ) )
 
-
 #define CLEAR_II ( cpu->psu &= ~PSU_II )
 #define CLEAR_CC ( cpu->psl &= ~PSL_CC )
 
@@ -114,27 +115,28 @@ typedef enum {
 #define SET_OVERFLOW ( cpu->psl |= PSL_OVF )
 #define SET_ID_CARRY ( cpu->psl |= PSL_IDC )
 
-/* This macro masks of bit 3 and 4 of any byte that gets to be written into or
-   compared with the PSU in order to assure that those bits are never set to one
-   or compared with a one (because they are not used). */
-#define PSU( value )				\
+/*
+  This macro masks of bit 3 and 4 of any byte that gets to be written into or
+  compared with the PSU in order to assure that those bits are never set to one
+  or compared with a one (because they are not used).
+*/
+#define PSU( value )   \
   ( (value) & PSU_NU )
 
 /* Decide if a value should be interpreted logically or arithmetically. */
-#define LOG_OR_ARI( value )			\
+#define LOG_OR_ARI( value )                     \
   ( COMPARE ? (value) : (signed char) (value) )
 
-/* Get the correct value for CC after any instruction that affects a
-   register. */
-#define CC_REG( data_byte )				\
-  ( ( (data_byte) != CC_ZERO )				\
-    ? ( ( (data_byte) < CC_NEGATIVE )			\
-	? CC_POSITIVE : CC_NEGATIVE ) : CC_ZERO )
+/* Get the correct value for CC after any instruction that affects a register.*/
+#define CC_REG( data_byte )                       \
+  ( ( (data_byte) != CC_ZERO )                    \
+    ? ( ( (data_byte) < CC_NEGATIVE )             \
+        ? CC_POSITIVE : CC_NEGATIVE ) : CC_ZERO )
 
 /* Get the correct value for CC after a compare instruction. */
-#define CC_COM( first_byte, second_byte )			\
-  (first_byte) != (second_byte) ?				\
-    ( LOG_OR_ARI(first_byte) < LOG_OR_ARI(second_byte) ?	\
+#define CC_COM( first_byte, second_byte )                 \
+  (first_byte) != (second_byte) ?                         \
+    ( LOG_OR_ARI(first_byte) < LOG_OR_ARI(second_byte) ?  \
       CC_LESS : CC_GREATER ) : CC_EQUAL
 
 
@@ -151,22 +153,24 @@ typedef enum {
 /* Macros for relative indexing. */
 
 /* Get 7 bit long two's complement for ofsetting relative addressing. */
-#define RELATIVE_OFFSET( offset )		\
+#define RELATIVE_OFFSET( offset )               \
   ( (signed char) ( (offset) << 1 ) >> 1 )
 
 /* Compute Address for relative addressing. */
-#define RELATIVE_ADDRESS( iar, off )		\
+#define RELATIVE_ADDRESS( iar, off )            \
   ( ( (iar) + 1 ) + RELATIVE_OFFSET(off) )
 
 /* Compute Address for indirect relative addressing. */
-#define RELATIVE_ADDRESS_INDIRECT( iar, off )				\
-  ( ( ( memory[MEMORY( ( (iar) + 1 ) +					\
-		       RELATIVE_OFFSET(off) )] & I_HIGH_B ) << 8 ) +	\
+#define RELATIVE_ADDRESS_INDIRECT( iar, off )                         \
+  ( ( ( memory[MEMORY( ( (iar) + 1 ) +                                \
+                       RELATIVE_OFFSET(off) )] & I_HIGH_B ) << 8 ) +  \
     memory[MEMORY( ( (iar) + 2 ) + RELATIVE_OFFSET(off) )] )
 
-/* In a branch instruction, the above macros would point one memory address too
-   far, therefore, we have to subtract one. */
-#define BRANCH_TO( too_far )			\
+/*
+  In a branch instruction, the above macros would point one memory address too
+  far, therefore, we have to subtract one.
+*/
+#define BRANCH_TO( too_far )      \
   ( (too_far) - 1 )
 
 /*
@@ -185,11 +189,11 @@ typedef enum {
       7E    1FFE
       7F    1FFF
 */
-#define ZERO_BRANCH( off )				\
+#define ZERO_BRANCH( off )                              \
   ( (unsigned short) RELATIVE_OFFSET( off ) % 0x2000 )
 
-#define ZERO_BRANCH_INDIRECT( off )			\
-  ( ( (memory[ZERO_BRANCH( off )] & I_HIGH_B) << 8 ) +	\
+#define ZERO_BRANCH_INDIRECT( off )     \
+  ( ( (memory[ZERO_BRANCH( off )] & I_HIGH_B) << 8 ) +  \
     memory[ZERO_BRANCH( off ) + 1] )
 
 /* Macros for absolute addressing. */
@@ -201,36 +205,36 @@ typedef enum {
   SIMPLE_INDEXING = 0x60
 } IndexingModes;
 
-#define ABSOLUTE_ADDRESS( high, low )		\
+#define ABSOLUTE_ADDRESS( high, low )           \
   ( ( ( (high) & A_HIGH_N ) << 8 ) + (low) )
 
 #define ABSOLUTE_ADDRESS_INDIRECT( hpart, lpart )                              \
   ( ( ( memory[MEMORY( ABSOLUTE_ADDRESS(hpart, lpart) )] & I_HIGH_B ) << 8 ) + \
     memory[MEMORY( ABSOLUTE_ADDRESS(hpart, (lpart) + 1) )] )
 
-#define ABSOLUTE_ADDRESS_INDEX( index, hpart, lpart )	\
+#define ABSOLUTE_ADDRESS_INDEX( index, hpart, lpart ) \
   ( ABSOLUTE_ADDRESS( hpart, lpart ) + (index) )
 
-#define ABSOLUTE_ADDRESS_INDEX_INDIRECT( index, hbyte, lbyte )	\
+#define ABSOLUTE_ADDRESS_INDEX_INDIRECT( index, hbyte, lbyte )  \
   ( ABSOLUTE_ADDRESS_INDIRECT( hbyte, lbyte ) + (index) )
 
-#define BRANCH_TO_ABSOLUTE_ADDRESS( high, low ) \
+#define BRANCH_TO_ABSOLUTE_ADDRESS( high, low )   \
   ( ( ( (high) & A_HIGH_B ) << 8 ) + (low) - 1 )
 
-#define BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( hpart, lpart )		   \
-  ( ( ( memory[MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( hpart,		   \
+#define BRANCH_TO_ABSOLUTE_ADDRESS_INDIRECT( hpart, lpart )                \
+  ( ( ( memory[MEMORY( BRANCH_TO_ABSOLUTE_ADDRESS( hpart,                  \
                                                    lpart ) )] & I_HIGH_B ) \
                                                                   << 8 ) + \
     memory[MEMORY( ABSOLUTE_ADDRESS( hpart, (lpart) + 1 ) )] - 1 )
 
 
 /* Return Address Stack Operations */
-#define RAS_PUSH( ret_addr )					\
-  cpu->psu = ( ( ( STACK_POINTER + 1 ) % 8 ) & PSU_SP );	\
-  cpu->ras[ STACK_POINTER ] = (ret_addr)		
+#define RAS_PUSH( ret_addr )                              \
+  cpu->psu = ( ( ( STACK_POINTER + 1 ) % 8 ) & PSU_SP );  \
+  cpu->ras[ STACK_POINTER ] = (ret_addr)
 
-#define RAS_POP					       	\
-  cpu->iar = cpu->ras[ STACK_POINTER ] - 1;	       	\
+#define RAS_POP                                         \
+  cpu->iar = cpu->ras[ STACK_POINTER ] - 1;             \
   cpu->psu = ( ( ( STACK_POINTER - 1 ) % 8 ) & PSU_SP )
 
 
@@ -257,36 +261,36 @@ typedef enum {
 */
 #define CARRY_OR_NOT ((cpu->psl >> 3) & cpu->psl & PSL_C)
 
-#define ADD( destination, source )					\
-  cpu->before_arith = destination;					\
-  cpu->adder = destination + source + CARRY_OR_NOT;			\
-  CLEAR_FLAGS;								\
-									\
-  /* Check for Carry. */						\
-  if ( cpu->adder & CARRY_CHECK ) {					\
-    SET_CARRY;								\
-  }									\
-  									\
-  /* Write lower 8 bits to destination. */				\
-  destination = cpu->adder & EIGHT_BIT;					\
-									\
-  /* Check for Inter Digit Carry. */					\
-  if ( (destination & LOW_NIBBLE) < (cpu->before_arith & LOW_NIBBLE) ) { \
-    SET_ID_CARRY;							\
-  }									\
-									\
-  /* Check for Overflow. */						\
-  if ( source <= HIGH_POS_NUM ) {					\
+#define ADD( destination, source )                                            \
+  cpu->before_arith = destination;                                            \
+  cpu->adder = destination + source + CARRY_OR_NOT;                           \
+  CLEAR_FLAGS;                                                                \
+                                                                              \
+  /* Check for Carry. */                                                      \
+  if ( cpu->adder & CARRY_CHECK ) {                                           \
+    SET_CARRY;                                                                \
+  }                                                                           \
+                                                                              \
+  /* Write lower 8 bits to destination. */                                    \
+  destination = cpu->adder & EIGHT_BIT;                                       \
+                                                                              \
+  /* Check for Inter Digit Carry. */                                          \
+  if ( (destination & LOW_NIBBLE) < (cpu->before_arith & LOW_NIBBLE) ) {      \
+    SET_ID_CARRY;                                                             \
+  }                                                                           \
+                                                                              \
+  /* Check for Overflow. */                                                   \
+  if ( source <= HIGH_POS_NUM ) {                                             \
     if ( cpu->before_arith <= HIGH_POS_NUM && destination >= HIGH_NEG_NUM ) { \
-      SET_OVERFLOW;							\
-    }									\
-  } else {								\
+      SET_OVERFLOW;                                                           \
+    }                                                                         \
+  } else {                                                                    \
     if ( cpu->before_arith >= HIGH_POS_NUM && destination <= HIGH_POS_NUM ) { \
-      SET_OVERFLOW;							\
-    }									\
-  }									\
-									\
-  /* Set Condition Code. */						\
+      SET_OVERFLOW;                                                           \
+    }                                                                         \
+  }                                                                           \
+                                                                              \
+  /* Set Condition Code. */                                                   \
   cpu->psl |= CC_REG( destination );
 
 
@@ -298,88 +302,88 @@ typedef enum {
 */
 #define BORROW_OR_NOT ((cpu->psl >> 3) & (cpu->psl ^ PSL_C) & PSL_C)
 
-#define SUB( destination, source )					\
-  cpu->before_arith = destination;					\
-  cpu->adder = destination - source - BORROW_OR_NOT;			\
-  CLEAR_FLAGS;								\
-									\
-  /* Check for Carry. */						\
-  if ( (cpu->adder & CARRY_CHECK) == 0 ) {				\
-    SET_CARRY;								\
-  }									\
-									\
-  /* Write lower 8 bits to destination. */				\
-  destination = cpu->adder & EIGHT_BIT;					\
-									\
-  /* Check for Inter Digit Carry. */					\
-  if ( (destination & LOW_NIBBLE) <= (cpu->before_arith & LOW_NIBBLE) ) { \
-    SET_ID_CARRY;							\
-  }									\
-									\
-  /* Check for Overflow. */						\
-  if ( source <= HIGH_POS_NUM) {					\
+#define SUB( destination, source )                                            \
+  cpu->before_arith = destination;                                            \
+  cpu->adder = destination - source - BORROW_OR_NOT;                          \
+  CLEAR_FLAGS;                                                                \
+                                                                              \
+  /* Check for Carry. */                                                      \
+  if ( (cpu->adder & CARRY_CHECK) == 0 ) {                                    \
+    SET_CARRY;                                                                \
+  }                                                                           \
+                                                                              \
+  /* Write lower 8 bits to destination. */                                    \
+  destination = cpu->adder & EIGHT_BIT;                                       \
+                                                                              \
+  /* Check for Inter Digit Carry. */                                          \
+  if ( (destination & LOW_NIBBLE) <= (cpu->before_arith & LOW_NIBBLE) ) {     \
+    SET_ID_CARRY;                                                             \
+  }                                                                           \
+                                                                              \
+  /* Check for Overflow. */                                                   \
+  if ( source <= HIGH_POS_NUM) {                                              \
     if ( cpu->before_arith <= HIGH_POS_NUM && destination >= HIGH_NEG_NUM ) { \
-      SET_OVERFLOW;							\
-    }									\
-  } else {								\
+      SET_OVERFLOW;                                                           \
+    }                                                                         \
+  } else {                                                                    \
     if ( cpu->before_arith >= HIGH_POS_NUM && destination <= HIGH_POS_NUM ) { \
-      SET_OVERFLOW;							\
-    }									\
-  }									\
-									\
-  /* Set Condition Code. */						\
+      SET_OVERFLOW;                                                           \
+    }                                                                         \
+  }                                                                           \
+                                                                              \
+  /* Set Condition Code. */                                                   \
   cpu->psl |= CC_REG( destination );
 
 
-#define ROTATE_LEFT( reg )						\
-  cpu->before_arith = reg;						\
-  cpu->adder = reg << 1;						\
-									\
-  if ( WITH_CARRY ) {							\
-									\
-    /* Current carry flag rotates into LSB of register. */		\
-    reg = cpu->adder | CARRY;						\
-    CLEAR_FLAGS;							\
-									\
-    /* MSB of 'adder' becomes new carry and bit #4 of register */	\
-    /* (now bit #5 of 'adder') becomes IDC. */				\
-    cpu->psl |= ( (cpu->adder & PSL_IDC) | (cpu->adder >> 8) );		\
-									\
-  } else {								\
-    reg = (cpu->adder & EIGHT_BIT) | (cpu->adder >> 8);			\
-    CLEAR_ROT; /* Clears CC and OVF. */					\
-  }									\
-									\
-  if ( (cpu->before_arith & OVF_CHECK) != (reg & OVF_CHECK) )		\
-    SET_OVERFLOW;							\
-									\
-  /* Set CC. */								\
+#define ROTATE_LEFT( reg )                                        \
+  cpu->before_arith = reg;                                        \
+  cpu->adder = reg << 1;                                          \
+                                                                  \
+  if ( WITH_CARRY ) {                                             \
+                                                                  \
+    /* Current carry flag rotates into LSB of register. */        \
+    reg = cpu->adder | CARRY;                                     \
+    CLEAR_FLAGS;                                                  \
+                                                                  \
+    /* MSB of 'adder' becomes new carry and bit #4 of register */ \
+    /* (now bit #5 of 'adder') becomes IDC. */                    \
+    cpu->psl |= ( (cpu->adder & PSL_IDC) | (cpu->adder >> 8) );   \
+                                                                  \
+  } else {                                                        \
+    reg = (cpu->adder & EIGHT_BIT) | (cpu->adder >> 8);           \
+    CLEAR_ROT; /* Clears CC and OVF. */                           \
+  }                                                               \
+                                                                  \
+  if ( (cpu->before_arith & OVF_CHECK) != (reg & OVF_CHECK) )     \
+    SET_OVERFLOW;                                                 \
+                                                                  \
+  /* Set CC. */                                                   \
   cpu->psl |= CC_REG( reg );
 
 
-#define ROTATE_RIGHT( reg )						\
-  cpu->before_arith = reg;						\
-  cpu->adder = reg >> 1;						\
-									\
-  if ( WITH_CARRY ) {							\
-									\
-    /* Current carry flag rotates into MSB of register. */		\
-    reg = (CARRY << 7) | cpu->adder;					\
-    CLEAR_FLAGS;							\
-									\
-    /* LSB of old reg value becomes new carry and bit #6 of register */	\
-    /* (now bit #5 of 'adder') becomes IDC. */				\
+#define ROTATE_RIGHT( reg )                                               \
+  cpu->before_arith = reg;                                                \
+  cpu->adder = reg >> 1;                                                  \
+                                                                          \
+  if ( WITH_CARRY ) {                                                     \
+                                                                          \
+    /* Current carry flag rotates into MSB of register. */                \
+    reg = (CARRY << 7) | cpu->adder;                                      \
+    CLEAR_FLAGS;                                                          \
+                                                                          \
+    /* LSB of old reg value becomes new carry and bit #6 of register */   \
+    /* (now bit #5 of 'adder') becomes IDC. */                            \
     cpu->psl |= ( (cpu->adder & PSL_IDC) | (cpu->before_arith & PSL_C) ); \
-									\
-  } else {								\
-    reg = ((cpu->before_arith & PSL_C) << 7) | cpu->adder;		\
-    CLEAR_ROT; /* Clears CC and OVF. */					\
-  }									\
-									\
-  if ( (cpu->before_arith & OVF_CHECK) != (reg & OVF_CHECK) )		\
-    SET_OVERFLOW;							\
-									\
-  /* Set CC. */								\
+                                                                          \
+  } else {                                                                \
+    reg = ((cpu->before_arith & PSL_C) << 7) | cpu->adder;                \
+    CLEAR_ROT; /* Clears CC and OVF. */                                   \
+  }                                                                       \
+                                                                          \
+  if ( (cpu->before_arith & OVF_CHECK) != (reg & OVF_CHECK) )             \
+    SET_OVERFLOW;                                                         \
+                                                                          \
+  /* Set CC. */                                                           \
   cpu->psl |= CC_REG( reg );
 
 

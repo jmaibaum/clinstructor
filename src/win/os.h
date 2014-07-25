@@ -19,8 +19,6 @@
 #ifndef WIN_OS_H
 #define WIN_OS_H
 
+#define MICRO_SIGN "\xE6" /* Codepage 437 */
 
-#define MICRO_SIGN "\xE6"	/* Codepage 437 */
-
-
-#endif
+#endif /* WIN_OS_H */

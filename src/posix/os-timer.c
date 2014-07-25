@@ -23,21 +23,21 @@
 static struct timeval emu_start;
 static struct timeval emu_stop;
 
-void timer_start(void) {
+void timer_start( void ) {
   gettimeofday( &emu_start, NULL );
 }
 
-void timer_stop(void) {
+void timer_stop( void ) {
   gettimeofday( &emu_stop, NULL );
 }
 
-void timer_warn(void) {
+void timer_warn( void ) {
   if ( emu_stop.tv_sec - emu_start.tv_sec ) {
     printf( "Emulation lasted longer than one second. "
-	    "The next line does\n not tell the truth.\n" );
-    }
+            "The next line does\n not tell the truth.\n" );
+  }
 }
 
-double timer_elapsed_microsecs(void) {
-    return emu_stop.tv_usec - emu_start.tv_usec;
+double timer_elapsed_microsecs( void ) {
+  return emu_stop.tv_usec - emu_start.tv_usec;
 }

@@ -9,12 +9,12 @@ OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=clinstructor
 
 ifeq ($(WIN),y)
-   CROSS=i686-pc-mingw32-
-   CC=gcc
-   EXECUTABLE:=$(EXECUTABLE).exe
-   ARCH=win
+	CROSS=i686-pc-mingw32-
+	CC=gcc
+	EXECUTABLE:=$(EXECUTABLE).exe
+	ARCH=win
 else
-   ARCH=posix
+	ARCH=posix
 endif
 VPATH:=$(VPATH) src/$(ARCH)
 
@@ -44,8 +44,8 @@ cleanmisc:
 # If you're looking for a cross compiler for Windows designed to
 # run on any Unix sytem (Linux, Mac OS X, *BSD...): http://mxe.cc
 win:
-	make clean		# Drop any *NIX object files
-	make WIN=y		# Cross compile for Windows
+	make clean    # Drop any *NIX object files
+	make WIN=y    # Cross compile for Windows
 
 install:
 	install $(EXECUTABLE) $(INSTALLPATH)

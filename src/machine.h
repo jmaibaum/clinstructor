@@ -16,11 +16,13 @@
   CLInstructor.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* This file contains definitions that are specific for the hardware
-   configuration of the Signetics Instructor 50. */
+/*
+  This file contains definitions that are specific for the hardware
+  configuration of the Signetics Instructor 50.
+*/
 
 #define CLOCK         (3579548)   /* Instructor 50 says 3579545, but the chosen
-				     value allows for correct integer
-				     division. */
+                                     value allows for correct integer
+                                     division. */
 #define CPU_CLOCK     (CLOCK / 4) /* = 894887, otherwise it would be
-				     894886.25. */
+                                     894886.25. */

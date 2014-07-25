@@ -49,8 +49,8 @@ int main( int argc, char **argv )
     if ( (fp = fopen( argv[1], "r" )) ) {
 
       if ( parse_hex_file( fp, memory ) ) {
-	printf( "Warning: Emulated memory is full, "
-		"but hex file still contains data.\n" );
+        printf( "Warning: Emulated memory is full, "
+                "but hex file still contains data.\n" );
       }
 
       fclose( fp );
@@ -63,13 +63,13 @@ int main( int argc, char **argv )
       m = atoi( argv[2] );
 
       if ( m > 0x7F00 ) {
-	m = 0x7F00;
-	printf( "Warning: Memory dump start address is too high, "
-		"reset to 32512 (0x7F00).\n" );
+        m = 0x7F00;
+        printf( "Warning: Memory dump start address is too high, "
+                "reset to 32512 (0x7F00).\n" );
       } else if ( m < 0 ) {
-	m = 0;
-	printf( "Warning: Memory dump start address is negative, "
-		"reset to 0.\n" );
+        m = 0;
+        printf( "Warning: Memory dump start address is negative, "
+                "reset to 0.\n" );
       }
 
     } else {
@@ -105,8 +105,8 @@ int main( int argc, char **argv )
     speed = (emu_time * 100) / real_time;
 
     printf( "Emulated %ld CPU cycles. Real time: %ld%ss.\n"
-	    "Emulation time: %.02f%ss. Speed: %.02f%%.\n",
-	    cpu_cycles, real_time, MICRO_SIGN, emu_time, MICRO_SIGN, speed );
+            "Emulation time: %.02f%ss. Speed: %.02f%%.\n",
+            cpu_cycles, real_time, MICRO_SIGN, emu_time, MICRO_SIGN, speed );
 
   }
 
